@@ -76,11 +76,11 @@ int main (void)
   while(1)
   {
     //parser_process(state, &parser_result);
-    cmd_parser_next_state()->state_process(&parser_result);
-    /*if((int)(parser_result.commands->Etat_Epreuve) == 1)
+    cmd_parser_process(&parser_result);
+    if((parser_result.commands->Etat_Epreuve) == epreuve1)
     {
       USART_print("Epreuve 1 !!!");
-    }*/
+    }
     //USART_send(&c);
     //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
   }

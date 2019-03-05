@@ -23,16 +23,13 @@ typedef unsigned char byte;
 #endif
 
 // Taille en octect que l'on alloue au buffer qui récupère la commande envoyé
-#define COMMAND_BUFFER_SIZE 10
+#define COMMAND_BUFFER_SIZE 100
 
-// Nombre max d'argmuents que l'on peut récupérer avec le buffer lors du parse
-#define ARGS_MAX_NUMBER  5
+// Nombre max de mots composants une commande que l'on peut récupérer avec le buffer lors du parse
+#define MAX_COMMAND_WORD  8
 
-// Taille max du buffer pour un seul nom d'argument
+// Taille max du buffer pour un seul mot de commande/argument
 #define ARGS_BUFFER_SIZE  12
-
-// Taille en octect que l'on alloue au buffer des params lors du décodage
-#define PARAM_BUFFER_SIZE 16
 
 // Nombre de commandes implémentée
 #define NUMBER_OF_COMMAND 27
@@ -73,7 +70,7 @@ typedef struct
 typedef struct
 {
   char* name;
-  void(*process)(char**, OUT_M1*);
+  void(*process)(char**, byte, OUT_M1*);
 }CMD_;
 
 /*
@@ -109,16 +106,66 @@ typedef enum
 }HASH_IDENTIFIER;
 */
 
+/*
+#############################################################################
+        µP Related Code
+#############################################################################
+*/
+
+/**
+  Initialize devices for commands_parser : UART0 and Interrupt
+**/
 byte init_parser();
+
+/*
+  Envoie un caractere sur la liaison UART0
+*/
+void USART_send(byte data);
+
+/*
+  Récupère un caractere sur la liaison UART0 par scrutation
+*/
+void USART_receive(byte* read_byte);
+
+/*
+#############################################################################
+        Core Code of commands_parser.c
+#############################################################################
+*/
+
+/*
+  Envoie une chaine de caractères sur la liaison UART0
+*/
+void USART_print(char* str);
+
+/*
+
+*/
 const FSM_PROCESS* cmd_parser_next_state();
+
+/*
+  Execute un cycle de la machine d'Etat commands_parser.c
+*/
+void cmd_parser_process(PARSER_RESULT*);
+
+/*
+  Etat d'attente de la FSM. A chaque exécution, on scrute l'UART0 pour voir si
+  un nouveau caractère est présent, et on l'ajoute dans le buffer raw_data
+*/
 void wait(PARSER_RESULT* parser_result);
+
+/*
+  Analyse le buffer brute afin d'en extraire une commande existante
+*/
 void get_command(PARSER_RESULT* parser_result);
+
+/*
+  TODO
+*/
 void read_command(PARSER_RESULT* parser_result);
 
-//char decode_data(PARSER_RESULT* parser_result);
-//void parse_args(char * raw_args, char** args, byte* values);
+/*
+  Découpe le buffer brute afin d'en extraire le nom de la commande, les paramètres,
+  et leurs valeurs
+*/
 byte parse(PARSER_RESULT* parser_result);
-
-void USART_send(byte data);
-void USART_receive(byte* read_byte);
-void USART_print(char* str);

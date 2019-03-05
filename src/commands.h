@@ -117,5 +117,11 @@ typedef struct INFORMATIONS       // Cette structure contient toutes les informa
 } IN_M1;
 // *******************************************************************************************
 
-void default_process(char** args, OUT_M1* commands);
-void start_test(char** args, OUT_M1* commands);
+void default_process(char** args, byte size, OUT_M1* commands);
+
+
+/*
+  Commande de démarage de l'épreuve : D [Numéro Epreuve]
+  Si aucun paramètre rentré, alors on démarre à l'épreuve 1
+*/
+void start_test(char** args, byte size, OUT_M1* commands);
