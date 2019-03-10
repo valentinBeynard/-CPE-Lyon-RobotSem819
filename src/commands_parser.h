@@ -2,25 +2,9 @@
 #define COMMAND_PARSER_H
 #endif
 
+#include "c8051F020.h"
 #include "commands.h"
-#include <stdio.h>
-#include <avr/io.h>
 
-#include <avr/interrupt.h>
-
-typedef unsigned char byte;
-
-#define ATMEGA
-
-#ifdef ATMEGA
-
-#define CLK 16000000UL
-#define BAUD  9600
-#define UBRR_BAUD CLK/16/BAUD-1
-
-#else
-
-#endif
 
 // Taille en octect que l'on alloue au buffer qui récupère la commande envoyé
 #define COMMAND_BUFFER_SIZE 100
@@ -49,7 +33,7 @@ typedef unsigned char byte;
 typedef struct
 {
   byte has_command;
-  OUT_M1 * commands;
+  OUT_M1 commands;
 }PARSER_RESULT;
 
 typedef enum
@@ -67,45 +51,6 @@ typedef struct
 
 
 
-typedef struct
-{
-  char* name;
-  void(*process)(char**, byte, OUT_M1*);
-}CMD_;
-
-/*
-typedef enum
-{
-  D = 100,
-  E = 10,
-  Q = 9,
-  TV = 220,
-  A = 91,
-  B = 219,
-  S = 204,
-  RD = 37,
-  RG = 133,
-  RC = 131,
-  RA = 21,
-  G = 109,
-  ASS = 107,
-  MI = 166,
-  ME = 243,
-  IPO = 0,
-  POS = 177,
-  MOU = 135,
-  MOB = 72,
-  MOS = 213,
-  SD = 168,
-  L = 29,
-  LS = 244,
-  CS = 41,
-  PPH = 172,
-  SPH = 120,
-  AUX = 167,
-}HASH_IDENTIFIER;
-*/
-
 /*
 #############################################################################
         µP Related Code
@@ -120,7 +65,7 @@ byte init_parser();
 /*
   Envoie un caractere sur la liaison UART0
 */
-void USART_send(byte data);
+void USART_send(byte ch);
 
 /*
   Récupère un caractere sur la liaison UART0 par scrutation

@@ -5,6 +5,7 @@
 typedef unsigned char byte;
 typedef char signed_byte;
 
+
 ///*****************************************************************************************************************************************
 // Structure de donn�es pour les commandes transmises par la centrale ce commande
 // Les commandes d�cod�es par FO-M1 seront stock�es dans une structure de ce type pour �tre utilis�es par FO-M5
@@ -117,11 +118,27 @@ typedef struct INFORMATIONS       // Cette structure contient toutes les informa
 } IN_M1;
 // *******************************************************************************************
 
-void default_process(char** args, byte size, OUT_M1* commands);
+typedef struct
+{
+	char** commands_data;
+	byte cmd_size;
+	OUT_M1* commands;
+}CMD_PACKET;
+
+typedef struct
+{
+  char* name;
+  void(*process)(CMD_PACKET*);
+}CMD_;
+
+
+
+
+void default_process(CMD_PACKET* cmd_packet);
 
 
 /*
   Commande de démarage de l'épreuve : D [Numéro Epreuve]
   Si aucun paramètre rentré, alors on démarre à l'épreuve 1
 */
-void start_test(char** args, byte size, OUT_M1* commands);
+void start_test(CMD_PACKET* cmd_packet);

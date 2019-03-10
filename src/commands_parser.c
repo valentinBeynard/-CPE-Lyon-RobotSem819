@@ -1,6 +1,6 @@
 #include "commands_parser.h"
 #include <string.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 
 /*
     DISPATCH TABLE
@@ -45,13 +45,13 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     Liste des Etats de la machines d'état du Parser associés à leur fonction
 */
 const FSM_PROCESS full_state_machine[3] = {
-    {WAIT, wait},
-    {GET_COMMAND, get_command},
-    {SEND_COMMAND, wait}
+    {WAIT, &wait},
+    {GET_COMMAND, &get_command},
+    {SEND_COMMAND, &wait}
 };
 
 /* Etat courant de la machine d'Etat */
-COMMANDS_PARSER_STATE current_state;
+COMMANDS_PARSER_STATE current_state = WAIT;
 
 /* Buffer principal dans lesquel est stocké tout caractère reçu sur la liaison UART du µP */
 byte raw_data[COMMAND_BUFFER_SIZE];
@@ -61,97 +61,74 @@ byte buffer_index = 0;
 
 /*
 #############################################################################
-        Pour µP ATmega328p
-#############################################################################
-*/
-
-#ifdef ATMEGA
-
-
-byte init_parser()
-{
-  // Set BAUD Rate
-  UBRR0H = (byte) (UBRR_BAUD >> 8);
-  UBRR0L = (byte) (UBRR_BAUD);
-
-  //Enable Receiver and Transmetter
-  UCSR0B = (1<<RXEN0)
-            | (1<<TXEN0);
-
-  // Set Frame Format : 8Data and 1 Stop Bit
-  UCSR0C = (0<<USBS0)|(3<<UCSZ00);
-
-  // Enable Interrupt
-  //sei();
-
-  return 0;
-}
-
-/*
-ISR(USART_RX_vect)
-{
-
-  while ((UCSR0A & (1 << RXC0)) == 0) {};
-  raw_data[buffer_index] = UDR0;
-
-  if(raw_data[buffer_index] == STOP_BYTE)
-  {
-    current_state = GET_COMMAND;
-  }else{
-    buffer_index++;
-  }
-}*/
-
-
-void USART_receive(byte* read_byte)
-{
-  if((UCSR0A & (1 << RXC0)))
-  {
-    *read_byte = UDR0;
-  }else{
-    *read_byte = '*';
-  }
-}
-
-void USART_send(byte data)
-{
-	//while the transmit buffer is not empty loop
-	while(!(UCSR0A & (1<<UDRE0)));
-
-	//when the buffer is empty write data to the transmitted
-	UDR0 = data;
-}
-
-/*
-#############################################################################
         Pour µP 8051F020
 #############################################################################
 */
 
-#else
 /**
   8051 µP :
   Initialize devices for commands_parser : UART0 and Interrupt
 **/
 byte init_parser()
 {
-  // TODO
+  // Config External Osci
+	OSCXCN = 0x67;
+	while(OSCXCN != 0xE7) {}
+	
+	// Use Exern CLK
+	OSCICN = 0x08;
+	
+	
+	/****** INIT UART0 *****/
+	SM00 = 0;
+	SM10 = 1;
+	REN0 = 1;		
+		
+	/****** INIT PIN *****/
+	
+	/* PIN SYSCLK */
+
+	// Enable Crossbar
+	XBR2 = 0x40;
+	// Init UART0 on Crossbar
+	XBR0 = 0x04;
+	// Push Pull mode
+	P0MDOUT = 0xFF;
+	
+	/****** INIT TIMER ******/
+	CKCON = 0x00; // Set CLK divider to 12 for timer 0 and 2
+	
+	
+	// Réglage timer 2
+	T2CON = 0x0D; // Capture Mode & Counter Mode & Enable & External Trig enable
+	RCLK0 = 1;
+	TCLK0 = 1;
+	RCAP2L = 0xDC;
+	RCAP2H = 0xFF;
+	TR2 = 1;
+	
   return 0;
 }
 
 void USART_receive(byte* read_byte)
 {
-  // TODO
-  // *read_byte = UDR0;
-
+  if(RI0 == 1)
+	{
+		*read_byte = SBUF0;
+		RI0 = 0;
+	}else{
+    *read_byte = '*';
+  }
 }
 
-void USART_send(byte data)
+void USART_send(byte ch)
 {
-	// TODO
+	SBUF0 = ch;
+	while(TI0 == 0){}
+	TI0 = 0;
 }
 
-#endif
+
 
 /*
 #############################################################################
@@ -161,7 +138,8 @@ void USART_send(byte data)
 
 void USART_print(char* str)
 {
-  for(byte i = 0 ; i < strlen(str); i++)
+  byte i = 0;
+	for(i = 0 ; i < strlen(str); i++)
   {
     USART_send(*(str+i));
   }
@@ -172,7 +150,32 @@ void USART_print(char* str)
 void cmd_parser_process(PARSER_RESULT* result)
 {
   //return &full_state_machine[current_state];
-  full_state_machine[current_state].state_process(result);
+	/*
+		En utilisant un pointer de function, un problème en mémoire apparait
+		et le programme ne fonctionne plus comme prévu...
+		Il semblerait que lorsqu'on arrive à l'appelle de wait par le biais
+		de son ptr créer le problème. A ce moment, on vient écrire à l'adresse 0x000114
+		de "result" la valeur du ptr de result...
+	*/
+  (full_state_machine[current_state]).state_process(result);
+	
+	/*
+		Sans passer par les pointer de fonctions, plus de problème ...
+	*/
+	/*switch(current_state)
+	{
+		case WAIT:
+			wait(result);
+			break;
+		case GET_COMMAND:
+			get_command(result);
+			break;
+		default:
+			wait(result);
+		break;
+		
+	}*/
+	//wait(result);
 }
 
 
@@ -226,8 +229,10 @@ byte parse(PARSER_RESULT* parser_result)
   // Pointers pour parcourir les différents buffers
   byte data_index = 0, ptr = 0, reading_ptr = 0;
 
-  char c = 0;
+  char c = 0, i = 0;
   char run = 1;
+	
+	CMD_PACKET cmd_packet;
 
   // Dispatches commands and arguments in commands_data buffer
   while(run)
@@ -265,13 +270,17 @@ byte parse(PARSER_RESULT* parser_result)
 
       reading_ptr++;
   }
+	
+	cmd_packet.commands_data = commands_data;
+	cmd_packet.cmd_size = data_index;
+	cmd_packet.commands = &(parser_result->commands);
 
   // Looking for the command in the Command Dictionnary
-  for(char i = 0 ; i < NUMBER_OF_COMMAND; i++)
+  for(i = 0 ; i < NUMBER_OF_COMMAND; i++)
   {
     if(strcmp(*(commands_data), dispatch_table[i].name) == 0)
     {
-      dispatch_table[i].process(commands_data, data_index, (parser_result->commands));
+      dispatch_table[i].process(&cmd_packet);
       USART_print("Find ");
       USART_print(dispatch_table[i].name);
       return 1;

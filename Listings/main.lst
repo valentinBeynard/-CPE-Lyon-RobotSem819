@@ -1,0 +1,118 @@
+C51 COMPILER V9.55   MAIN                                                                  03/10/2019 01:05:38 PAGE 1   
+
+
+C51 COMPILER V9.55, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\main.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Lis
+                    -tings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "debug.h"
+   2          #include "commands_parser.h"
+   3          
+   4          sfr Reg = 0xFF;
+   5          
+   6          #ifdef ROBOT
+   7          
+   8          byte cmd_timer = 0;
+   9          
+  10          int main (void)
+  11          {
+  12   1        /*
+  13   1        OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
+  14   1                            Mouvement_non,  // Etat mouvement
+  15   1                            0,  //  Vitesse
+  16   1                            0,  // Coord_X
+  17   1                            0,  // Coord_Y
+  18   1                            0,  // Angle
+  19   1                            ACQ_non,  // Commande d'acquisition du son
+  20   1                            0,  // Durée d'acquisition
+  21   1                            DCT_non,  // Commande de détection d'obstacle
+  22   1                            0,  // Résolution angulaire de la détection d'obstacle
+  23   1                            Lumiere_non,  // Commande d'allumage du pointeur lumineux
+  24   1                            0,  //Intensitée lumineuse
+  25   1                            0,  // Durée d'allumage
+  26   1                            0,  // Durée d'extinction
+  27   1                            0,  // Nombre de cycles d'allumage
+  28   1                            Servo_non,  // Commande de position du servo
+  29   1                            0,  // Paramètre angle
+  30   1                            Energie_non,  // Commande relevée courant
+  31   1                            Position_non, // Commande de gestion de position
+  32   1                            0,  // Coord X de position
+  33   1                            0,  // Coord Y de position
+  34   1                            0,  // Angle
+  35   1                            Photo_non,  // Commande de prise de phot
+  36   1                            0,  // Temps entre deux photo
+  37   1                            0 // Nbr de photo
+  38   1                            };*/
+  39   1      
+  40   1        PARSER_RESULT parser_result = {
+  41   1          
+  42   1                            1 ,
+  43   1          
+  44   1                            {Epreuve_non, // Numéro Epreuve
+  45   1                            Mouvement_non,  // Etat mouvement
+  46   1                            0,  //  Vitesse
+  47   1                            0,  // Coord_X
+  48   1                            0,  // Coord_Y
+  49   1                            0,  // Angle
+  50   1                            ACQ_non,  // Commande d'acquisition du son
+  51   1                            0,  // Durée d'acquisition
+  52   1                            DCT_non,  // Commande de détection d'obstacle
+  53   1                            0,  // Résolution angulaire de la détection d'obstacle
+  54   1                            Lumiere_non,  // Commande d'allumage du pointeur lumineux
+C51 COMPILER V9.55   MAIN                                                                  03/10/2019 01:05:38 PAGE 2   
+
+  55   1                            0,  //Intensitée lumineuse
+  56   1                            0,  // Durée d'allumage
+  57   1                            0,  // Durée d'extinction
+  58   1                            0,  // Nombre de cycles d'allumage
+  59   1                            Servo_non,  // Commande de position du servo
+  60   1                            0,  // Paramètre angle
+  61   1                            Energie_non,  // Commande relevée courant
+  62   1                            Position_non, // Commande de gestion de position
+  63   1                            0,  // Coord X de position
+  64   1                            0,  // Coord Y de position
+  65   1                            0,  // Angle
+  66   1                            Photo_non,  // Commande de prise de phot
+  67   1                            0,  // Temps entre deux photo
+  68   1                            0 // Nbr de photo
+  69   1                            }
+  70   1      
+  71   1                    };
+  72   1        
+  73   1        
+  74   1        Reg = 0xDE;   // Dévalidation du watchdog 
+  75   1        Reg = 0xAD;
+  76   1        
+  77   1        init_parser();
+  78   1      
+  79   1        while(1)
+  80   1        {
+  81   2          //parser_process(state, &parser_result);
+  82   2          cmd_parser_process(&parser_result);
+  83   2          if( parser_result.commands.Etat_Epreuve == epreuve1)
+  84   2          {
+  85   3            USART_print("Epreuve 1 !!!");
+  86   3          }
+  87   2          //USART_send('A');
+  88   2          //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
+  89   2        }
+  90   1      }
+  91          
+  92          #endif
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     55    ----
+   CONSTANT SIZE    =     42    ----
+   XDATA SIZE       =      1      28
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -4,6 +4,7 @@
 //
 //------------------------------------------------------------------------------------
 #include "c8051F020.h"
+
 #define POW 4096.0
 
 
@@ -15,7 +16,7 @@ sfr16 ADC0 = 0xbe;
 void config_watchdog()
 {
 	WDTCN = 0xDE;   // Dévalidation du watchdog 
-  	WDTCN = 0xAD;
+  WDTCN = 0xAD;
 }
 
 
@@ -101,6 +102,8 @@ void init(){
 	config_ADC();
 }
 
+#ifdef UNITY_TELEMETER
+
 void main()
 {
 	init();
@@ -112,3 +115,5 @@ void main()
 	}
 	
 }
+
+#endif
