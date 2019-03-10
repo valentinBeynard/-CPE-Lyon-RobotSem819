@@ -2,6 +2,7 @@
 ".\Objects\commands.obj",
 ".\Objects\commands_parser.obj",
 ".\Objects\main.obj",
-".\Objects\telemetres.obj" 
+".\Objects\telemetres.obj",
+".\Objects\serializer.obj" 
 TO ".\Objects\robot_V1" 
 PRINT(".\Listings\robot_V1.m51") RAMSIZE(256) 

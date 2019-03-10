@@ -30,6 +30,12 @@
 // Byte séparateur entre un arguments complexe et sa valeur
 #define ARG_VALUE_SEPARATOR 0x3A
 
+// Byte retourné par le parser en cas de commande valide
+#define COMMAND_CONFIRM_BYTE	0x3E
+
+// Byte retourné par le parser en cas de commande invalide
+#define COMMAND_ERROR_BYTE	0x23
+
 typedef struct
 {
   byte has_command;
@@ -114,3 +120,13 @@ void read_command(PARSER_RESULT* parser_result);
   et leurs valeurs
 */
 byte parse(PARSER_RESULT* parser_result);
+
+/*
+Renvoie la séquence définie par le CdC lorsque la commande est valide : "\n>"
+*/
+void valid_cmd_flag();
+
+/*
+Renvoie la séquence définie par le CdC lorsque la commande est éronnée : "\n#"
+*/
+void error_cmd_flag();

@@ -5,6 +5,9 @@
 typedef unsigned char byte;
 typedef char signed_byte;
 
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+
 
 ///*****************************************************************************************************************************************
 // Structure de donn�es pour les commandes transmises par la centrale ce commande
@@ -12,7 +15,7 @@ typedef char signed_byte;
 //*****************************************************************************************************************************************
 
 enum Epreuve {Epreuve_non, epreuve1, epreuve2, epreuve3, epreuve4, epreuve5, epreuve6, epreuve7, epreuve8, Fin_Epreuve, Stop_Urgence};
-enum Mouvement {Mouvement_non, Avancer, Reculer, Stopper, Rot_90D, Rot_90G, Rot_180D, Rot_180G, Rot_AngD, RotAngG, Depl_Coord};
+enum Mouvement {Mouvement_non, Avancer, Reculer, Stopper, Rot_90D, Rot_90G, Rot_180D, Rot_180G, Rot_AngD, Rot_AngG, Depl_Coord};
 enum ACQ_Son {ACQ_non, ACQ_oui};
 enum DCT_Obst {DCT_non, oui_180, oui_360};
 enum Lumiere {Lumiere_non, Allumer, Eteindre};
@@ -121,17 +124,24 @@ typedef struct INFORMATIONS       // Cette structure contient toutes les informa
 typedef struct
 {
 	char** commands_data;
+	char** args_label;
 	byte cmd_size;
+	byte args_size;
 	OUT_M1* commands;
 }CMD_PACKET;
 
 typedef struct
 {
-  char* name;
+  const char* name;
+	const byte min_arg_size;
+	const byte max_arg_size;
+	const char* args_label[10];
   void(*process)(CMD_PACKET*);
 }CMD_;
 
 
+
+byte args_valid(CMD_PACKET* cmd_packet);
 
 
 void default_process(CMD_PACKET* cmd_packet);
@@ -142,3 +152,13 @@ void default_process(CMD_PACKET* cmd_packet);
   Si aucun paramètre rentré, alors on démarre à l'épreuve 1
 */
 void start_test(CMD_PACKET* cmd_packet);
+
+void safety_break(CMD_PACKET* cmd_packet);
+void set_default_speed(CMD_PACKET* cmd_packet);
+void move_forward(CMD_PACKET* cmd_packet);
+void move_backward(CMD_PACKET* cmd_packet);
+void move_stop(CMD_PACKET* cmd_packet);
+void rigth_rotation(CMD_PACKET* cmd_packet);
+void left_rotation(CMD_PACKET* cmd_packet);
+void complete_rotation(CMD_PACKET* cmd_packet);
+void angle_rotation(CMD_PACKET* cmd_packet);

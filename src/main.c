@@ -3,9 +3,18 @@
 
 sfr Reg =	0xFF;
 
-#ifdef ROBOT
+void Init_External_clk()
+{
+	// Config External Osci
+	OSCXCN = 0x67;
+	while(OSCXCN != 0xE7) {}
+	
+	// Use Exern CLK
+	OSCICN = 0x08;
+}
 
-byte cmd_timer = 0;
+
+#ifdef ROBOT
 
 int main (void)
 {
@@ -74,19 +83,30 @@ int main (void)
 	Reg = 0xDE;   // Dévalidation du watchdog 
   Reg = 0xAD;
 	
+	// µP candencé sur clk extern à 22 MHz						
+	Init_External_clk();
+	
+	// Initialise l'UART0 et le Timer 2 pour le parser de commandes				
   init_parser();
+
+	USART_print("Start Routine \n\n");
 
   while(1)
   {
     //parser_process(state, &parser_result);
     cmd_parser_process(&parser_result);
-    if( parser_result.commands.Etat_Epreuve == epreuve1)
+    if( parser_result.commands.Etat_Epreuve == Stop_Urgence)
     {
-      USART_print("Epreuve 1 !!!");
+      USART_print("Quit");
+			break;
     }
     //USART_send('A');
     //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
   }
+	
+	USART_print("Fin Soft");
+	
+	while(1);
 }
 
 #endif

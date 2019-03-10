@@ -10,33 +10,45 @@
     commandes implémentées et les lier à une fonctionnalitée.
 */
 const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
-    {"D", start_test},
-    {"E", default_process},
-    {"Q", default_process},
-    {"TV", default_process},
-    {"A", default_process},
-    {"B", default_process},
-    {"S", default_process},
-    {"RD", default_process},
-    {"RG", default_process},
-    {"RC", default_process},
-    {"RA", default_process},
-    {"G", default_process},
-    {"ASS", default_process},
-    {"MI", default_process},
-    {"ME", default_process},
-    {"IPO", default_process},
-    {"POS", default_process},
-    {"MOU", default_process},
-    {"MOB", default_process},
-    {"MOS", default_process},
-    {"SD", default_process},
-    {"L", default_process},
-    {"LS", default_process},
-    {"CS", default_process},
-    {"PPH", default_process},
-    {"SPH", default_process},
-    {"AUX", default_process}
+		/*{"Nom de la Commande", Nombre minimum d'arg à rentrer, nombre d'arg  possible, function},
+	Exemple : 
+	
+	La commande "RA sens:valeur", est rentré comme suit : "RA D:90"
+	
+	Le cahier des Charges spécifie qu'on peut le sens de la rotation donné par l'arg sens peut
+	ne pas être rentré. On a donc que l'arg 'valeur' obligatoire à rentrer.
+	Donc min_arg_size = 1
+	Les arg possibles sont D ou G et une valeur. On a donc au maximum 2 arg à rentrer.
+	Donc max_arg_size = 2
+	Les noms d'arg possible sont D, G, donc args_label = {"D", "G"}
+	*/
+		{"D", 0, 1, {"epreuve"}, start_test},
+    {"E", 0, 0, {""}, default_process},
+    {"Q", 0, 0, {""}, safety_break},
+    {"TV", 1, 1, {""}, set_default_speed},
+    {"A", 0, 1, {""}, move_forward},
+    {"B", 0, 1, {""}, move_backward},
+    {"S", 0, 0, {""}, move_stop},
+    {"RD", 0, 0, {""}, rigth_rotation},
+    {"RG", 0, 0, {""}, left_rotation},
+    {"RC", 0, 1, {"D", "G"}, complete_rotation},
+    {"RA", 0, 2, {"D", "G"}, angle_rotation},
+    {"G", 6, 6, {"X", "Y", "A"}, default_process},
+    {"ASS", 1, 1, {""}, default_process},
+    {"MI", 0, 0, {""}, default_process},
+    {"ME", 0, 0, {""}, default_process},
+    {"IPO", 6, 6, {"X", "Y", "A", }, default_process},
+    {"POS", 0, 0, {""}, default_process},
+    {"MOU", 0, 1, {"D"}, default_process},
+    {"MOB", 0, 3, {"A", "D"}, default_process},
+    {"MOS", 0, 3, {"D", "A"}, default_process},
+    {"SD", 0, 8, {"F", "P", "W", "B"}, default_process},
+    {"L", 0, 8, {"I", "D", "E", "N"}, default_process},
+    {"LS", 0, 0, {""}, default_process},
+    {"CS", 0, 3, {"A", "H", "V"}, default_process},
+    {"PPH", 0, 5, {"E", "N", "O", "C", "S"}, default_process},
+    {"SPH", 0, 0, {""}, default_process},
+    {"AUX", 0, 0, {""}, default_process}
 };
 
 /*
@@ -67,17 +79,10 @@ byte buffer_index = 0;
 
 /**
   8051 µP :
-  Initialize devices for commands_parser : UART0 and Interrupt
+  Initialize devices for commands_parser : UART0 and Timer 2
 **/
 byte init_parser()
 {
-  // Config External Osci
-	OSCXCN = 0x67;
-	while(OSCXCN != 0xE7) {}
-	
-	// Use Exern CLK
-	OSCICN = 0x08;
-	
 	
 	/****** INIT UART0 *****/
 	SM00 = 0;
@@ -85,8 +90,6 @@ byte init_parser()
 	REN0 = 1;		
 		
 	/****** INIT PIN *****/
-	
-	/* PIN SYSCLK */
 
 	// Enable Crossbar
 	XBR2 = 0x40;
@@ -157,12 +160,12 @@ void cmd_parser_process(PARSER_RESULT* result)
 		de son ptr créer le problème. A ce moment, on vient écrire à l'adresse 0x000114
 		de "result" la valeur du ptr de result...
 	*/
-  (full_state_machine[current_state]).state_process(result);
+  //(full_state_machine[current_state]).state_process(result);
 	
 	/*
 		Sans passer par les pointer de fonctions, plus de problème ...
 	*/
-	/*switch(current_state)
+	switch(current_state)
 	{
 		case WAIT:
 			wait(result);
@@ -174,10 +177,9 @@ void cmd_parser_process(PARSER_RESULT* result)
 			wait(result);
 		break;
 		
-	}*/
+	}
 	//wait(result);
 }
-
 
 void wait(PARSER_RESULT* parser_result)
 {
@@ -211,9 +213,12 @@ void get_command(PARSER_RESULT* parser_result)
     // On analyse le buffer brute
     if (!parse(parser_result))
     {
-      USART_print("Error decoding cmd !");
-    }
-    //USART_print("Fin");
+      //USART_print("Error decoding cmd !");
+			error_cmd_flag();
+    }else{
+			valid_cmd_flag();
+		}
+    
     // Clear le buffer pour la prochaine lecture
     memset(raw_data, 0, strlen(raw_data));
     buffer_index = 0;
@@ -271,6 +276,7 @@ byte parse(PARSER_RESULT* parser_result)
       reading_ptr++;
   }
 	
+	// Préparation du packet
 	cmd_packet.commands_data = commands_data;
 	cmd_packet.cmd_size = data_index;
 	cmd_packet.commands = &(parser_result->commands);
@@ -280,9 +286,31 @@ byte parse(PARSER_RESULT* parser_result)
   {
     if(strcmp(*(commands_data), dispatch_table[i].name) == 0)
     {
-      dispatch_table[i].process(&cmd_packet);
-      USART_print("Find ");
+      // On charge dans les packet le nombre d'arg dispo pour la cmd
+			cmd_packet.args_size = sizeof(dispatch_table[i].args_label) / sizeof(dispatch_table[i].args_label[0]);//dispatch_table[i].args_number;
+			cmd_packet.args_label = dispatch_table[i].args_label;
+			
+			// Si la commande ne contient pas le nombre de paramètre minimal demandé ou est trop grand
+			if(data_index < dispatch_table[i].min_arg_size 
+					|| data_index > dispatch_table[i].max_arg_size )
+			{
+				USART_print("Min Arg Size !!!!");
+				return 0;
+			}
+
+			// On test la validité des args entré par l'user
+			if(args_valid(&cmd_packet) != 0)
+			{
+				dispatch_table[i].process(&cmd_packet);
+			}else{
+				USART_print("Arg not match !!!!");
+				return 0;
+			}
+			/*
+      USART_print("Find Command : ");
       USART_print(dispatch_table[i].name);
+			USART_send('\n');
+			*/
       return 1;
     }
   }
@@ -290,6 +318,19 @@ byte parse(PARSER_RESULT* parser_result)
   return 0;
 }
 
+void valid_cmd_flag()
+{
+	USART_send(0x0D);
+	USART_send(0x0A);
+	USART_send(COMMAND_CONFIRM_BYTE);
+}
+
+void error_cmd_flag()
+{
+	USART_send(0x0D);
+	USART_send(0x0A);
+	USART_send(COMMAND_ERROR_BYTE);	
+}
 
 void read_command(PARSER_RESULT* parser_result)
 {

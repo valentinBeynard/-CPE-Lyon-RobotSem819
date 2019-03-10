@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.14.2.1
 Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Valentin BEYNARD, CPE Lyon, LIC=----
+License Information: Valentin BEYNARD, CPE Lyon, LIC=GM8PD-85TP7-N34JA-E6CIG-62JWP-CILZ6
  
 Tool Versions:
 Toolchain:       PK51 Prof. Developers Kit for SiLabs  Version: 9.55
@@ -19,19 +19,23 @@ CPU DLL:         S8051.DLL V3.101.0.0
 Dialog DLL:      DCYG.DLL V2.73.0.0 
 <h2>Project:</h2>
 C:\Users\BEYNARD\Documents\GitHub\-CPE-Lyon-RobotSem819\robot_V1.uvproj
-Project File Date:  03/09/2019
+Project File Date:  03/10/2019
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
 assembling STARTUP.A51...
 compiling commands.c...
-src\commands.c(4): warning C280: 'cmd_packet': unreferenced local variable
+src\commands.c(26): warning C182: pointer to different objects
+src\commands.c(26): warning C182: pointer to different objects
+src\commands.c(46): warning C280: 'cmd_packet': unreferenced local variable
 compiling commands_parser.c...
-src\commands_parser.c(179): warning C280: 'parser_result': unreferenced local variable
-src\commands_parser.c(271): warning C182: pointer to different objects
-src\commands_parser.c(291): warning C280: 'parser_result': unreferenced local variable
+src\commands_parser.c(184): warning C280: 'parser_result': unreferenced local variable
+src\commands_parser.c(280): warning C182: pointer to different objects
+src\commands_parser.c(291): warning C182: pointer to different objects
+src\commands_parser.c(335): warning C280: 'parser_result': unreferenced local variable
 compiling main.c...
 compiling telemetres.c...
+compiling serializer.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_READ_COMMAND?COMMANDS_PARSER
@@ -39,8 +43,8 @@ linking...
     SEGMENT: ?PR?MESURE?TELEMETRES
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?INIT?TELEMETRES
-Program Size: data=9.1 xdata=399 code=3643
-".\Objects\robot_V1" - 0 Error(s), 7 Warning(s).
+Program Size: data=21.4 xdata=1300 code=7397
+".\Objects\robot_V1" - 0 Error(s), 10 Warning(s).
 </pre>
 </body>
 </html>

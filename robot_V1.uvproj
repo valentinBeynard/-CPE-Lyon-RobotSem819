@@ -408,6 +408,11 @@
               <FileType>5</FileType>
               <FilePath>.\src\debug.h</FilePath>
             </File>
+            <File>
+              <FileName>serializer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\serializer.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

@@ -11,6 +11,10 @@
 ;
 ;---------------------------------------------------------------------------*/
 
+#ifndef H_8051F020
+
+#define H_8051F020
+
 /*  BYTE Registers  */
 sfr P0       =  0x80;	/* PORT 0                                                  */
 sfr SP       =  0x81;	/* STACK POINTER                                           */
@@ -236,3 +240,9 @@ sbit TXBSY    =   SPI0CN ^ 3;       /* SPI 0 TX BUSY FLAG			*/
 sbit SLVSEL   =   SPI0CN ^ 2;       /* SPI 0 SLAVE SELECT			*/
 sbit MSTEN    =   SPI0CN ^ 1;       /* SPI 0 MASTER ENABLE			*/
 sbit SPIEN    =   SPI0CN ^ 0;       /* SPI 0 SPI ENABLE				*/
+
+#else
+
+#error Multiples definition de 8051F020.h
+
+#endif

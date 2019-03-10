@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   MAIN                                                                  03/10/2019 01:05:38 PAGE 1   
+C51 COMPILER V9.55   MAIN                                                                  03/10/2019 17:34:44 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE MAIN
@@ -13,101 +13,123 @@ line level    source
    3          
    4          sfr Reg = 0xFF;
    5          
-   6          #ifdef ROBOT
-   7          
-   8          byte cmd_timer = 0;
-   9          
-  10          int main (void)
-  11          {
-  12   1        /*
-  13   1        OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
-  14   1                            Mouvement_non,  // Etat mouvement
-  15   1                            0,  //  Vitesse
-  16   1                            0,  // Coord_X
-  17   1                            0,  // Coord_Y
-  18   1                            0,  // Angle
-  19   1                            ACQ_non,  // Commande d'acquisition du son
-  20   1                            0,  // Durée d'acquisition
-  21   1                            DCT_non,  // Commande de détection d'obstacle
-  22   1                            0,  // Résolution angulaire de la détection d'obstacle
-  23   1                            Lumiere_non,  // Commande d'allumage du pointeur lumineux
-  24   1                            0,  //Intensitée lumineuse
-  25   1                            0,  // Durée d'allumage
-  26   1                            0,  // Durée d'extinction
-  27   1                            0,  // Nombre de cycles d'allumage
-  28   1                            Servo_non,  // Commande de position du servo
-  29   1                            0,  // Paramètre angle
-  30   1                            Energie_non,  // Commande relevée courant
-  31   1                            Position_non, // Commande de gestion de position
-  32   1                            0,  // Coord X de position
-  33   1                            0,  // Coord Y de position
-  34   1                            0,  // Angle
-  35   1                            Photo_non,  // Commande de prise de phot
-  36   1                            0,  // Temps entre deux photo
-  37   1                            0 // Nbr de photo
-  38   1                            };*/
-  39   1      
-  40   1        PARSER_RESULT parser_result = {
-  41   1          
-  42   1                            1 ,
-  43   1          
-  44   1                            {Epreuve_non, // Numéro Epreuve
-  45   1                            Mouvement_non,  // Etat mouvement
-  46   1                            0,  //  Vitesse
-  47   1                            0,  // Coord_X
-  48   1                            0,  // Coord_Y
-  49   1                            0,  // Angle
-  50   1                            ACQ_non,  // Commande d'acquisition du son
-  51   1                            0,  // Durée d'acquisition
-  52   1                            DCT_non,  // Commande de détection d'obstacle
-  53   1                            0,  // Résolution angulaire de la détection d'obstacle
-  54   1                            Lumiere_non,  // Commande d'allumage du pointeur lumineux
-C51 COMPILER V9.55   MAIN                                                                  03/10/2019 01:05:38 PAGE 2   
+   6          void Init_External_clk()
+   7          {
+   8   1        // Config External Osci
+   9   1        OSCXCN = 0x67;
+  10   1        while(OSCXCN != 0xE7) {}
+  11   1        
+  12   1        // Use Exern CLK
+  13   1        OSCICN = 0x08;
+  14   1      }
+  15          
+  16          
+  17          #ifdef ROBOT
+  18          
+  19          int main (void)
+  20          {
+  21   1        /*
+  22   1        OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
+  23   1                            Mouvement_non,  // Etat mouvement
+  24   1                            0,  //  Vitesse
+  25   1                            0,  // Coord_X
+  26   1                            0,  // Coord_Y
+  27   1                            0,  // Angle
+  28   1                            ACQ_non,  // Commande d'acquisition du son
+  29   1                            0,  // Durée d'acquisition
+  30   1                            DCT_non,  // Commande de détection d'obstacle
+  31   1                            0,  // Résolution angulaire de la détection d'obstacle
+  32   1                            Lumiere_non,  // Commande d'allumage du pointeur lumineux
+  33   1                            0,  //Intensitée lumineuse
+  34   1                            0,  // Durée d'allumage
+  35   1                            0,  // Durée d'extinction
+  36   1                            0,  // Nombre de cycles d'allumage
+  37   1                            Servo_non,  // Commande de position du servo
+  38   1                            0,  // Paramètre angle
+  39   1                            Energie_non,  // Commande relevée courant
+  40   1                            Position_non, // Commande de gestion de position
+  41   1                            0,  // Coord X de position
+  42   1                            0,  // Coord Y de position
+  43   1                            0,  // Angle
+  44   1                            Photo_non,  // Commande de prise de phot
+  45   1                            0,  // Temps entre deux photo
+  46   1                            0 // Nbr de photo
+  47   1                            };*/
+  48   1      
+  49   1        PARSER_RESULT parser_result = {
+  50   1          
+  51   1                            1 ,
+  52   1          
+  53   1                            {Epreuve_non, // Numéro Epreuve
+  54   1                            Mouvement_non,  // Etat mouvement
+C51 COMPILER V9.55   MAIN                                                                  03/10/2019 17:34:44 PAGE 2   
 
-  55   1                            0,  //Intensitée lumineuse
-  56   1                            0,  // Durée d'allumage
-  57   1                            0,  // Durée d'extinction
-  58   1                            0,  // Nombre de cycles d'allumage
-  59   1                            Servo_non,  // Commande de position du servo
-  60   1                            0,  // Paramètre angle
-  61   1                            Energie_non,  // Commande relevée courant
-  62   1                            Position_non, // Commande de gestion de position
-  63   1                            0,  // Coord X de position
-  64   1                            0,  // Coord Y de position
-  65   1                            0,  // Angle
-  66   1                            Photo_non,  // Commande de prise de phot
-  67   1                            0,  // Temps entre deux photo
-  68   1                            0 // Nbr de photo
-  69   1                            }
-  70   1      
-  71   1                    };
-  72   1        
-  73   1        
-  74   1        Reg = 0xDE;   // Dévalidation du watchdog 
-  75   1        Reg = 0xAD;
-  76   1        
-  77   1        init_parser();
-  78   1      
-  79   1        while(1)
-  80   1        {
-  81   2          //parser_process(state, &parser_result);
-  82   2          cmd_parser_process(&parser_result);
-  83   2          if( parser_result.commands.Etat_Epreuve == epreuve1)
-  84   2          {
-  85   3            USART_print("Epreuve 1 !!!");
-  86   3          }
-  87   2          //USART_send('A');
-  88   2          //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
-  89   2        }
-  90   1      }
-  91          
-  92          #endif
+  55   1                            0,  //  Vitesse
+  56   1                            0,  // Coord_X
+  57   1                            0,  // Coord_Y
+  58   1                            0,  // Angle
+  59   1                            ACQ_non,  // Commande d'acquisition du son
+  60   1                            0,  // Durée d'acquisition
+  61   1                            DCT_non,  // Commande de détection d'obstacle
+  62   1                            0,  // Résolution angulaire de la détection d'obstacle
+  63   1                            Lumiere_non,  // Commande d'allumage du pointeur lumineux
+  64   1                            0,  //Intensitée lumineuse
+  65   1                            0,  // Durée d'allumage
+  66   1                            0,  // Durée d'extinction
+  67   1                            0,  // Nombre de cycles d'allumage
+  68   1                            Servo_non,  // Commande de position du servo
+  69   1                            0,  // Paramètre angle
+  70   1                            Energie_non,  // Commande relevée courant
+  71   1                            Position_non, // Commande de gestion de position
+  72   1                            0,  // Coord X de position
+  73   1                            0,  // Coord Y de position
+  74   1                            0,  // Angle
+  75   1                            Photo_non,  // Commande de prise de phot
+  76   1                            0,  // Temps entre deux photo
+  77   1                            0 // Nbr de photo
+  78   1                            }
+  79   1      
+  80   1                    };
+  81   1        
+  82   1        
+  83   1        Reg = 0xDE;   // Dévalidation du watchdog 
+  84   1        Reg = 0xAD;
+  85   1        
+  86   1        // µP candencé sur clk extern à 22 MHz           
+  87   1        Init_External_clk();
+  88   1        
+  89   1        // Initialise l'UART0 et le Timer 2 pour le parser de commandes       
+  90   1        init_parser();
+  91   1      
+  92   1        USART_print("Start Routine \n\n");
+  93   1      
+  94   1        while(1)
+  95   1        {
+  96   2          //parser_process(state, &parser_result);
+  97   2          cmd_parser_process(&parser_result);
+  98   2          if( parser_result.commands.Etat_Epreuve == Stop_Urgence)
+  99   2          {
+ 100   3            USART_print("Quit");
+ 101   3            break;
+ 102   3          }
+ 103   2          //USART_send('A');
+ 104   2          //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
+ 105   2        }
+ 106   1        
+ 107   1        USART_print("Fin Soft");
+ 108   1        
+ 109   1        while(1);
+ 110   1      }
+ 111          
+ 112          #endif
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     55    ----
-   CONSTANT SIZE    =     42    ----
-   XDATA SIZE       =      1      28
+   CODE SIZE        =     88    ----
+C51 COMPILER V9.55   MAIN                                                                  03/10/2019 17:34:44 PAGE 3   
+
+   CONSTANT SIZE    =     59    ----
+   XDATA SIZE       =   ----      28
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
