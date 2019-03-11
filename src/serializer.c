@@ -1,5 +1,5 @@
 #include "serializer.h"
-
+#include <string.h>
 /*
 #############################################################################
         Pour µP 8051F020
@@ -13,35 +13,24 @@
 byte init_serializer_UART1()
 {
 	
-	/****** INIT UART0 *****/
-	SM01 = 0;
-	SM11 = 1;
-	REN1 = 1;		
-		
-	/****** INIT PIN *****/
-
-	// Init UART0 on Crossbar
-	XBR2 = 0x04;
-	// Push Pull mode
-	P0MDOUT = 0xFF;
+	/****** INIT UART1 *****/
+	SCON1 = 0x50;
 	
-	// Réglage timer 1
-	T2CON = 0x0D; // Capture Mode & Counter Mode & Enable & External Trig enable
-	RCLK0 = 1;
-	TCLK0 = 1;
-	RCAP2L = 0xDC;
-	RCAP2H = 0xFF;
-	TR2 = 1;
+	// Réglage timer 4
+	T4CON = 0x3D; // Baud Generator for UART1 + Enable TR4
+	
+	RCAP4L = 0xDC;	// Reload value for BaudRate 19200
+	RCAP4H = 0xFF;
 	
   return 0;
 }
 
 void serializer_receive(byte* read_byte)
 {
-  if(RI0 == 1)
+  if( (SCON1 & 0x01) == 1)
 	{
-		*read_byte = SBUF0;
-		RI0 = 0;
+		*read_byte = SBUF1;
+		SCON1 &= 0xFE;	// Remise à 0 de RI1
 	}else{
     *read_byte = '*';
   }
@@ -49,9 +38,10 @@ void serializer_receive(byte* read_byte)
 
 void serializer_send(byte ch)
 {
-	SBUF0 = ch;
-	while(TI0 == 0){}
-	TI0 = 0;
+	SBUF1 = ch;
+	
+	while( (SCON1 & 0x02) == 0){} // Tant que TI1 == 0
+	SCON1 &= 0xFD;	// Remise à 0 de TI1
 }
 
 void serializer_print(char* str)
@@ -59,6 +49,6 @@ void serializer_print(char* str)
   byte i = 0;
 	for(i = 0 ; i < strlen(str); i++)
   {
-    USART_send(*(str+i));
+    serializer_send(*(str+i));
   }
 }

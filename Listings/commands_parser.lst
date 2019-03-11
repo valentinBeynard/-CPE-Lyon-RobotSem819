@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 11:47:55 PAGE 1   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 18:16:19 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS_PARSER
@@ -62,7 +62,7 @@ line level    source
   52          };
   53          
   54          /*
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 11:47:55 PAGE 2   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 18:16:19 PAGE 2   
 
   55              FULL STATE MACHINE
   56          
@@ -103,287 +103,280 @@ line level    source
   91   1          
   92   1        /****** INIT PIN *****/
   93   1      
-  94   1        // Enable Crossbar
-  95   1        XBR2 = 0x40;
-  96   1        // Init UART0 on Crossbar
-  97   1        XBR0 = 0x04;
-  98   1        // Push Pull mode
-  99   1        P0MDOUT = 0xFF;
- 100   1        
- 101   1        /****** INIT TIMER ******/
- 102   1        CKCON = 0x00; // Set CLK divider to 12 for timer 0 and 2
- 103   1        
- 104   1        
- 105   1        // Réglage timer 2
- 106   1        T2CON = 0x0D; // Capture Mode & Counter Mode & Enable & External Trig enable
- 107   1        RCLK0 = 1;
- 108   1        TCLK0 = 1;
- 109   1        RCAP2L = 0xDC;
- 110   1        RCAP2H = 0xFF;
- 111   1        TR2 = 1;
- 112   1        
- 113   1        return 0;
- 114   1      }
- 115          
- 116          void USART_receive(byte* read_byte)
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 11:47:55 PAGE 3   
+  94   1      
+  95   1        
+  96   1        /****** INIT TIMER ******/
+  97   1        CKCON = 0x00; // Set CLK divider to 12 for timer 0 and 2
+  98   1        
+  99   1        
+ 100   1        // Réglage timer 2
+ 101   1        T2CON = 0x0D; // Capture Mode & Counter Mode & Enable & External Trig enable
+ 102   1        RCLK0 = 1;
+ 103   1        TCLK0 = 1;
+ 104   1        RCAP2L = 0xDC;
+ 105   1        RCAP2H = 0xFF;
+ 106   1        TR2 = 1;
+ 107   1        
+ 108   1        return 0;
+ 109   1      }
+ 110          
+ 111          void USART_receive(byte* read_byte)
+ 112          {
+ 113   1        if(RI0 == 1)
+ 114   1        {
+ 115   2          *read_byte = SBUF0;
+ 116   2          RI0 = 0;
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 18:16:19 PAGE 3   
 
- 117          {
- 118   1        if(RI0 == 1)
- 119   1        {
- 120   2          *read_byte = SBUF0;
- 121   2          RI0 = 0;
- 122   2        }else{
- 123   2          *read_byte = '*';
- 124   2        }
- 125   1      }
- 126          
- 127          void USART_send(byte ch)
- 128          {
- 129   1        SBUF0 = ch;
- 130   1        while(TI0 == 0){}
- 131   1        TI0 = 0;
- 132   1      }
- 133          
- 134          
- 135          
- 136          /*
- 137          #############################################################################
- 138                  Core Code of commands_parser.c
- 139          #############################################################################
- 140          */
- 141          
- 142          void USART_print(char* str)
- 143          {
- 144   1        byte i = 0;
- 145   1        for(i = 0 ; i < strlen(str); i++)
- 146   1        {
- 147   2          USART_send(*(str+i));
- 148   2        }
- 149   1      }
- 150          
- 151          
- 152          //const FSM_PROCESS* cmd_parser_next_state()
- 153          void cmd_parser_process(PARSER_RESULT* result)
- 154          {
- 155   1        //return &full_state_machine[current_state];
- 156   1        /*
- 157   1          En utilisant un pointer de function, un problème en mémoire apparait
- 158   1          et le programme ne fonctionne plus comme prévu...
- 159   1          Il semblerait que lorsqu'on arrive à l'appelle de wait par le biais
- 160   1          de son ptr créer le problème. A ce moment, on vient écrire à l'adresse 0x000114
- 161   1          de "result" la valeur du ptr de result...
+ 117   2        }else{
+ 118   2          *read_byte = '*';
+ 119   2        }
+ 120   1      }
+ 121          
+ 122          void USART_send(byte ch)
+ 123          {
+ 124   1        SBUF0 = ch;
+ 125   1        while(TI0 == 0){}
+ 126   1        TI0 = 0;
+ 127   1      }
+ 128          
+ 129          
+ 130          
+ 131          /*
+ 132          #############################################################################
+ 133                  Core Code of commands_parser.c
+ 134          #############################################################################
+ 135          */
+ 136          
+ 137          void USART_print(char* str)
+ 138          {
+ 139   1        byte i = 0;
+ 140   1        for(i = 0 ; i < strlen(str); i++)
+ 141   1        {
+ 142   2          USART_send(*(str+i));
+ 143   2        }
+ 144   1      }
+ 145          
+ 146          
+ 147          //const FSM_PROCESS* cmd_parser_next_state()
+ 148          void cmd_parser_process(PARSER_RESULT* result)
+ 149          {
+ 150   1        //return &full_state_machine[current_state];
+ 151   1        /*
+ 152   1          En utilisant un pointer de function, un problème en mémoire apparait
+ 153   1          et le programme ne fonctionne plus comme prévu...
+ 154   1          Il semblerait que lorsqu'on arrive à l'appelle de wait par le biais
+ 155   1          de son ptr créer le problème. A ce moment, on vient écrire à l'adresse 0x000114
+ 156   1          de "result" la valeur du ptr de result...
+ 157   1        */
+ 158   1        //(full_state_machine[current_state]).state_process(result);
+ 159   1        
+ 160   1        /*
+ 161   1          Sans passer par les pointer de fonctions, plus de problème ...
  162   1        */
- 163   1        //(full_state_machine[current_state]).state_process(result);
- 164   1        
- 165   1        /*
- 166   1          Sans passer par les pointer de fonctions, plus de problème ...
- 167   1        */
- 168   1        switch(current_state)
- 169   1        {
- 170   2          case WAIT:
- 171   2            wait(result);
- 172   2            break;
- 173   2          case GET_COMMAND:
- 174   2            get_command(result);
- 175   2            break;
- 176   2          default:
- 177   2            wait(result);
- 178   2          break;
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 11:47:55 PAGE 4   
+ 163   1        switch(current_state)
+ 164   1        {
+ 165   2          case WAIT:
+ 166   2            wait(result);
+ 167   2            break;
+ 168   2          case GET_COMMAND:
+ 169   2            get_command(result);
+ 170   2            break;
+ 171   2          default:
+ 172   2            wait(result);
+ 173   2          break;
+ 174   2          
+ 175   2        }
+ 176   1        //wait(result);
+ 177   1      }
+ 178          
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 18:16:19 PAGE 4   
 
- 179   2          
- 180   2        }
- 181   1        //wait(result);
- 182   1      }
- 183          
- 184          void wait(PARSER_RESULT* parser_result)
- 185          {
- 186   1        byte read_byte = '*';
- 187   1      
- 188   1        // Scrutation sur l'UART0
- 189   1        USART_receive(&read_byte);
- 190   1      
- 191   1        // Si on lit un caractère
- 192   1        if(read_byte != '*'){
- 193   2            if(read_byte == STOP_BYTE)
- 194   2            {
- 195   3              // On passe à l'Etat 'Get Command' après avoir terminé de préparer le Buffer
- 196   3              //USART_print("\nCommand Mode !\n");
- 197   3              raw_data[buffer_index] = read_byte;
- 198   3              buffer_index++;
- 199   3              // Tjrs ajouter un '\0' à la fin du buffer, sinon strlen ne marche pas...
- 200   3              raw_data[buffer_index] = '\0';
- 201   3              current_state = GET_COMMAND;
- 202   3            }else{
- 203   3              USART_send(read_byte);
- 204   3              raw_data[buffer_index] = read_byte;
- 205   3              buffer_index++;
- 206   3            }
- 207   2        }
- 208   1      }
-*** WARNING C280 IN LINE 184 OF src\commands_parser.c: 'parser_result': unreferenced local variable
- 209          
- 210          
- 211          void get_command(PARSER_RESULT* parser_result)
- 212          {
- 213   1          // On analyse le buffer brute
- 214   1          if (!parse(parser_result))
- 215   1          {
- 216   2            //USART_print("Error decoding cmd !");
- 217   2            error_cmd_flag();
- 218   2          }else{
- 219   2            valid_cmd_flag();
- 220   2          }
- 221   1          
- 222   1          // Clear le buffer pour la prochaine lecture
- 223   1          memset(raw_data, 0, strlen(raw_data));
- 224   1          buffer_index = 0;
- 225   1          // On revient dans l'Etat où on scrute l'UART0
- 226   1          current_state = WAIT;
- 227   1      }
- 228          
- 229          
- 230          byte parse(PARSER_RESULT* parser_result)
- 231          {
- 232   1        // Tableau dans lequel on va ranger : [Nom_Commande][Param1][Valeur1][...]
- 233   1        char commands_data[MAX_COMMAND_WORD][ARGS_BUFFER_SIZE] = {'H'};
- 234   1        // Pointers pour parcourir les différents buffers
- 235   1        byte data_index = 0, ptr = 0, reading_ptr = 0;
- 236   1        byte ret = 0;
- 237   1        char c = 0, i = 0;
- 238   1        char run = 1;
- 239   1        /*char** ptra = 0;
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 11:47:55 PAGE 5   
+ 179          void wait(PARSER_RESULT* parser_result)
+ 180          {
+ 181   1        byte read_byte = '*';
+ 182   1      
+ 183   1        // Scrutation sur l'UART0
+ 184   1        USART_receive(&read_byte);
+ 185   1      
+ 186   1        // Si on lit un caractère
+ 187   1        if(read_byte != '*'){
+ 188   2            if(read_byte == STOP_BYTE)
+ 189   2            {
+ 190   3              // On passe à l'Etat 'Get Command' après avoir terminé de préparer le Buffer
+ 191   3              //USART_print("\nCommand Mode !\n");
+ 192   3              raw_data[buffer_index] = read_byte;
+ 193   3              buffer_index++;
+ 194   3              // Tjrs ajouter un '\0' à la fin du buffer, sinon strlen ne marche pas...
+ 195   3              raw_data[buffer_index] = '\0';
+ 196   3              current_state = GET_COMMAND;
+ 197   3            }else{
+ 198   3              USART_send(read_byte);
+ 199   3              raw_data[buffer_index] = read_byte;
+ 200   3              buffer_index++;
+ 201   3            }
+ 202   2        }
+ 203   1      }
+*** WARNING C280 IN LINE 179 OF src\commands_parser.c: 'parser_result': unreferenced local variable
+ 204          
+ 205          
+ 206          void get_command(PARSER_RESULT* parser_result)
+ 207          {
+ 208   1          // On analyse le buffer brute
+ 209   1          if (!parse(parser_result))
+ 210   1          {
+ 211   2            //USART_print("Error decoding cmd !");
+ 212   2            error_cmd_flag();
+ 213   2          }else{
+ 214   2            valid_cmd_flag();
+ 215   2          }
+ 216   1          
+ 217   1          // Clear le buffer pour la prochaine lecture
+ 218   1          memset(raw_data, 0, strlen(raw_data));
+ 219   1          buffer_index = 0;
+ 220   1          // On revient dans l'Etat où on scrute l'UART0
+ 221   1          current_state = WAIT;
+ 222   1      }
+ 223          
+ 224          
+ 225          byte parse(PARSER_RESULT* parser_result)
+ 226          {
+ 227   1        // Tableau dans lequel on va ranger : [Nom_Commande][Param1][Valeur1][...]
+ 228   1        char commands_data[MAX_COMMAND_WORD][ARGS_BUFFER_SIZE] = {'H'};
+ 229   1        // Pointers pour parcourir les différents buffers
+ 230   1        byte data_index = 0, ptr = 0, reading_ptr = 0;
+ 231   1        byte ret = 0;
+ 232   1        char c = 0, i = 0;
+ 233   1        char run = 1;
+ 234   1        /*char** ptra = 0;
+ 235   1        char** ptrb = 0;
+ 236   1        char* t = 0;
+ 237   1        char* v = 0;*/
+ 238   1      
+ 239   1        CMD_PACKET cmd_packet;
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 18:16:19 PAGE 5   
 
- 240   1        char** ptrb = 0;
- 241   1        char* t = 0;
- 242   1        char* v = 0;*/
- 243   1      
- 244   1        CMD_PACKET cmd_packet;
- 245   1      
- 246   1        // Dispatches commands and arguments in commands_data buffer
- 247   1        while(run)
- 248   1        {
- 249   2            c = *(raw_data + reading_ptr);
- 250   2            /*t = (commands_data + data_index);
- 251   2            v = commands_data[data_index];*/
- 252   2            switch (c)
- 253   2            {
- 254   3              case COMMAND_SEPARATOR:
- 255   3                *( *(commands_data + data_index) + ptr ) = '\0';
- 256   3                //USART_print(commands_data[data_index]);
- 257   3                data_index++;
- 258   3                ptr = 0;
- 259   3                break;
- 260   3      
- 261   3              case ARG_VALUE_SEPARATOR:
- 262   3                *( *(commands_data + data_index) + ptr ) = '\0';
- 263   3                //USART_print(commands_data[data_index]);
- 264   3                data_index++;
- 265   3                ptr = 0;
- 266   3                break;
- 267   3      
- 268   3                // Fin de l'analyse
- 269   3              case STOP_BYTE:
- 270   3                *( *(commands_data + data_index) + ptr ) = '\0';
- 271   3                //USART_print(commands_data[data_index]);
- 272   3                run = 0;
- 273   3                break;
- 274   3      
- 275   3              default:
- 276   3                *( *(commands_data + data_index) + ptr ) = c;
- 277   3                ptr++;
- 278   3            }
- 279   2      
- 280   2            reading_ptr++;
- 281   2        }
- 282   1        
- 283   1        // Préparation du packet
+ 240   1      
+ 241   1        // Dispatches commands and arguments in commands_data buffer
+ 242   1        while(run)
+ 243   1        {
+ 244   2            c = *(raw_data + reading_ptr);
+ 245   2            /*t = (commands_data + data_index);
+ 246   2            v = commands_data[data_index];*/
+ 247   2            switch (c)
+ 248   2            {
+ 249   3              case COMMAND_SEPARATOR:
+ 250   3                *( *(commands_data + data_index) + ptr ) = '\0';
+ 251   3                //USART_print(commands_data[data_index]);
+ 252   3                data_index++;
+ 253   3                ptr = 0;
+ 254   3                break;
+ 255   3      
+ 256   3              case ARG_VALUE_SEPARATOR:
+ 257   3                *( *(commands_data + data_index) + ptr ) = '\0';
+ 258   3                //USART_print(commands_data[data_index]);
+ 259   3                data_index++;
+ 260   3                ptr = 0;
+ 261   3                break;
+ 262   3      
+ 263   3                // Fin de l'analyse
+ 264   3              case STOP_BYTE:
+ 265   3                *( *(commands_data + data_index) + ptr ) = '\0';
+ 266   3                //USART_print(commands_data[data_index]);
+ 267   3                run = 0;
+ 268   3                break;
+ 269   3      
+ 270   3              default:
+ 271   3                *( *(commands_data + data_index) + ptr ) = c;
+ 272   3                ptr++;
+ 273   3            }
+ 274   2      
+ 275   2            reading_ptr++;
+ 276   2        }
+ 277   1        
+ 278   1        // Préparation du packet
+ 279   1        
+ 280   1        cmd_packet.commands_data = &commands_data;
+*** WARNING C182 IN LINE 280 OF src\commands_parser.c: pointer to different objects
+ 281   1        cmd_packet.cmd_size = data_index;
+ 282   1        cmd_packet.commands = &(parser_result->commands);
+ 283   1      
  284   1        
- 285   1        cmd_packet.commands_data = &commands_data;
-*** WARNING C182 IN LINE 285 OF src\commands_parser.c: pointer to different objects
- 286   1        cmd_packet.cmd_size = data_index;
- 287   1        cmd_packet.commands = &(parser_result->commands);
- 288   1      
- 289   1        
- 290   1        // Looking for the command in the Command Dictionnary
- 291   1        for(i = 0 ; i < NUMBER_OF_COMMAND; i++)
- 292   1        {
- 293   2          if(strcmp(*(commands_data), dispatch_table[i].name) == 0)
- 294   2          {
- 295   3            // On test la validité des args entré par l'user
- 296   3            if(dispatch_table[i].process(&cmd_packet) != 0)
- 297   3            {
- 298   4              ret = 1;
- 299   4            }else{
- 300   4              USART_print("Cmd Erreur !!!!");
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 11:47:55 PAGE 6   
+ 285   1        // Looking for the command in the Command Dictionnary
+ 286   1        for(i = 0 ; i < NUMBER_OF_COMMAND; i++)
+ 287   1        {
+ 288   2          if(strcmp(*(commands_data), dispatch_table[i].name) == 0)
+ 289   2          {
+ 290   3            // On test la validité des args entré par l'user
+ 291   3            if(dispatch_table[i].process(&cmd_packet) != 0)
+ 292   3            {
+ 293   4              ret = 1;
+ 294   4            }else{
+ 295   4              USART_print("Cmd Erreur !!!!");
+ 296   4              ret = 0;
+ 297   4            }
+ 298   3            /*
+ 299   3            USART_print("Find Command : ");
+ 300   3            USART_print(dispatch_table[i].name);
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 18:16:19 PAGE 6   
 
- 301   4              ret = 0;
- 302   4            }
- 303   3            /*
- 304   3            USART_print("Find Command : ");
- 305   3            USART_print(dispatch_table[i].name);
- 306   3            USART_send('\n');
- 307   3            */
- 308   3            
- 309   3          }
- 310   2        }
- 311   1      
- 312   1        clear_buffer(commands_data, data_index+1);
-*** WARNING C182 IN LINE 312 OF src\commands_parser.c: pointer to different objects
- 313   1        clear_buffer(cmd_packet.commands_data, data_index+1);
- 314   1      
- 315   1        return ret;
- 316   1      }
- 317          
- 318          void valid_cmd_flag()
- 319          {
- 320   1        USART_send(0x0D);
- 321   1        USART_send(0x0A);
- 322   1        USART_send(COMMAND_CONFIRM_BYTE);
- 323   1      }
- 324          
- 325          void error_cmd_flag()
- 326          {
- 327   1        USART_send(0x0D);
- 328   1        USART_send(0x0A);
- 329   1        USART_send(COMMAND_ERROR_BYTE); 
- 330   1      }
- 331          
- 332          void clear_buffer(char** data_buffer, byte buffer_size)
- 333          {
- 334   1        byte i = 0;
- 335   1        for(i = 0 ; i <= buffer_size; ++i)
- 336   1        {
- 337   2          memset(*(data_buffer + i), 0 , ARGS_BUFFER_SIZE);
- 338   2        }
- 339   1        
+ 301   3            USART_send('\n');
+ 302   3            */
+ 303   3            
+ 304   3          }
+ 305   2        }
+ 306   1      
+ 307   1        clear_buffer(commands_data, data_index+1);
+*** WARNING C182 IN LINE 307 OF src\commands_parser.c: pointer to different objects
+ 308   1        clear_buffer(cmd_packet.commands_data, data_index+1);
+ 309   1      
+ 310   1        return ret;
+ 311   1      }
+ 312          
+ 313          void valid_cmd_flag()
+ 314          {
+ 315   1        USART_send(0x0D);
+ 316   1        USART_send(0x0A);
+ 317   1        USART_send(COMMAND_CONFIRM_BYTE);
+ 318   1      }
+ 319          
+ 320          void error_cmd_flag()
+ 321          {
+ 322   1        USART_send(0x0D);
+ 323   1        USART_send(0x0A);
+ 324   1        USART_send(COMMAND_ERROR_BYTE); 
+ 325   1      }
+ 326          
+ 327          void clear_buffer(char** data_buffer, byte buffer_size)
+ 328          {
+ 329   1        byte i = 0;
+ 330   1        for(i = 0 ; i <= buffer_size; ++i)
+ 331   1        {
+ 332   2          memset(*(data_buffer + i), 0 , ARGS_BUFFER_SIZE);
+ 333   2        }
+ 334   1        
+ 335   1      }
+ 336          
+ 337          void read_command(PARSER_RESULT* parser_result)
+ 338          {
+ 339   1          // Nothing TODO
  340   1      }
+*** WARNING C280 IN LINE 337 OF src\commands_parser.c: 'parser_result': unreferenced local variable
  341          
- 342          void read_command(PARSER_RESULT* parser_result)
- 343          {
- 344   1          // Nothing TODO
- 345   1      }
-*** WARNING C280 IN LINE 342 OF src\commands_parser.c: 'parser_result': unreferenced local variable
+ 342          /*
+ 343          char encode_data()
+ 344          {
+ 345          
  346          
- 347          /*
- 348          char encode_data()
- 349          {
- 350          
- 351          
- 352          }*/
+ 347          }*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    901    ----
+   CODE SIZE        =    892    ----
    CONSTANT SIZE    =    194    ----
    XDATA SIZE       =    276     131
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/11/2019 11:47:55 PAGE 7   
-
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

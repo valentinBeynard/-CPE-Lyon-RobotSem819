@@ -2,8 +2,13 @@
 #define COMMAND_H
 #endif
 
+#define byte unsigned char
+#define signed_byte char
+
+/*
 typedef unsigned char byte;
 typedef char signed_byte;
+*/
 
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
 #define min(a,b)            (((a) < (b)) ? (a) : (b))

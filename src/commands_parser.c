@@ -91,12 +91,7 @@ byte init_parser()
 		
 	/****** INIT PIN *****/
 
-	// Enable Crossbar
-	XBR2 = 0x40;
-	// Init UART0 on Crossbar
-	XBR0 = 0x04;
-	// Push Pull mode
-	P0MDOUT = 0xFF;
+
 	
 	/****** INIT TIMER ******/
 	CKCON = 0x00; // Set CLK divider to 12 for timer 0 and 2

@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.14.2.1
 Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Valentin BEYNARD, CPE Lyon, LIC=GM8PD-85TP7-N34JA-E6CIG-62JWP-CILZ6
+License Information: Valentin BEYNARD, CPE Lyon, LIC=----
  
 Tool Versions:
 Toolchain:       PK51 Prof. Developers Kit for SiLabs  Version: 9.55
@@ -18,8 +18,8 @@ Hex Converter:   OH51.exe V2.7.0.0
 CPU DLL:         S8051.DLL V3.101.0.0
 Dialog DLL:      DCYG.DLL V2.73.0.0 
 <h2>Project:</h2>
-C:\Users\BEYNARD\Documents\GitHub\-CPE-Lyon-RobotSem819\robot_V1.uvproj
-Project File Date:  03/10/2019
+F:\Mes Documents\GitHub\-CPE-Lyon-RobotSem819\robot_V1.uvproj
+Project File Date:  03/11/2019
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
@@ -30,10 +30,10 @@ src\commands.c(6): warning C280: 'cmd_packet': unreferenced local variable
 src\commands.c(31): warning C182: pointer to different objects
 src\commands.c(9): warning C290: missing return value
 compiling commands_parser.c...
-src\commands_parser.c(184): warning C280: 'parser_result': unreferenced local variable
-src\commands_parser.c(285): warning C182: pointer to different objects
-src\commands_parser.c(312): warning C182: pointer to different objects
-src\commands_parser.c(342): warning C280: 'parser_result': unreferenced local variable
+src\commands_parser.c(179): warning C280: 'parser_result': unreferenced local variable
+src\commands_parser.c(280): warning C182: pointer to different objects
+src\commands_parser.c(307): warning C182: pointer to different objects
+src\commands_parser.c(337): warning C280: 'parser_result': unreferenced local variable
 compiling main.c...
 compiling telemetres.c...
 compiling serializer.c...
@@ -44,8 +44,12 @@ linking...
     SEGMENT: ?PR?MESURE?TELEMETRES
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?INIT?TELEMETRES
-Program Size: data=21.4 xdata=432 code=6489
-".\Objects\robot_V1" - 0 Error(s), 11 Warning(s).
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SERIALIZER_RECEIVE?SERIALIZER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SERIALIZER_PRINT?SERIALIZER
+Program Size: data=21.4 xdata=436 code=6627
+".\Objects\robot_V1" - 0 Error(s), 13 Warning(s).
 </pre>
 </body>
 </html>

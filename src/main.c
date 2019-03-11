@@ -1,5 +1,6 @@
 #include "debug.h"
 #include "commands_parser.h"
+#include "serializer.h"
 
 sfr Reg =	0xFF;
 
@@ -11,6 +12,21 @@ void Init_External_clk()
 	
 	// Use Exern CLK
 	OSCICN = 0x08;
+}
+
+void Init_Crossbar()
+{
+	// Init UART0 on Crossbar
+	XBR0 = 0x04;
+	
+	// Init UART1 on Crossbar
+	XBR2 = 0x04;
+	
+	// Push Pull mode
+	P0MDOUT = 0xFF;
+	
+	// Enable Crossbar
+	XBR2 = 0x40;
 }
 
 
@@ -88,6 +104,11 @@ int main (void)
 	
 	// Initialise l'UART0 et le Timer 2 pour le parser de commandes				
   init_parser();
+		
+	// Initialise l'UART1 utilisé pour communiquer avec le sérializer
+	init_serializer_UART1();
+							
+	Init_Crossbar();
 
 	USART_print("Start Routine \n\n");
 
@@ -100,6 +121,8 @@ int main (void)
       USART_print("Quit");
 			break;
     }
+		
+		serializer_send('H');
     //USART_send('A');
     //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
   }

@@ -413,6 +413,11 @@
               <FileType>1</FileType>
               <FilePath>.\src\serializer.c</FilePath>
             </File>
+            <File>
+              <FileName>serializer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\serializer.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

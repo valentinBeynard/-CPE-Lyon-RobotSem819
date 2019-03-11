@@ -1,6 +1,12 @@
-typedef unsigned char BYTE;
-typedef char SIGNED_BYTE;
+#include "c8051F020.h"
 
+#define byte unsigned char
+#define SIGNED_BYTE char
+
+/*
+typedef unsigned char byte;
+typedef char SIGNED_BYTE;
+*/
 //*****************************************************************************************************************************************
 // Structure de donn?es pour les commandes ? envoyer ? la carte Serializer
 // Les commandes produites par FO-M5 (? priori) seront stock?es dans une structure de ce type pour ?tre utilis?es par FO-M2
@@ -56,8 +62,13 @@ typedef struct INFORMATIONS_SERIALIZER // Cette structure contient toutes les in
    int   Read_I;                       //   information commande vpid dpid
    int   Read_D;                       //   information commande vpid dpid
    int   Read_L_A;                     //   information commande vpid (L)  dpid (A)
-   BYTE  Read_Pids;                    //   information commande pids
+   byte  Read_Pids;                    //   information commande pids
    int   Read_Vitesse_mot1;            //   information commande "velocity" moteur 1
    int   Read_Vitesse_mot2;            //   information commande "velocity" moteur 2
    
 } OUT_M2;
+
+byte init_serializer_UART1();
+void serializer_receive(byte* read_byte);
+void serializer_send(byte ch);
+void serializer_print(char* str);
