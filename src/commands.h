@@ -8,6 +8,12 @@ typedef char signed_byte;
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 
+// Taille max du buffer pour un seul mot de commande/argument
+#define ARGS_BUFFER_SIZE  32
+
+// Nombre max de mots composants une commande que l'on peut récupérer avec le buffer lors du parse
+#define MAX_COMMAND_WORD  3
+
 
 ///*****************************************************************************************************************************************
 // Structure de donn�es pour les commandes transmises par la centrale ce commande
@@ -124,41 +130,32 @@ typedef struct INFORMATIONS       // Cette structure contient toutes les informa
 typedef struct
 {
 	char** commands_data;
-	char** args_label;
 	byte cmd_size;
-	byte args_size;
 	OUT_M1* commands;
 }CMD_PACKET;
 
 typedef struct
 {
   const char* name;
-	const byte min_arg_size;
-	const byte max_arg_size;
-	const char* args_label[10];
-  void(*process)(CMD_PACKET*);
+  byte(*process)(CMD_PACKET*);
 }CMD_;
 
 
-
-byte args_valid(CMD_PACKET* cmd_packet);
-
-
-void default_process(CMD_PACKET* cmd_packet);
+byte default_process(CMD_PACKET* cmd_packet);
 
 
 /*
   Commande de démarage de l'épreuve : D [Numéro Epreuve]
   Si aucun paramètre rentré, alors on démarre à l'épreuve 1
 */
-void start_test(CMD_PACKET* cmd_packet);
+byte epreuve_cmd(CMD_PACKET* cmd_packet);
 
-void safety_break(CMD_PACKET* cmd_packet);
-void set_default_speed(CMD_PACKET* cmd_packet);
-void move_forward(CMD_PACKET* cmd_packet);
-void move_backward(CMD_PACKET* cmd_packet);
-void move_stop(CMD_PACKET* cmd_packet);
-void rigth_rotation(CMD_PACKET* cmd_packet);
-void left_rotation(CMD_PACKET* cmd_packet);
-void complete_rotation(CMD_PACKET* cmd_packet);
-void angle_rotation(CMD_PACKET* cmd_packet);
+byte safety_break_cmd(CMD_PACKET* cmd_packet);
+byte set_default_speed_cmd(CMD_PACKET* cmd_packet);
+byte move_forward_cmd(CMD_PACKET* cmd_packet);
+byte move_backward_cmd(CMD_PACKET* cmd_packet);
+byte move_stop_cmd(CMD_PACKET* cmd_packet);
+byte rigth_rotation_cmd(CMD_PACKET* cmd_packet);
+byte left_rotation_cmd(CMD_PACKET* cmd_packet);
+byte complete_rotation_cmd(CMD_PACKET* cmd_packet);
+byte angle_rotation_cmd(CMD_PACKET* cmd_packet);

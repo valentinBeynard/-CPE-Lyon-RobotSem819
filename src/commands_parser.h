@@ -9,12 +9,6 @@
 // Taille en octect que l'on alloue au buffer qui récupère la commande envoyé
 #define COMMAND_BUFFER_SIZE 100
 
-// Nombre max de mots composants une commande que l'on peut récupérer avec le buffer lors du parse
-#define MAX_COMMAND_WORD  8
-
-// Taille max du buffer pour un seul mot de commande/argument
-#define ARGS_BUFFER_SIZE  12
-
 // Nombre de commandes implémentée
 #define NUMBER_OF_COMMAND 27
 
@@ -130,3 +124,5 @@ void valid_cmd_flag();
 Renvoie la séquence définie par le CdC lorsque la commande est éronnée : "\n#"
 */
 void error_cmd_flag();
+
+void clear_buffer(char** data_buffer, byte buffer_size);

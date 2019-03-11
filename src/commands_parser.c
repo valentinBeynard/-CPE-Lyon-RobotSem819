@@ -22,33 +22,33 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
 	Donc max_arg_size = 2
 	Les noms d'arg possible sont D, G, donc args_label = {"D", "G"}
 	*/
-		{"D", 0, 1, {"epreuve"}, start_test},
-    {"E", 0, 0, {""}, default_process},
-    {"Q", 0, 0, {""}, safety_break},
-    {"TV", 1, 1, {""}, set_default_speed},
-    {"A", 0, 1, {""}, move_forward},
-    {"B", 0, 1, {""}, move_backward},
-    {"S", 0, 0, {""}, move_stop},
-    {"RD", 0, 0, {""}, rigth_rotation},
-    {"RG", 0, 0, {""}, left_rotation},
-    {"RC", 0, 1, {"D", "G"}, complete_rotation},
-    {"RA", 0, 2, {"D", "G"}, angle_rotation},
-    {"G", 6, 6, {"X", "Y", "A"}, default_process},
-    {"ASS", 1, 1, {""}, default_process},
-    {"MI", 0, 0, {""}, default_process},
-    {"ME", 0, 0, {""}, default_process},
-    {"IPO", 6, 6, {"X", "Y", "A", }, default_process},
-    {"POS", 0, 0, {""}, default_process},
-    {"MOU", 0, 1, {"D"}, default_process},
-    {"MOB", 0, 3, {"A", "D"}, default_process},
-    {"MOS", 0, 3, {"D", "A"}, default_process},
-    {"SD", 0, 8, {"F", "P", "W", "B"}, default_process},
-    {"L", 0, 8, {"I", "D", "E", "N"}, default_process},
-    {"LS", 0, 0, {""}, default_process},
-    {"CS", 0, 3, {"A", "H", "V"}, default_process},
-    {"PPH", 0, 5, {"E", "N", "O", "C", "S"}, default_process},
-    {"SPH", 0, 0, {""}, default_process},
-    {"AUX", 0, 0, {""}, default_process}
+		{"D", epreuve_cmd},
+    {"E", default_process},
+    {"Q", safety_break_cmd},
+    {"TV", set_default_speed_cmd},
+    {"A", move_forward_cmd},
+    {"B", move_backward_cmd},
+    {"S", move_stop_cmd},
+    {"RD", rigth_rotation_cmd},
+    {"RG", left_rotation_cmd},
+    {"RC", complete_rotation_cmd},
+    {"RA", angle_rotation_cmd},
+    {"G", default_process},
+    {"ASS", default_process},
+    {"MI", default_process},
+    {"ME", default_process},
+    {"IPO", default_process},
+    {"POS", default_process},
+    {"MOU", default_process},
+    {"MOB", default_process},
+    {"MOS", default_process},
+    {"SD", default_process},
+    {"L", default_process},
+    {"LS", default_process},
+    {"CS", default_process},
+    {"PPH", default_process},
+    {"SPH", default_process},
+    {"AUX", default_process}
 };
 
 /*
@@ -230,20 +230,25 @@ void get_command(PARSER_RESULT* parser_result)
 byte parse(PARSER_RESULT* parser_result)
 {
   // Tableau dans lequel on va ranger : [Nom_Commande][Param1][Valeur1][...]
-  char commands_data[MAX_COMMAND_WORD][ARGS_BUFFER_SIZE];
+  char commands_data[MAX_COMMAND_WORD][ARGS_BUFFER_SIZE] = {'H'};
   // Pointers pour parcourir les différents buffers
   byte data_index = 0, ptr = 0, reading_ptr = 0;
-
+	byte ret = 0;
   char c = 0, i = 0;
   char run = 1;
-	
+	/*char** ptra = 0;
+	char** ptrb = 0;
+	char* t = 0;
+	char* v = 0;*/
+
 	CMD_PACKET cmd_packet;
 
   // Dispatches commands and arguments in commands_data buffer
   while(run)
   {
       c = *(raw_data + reading_ptr);
-
+			/*t = (commands_data + data_index);
+			v = commands_data[data_index];*/
       switch (c)
       {
         case COMMAND_SEPARATOR:
@@ -269,7 +274,6 @@ byte parse(PARSER_RESULT* parser_result)
 
         default:
           *( *(commands_data + data_index) + ptr ) = c;
-          //commands_data[data_index][ptr] = c;
           ptr++;
       }
 
@@ -277,45 +281,38 @@ byte parse(PARSER_RESULT* parser_result)
   }
 	
 	// Préparation du packet
-	cmd_packet.commands_data = commands_data;
+	
+	cmd_packet.commands_data = &commands_data;
 	cmd_packet.cmd_size = data_index;
 	cmd_packet.commands = &(parser_result->commands);
 
+	
   // Looking for the command in the Command Dictionnary
   for(i = 0 ; i < NUMBER_OF_COMMAND; i++)
   {
     if(strcmp(*(commands_data), dispatch_table[i].name) == 0)
     {
-      // On charge dans les packet le nombre d'arg dispo pour la cmd
-			cmd_packet.args_size = sizeof(dispatch_table[i].args_label) / sizeof(dispatch_table[i].args_label[0]);//dispatch_table[i].args_number;
-			cmd_packet.args_label = dispatch_table[i].args_label;
-			
-			// Si la commande ne contient pas le nombre de paramètre minimal demandé ou est trop grand
-			if(data_index < dispatch_table[i].min_arg_size 
-					|| data_index > dispatch_table[i].max_arg_size )
-			{
-				USART_print("Min Arg Size !!!!");
-				return 0;
-			}
-
 			// On test la validité des args entré par l'user
-			if(args_valid(&cmd_packet) != 0)
+			if(dispatch_table[i].process(&cmd_packet) != 0)
 			{
-				dispatch_table[i].process(&cmd_packet);
+				ret = 1;
 			}else{
-				USART_print("Arg not match !!!!");
-				return 0;
+				USART_print("Cmd Erreur !!!!");
+				ret = 0;
 			}
 			/*
       USART_print("Find Command : ");
       USART_print(dispatch_table[i].name);
 			USART_send('\n');
 			*/
-      return 1;
+      
     }
   }
 
-  return 0;
+	clear_buffer(commands_data, data_index+1);
+	clear_buffer(cmd_packet.commands_data, data_index+1);
+
+  return ret;
 }
 
 void valid_cmd_flag()
@@ -330,6 +327,16 @@ void error_cmd_flag()
 	USART_send(0x0D);
 	USART_send(0x0A);
 	USART_send(COMMAND_ERROR_BYTE);	
+}
+
+void clear_buffer(char** data_buffer, byte buffer_size)
+{
+	byte i = 0;
+	for(i = 0 ; i <= buffer_size; ++i)
+	{
+		memset(*(data_buffer + i), 0 , ARGS_BUFFER_SIZE);
+	}
+	
 }
 
 void read_command(PARSER_RESULT* parser_result)

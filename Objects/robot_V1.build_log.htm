@@ -25,14 +25,15 @@ Project File Date:  03/10/2019
 Rebuild target 'Target 1'
 assembling STARTUP.A51...
 compiling commands.c...
-src\commands.c(26): warning C182: pointer to different objects
-src\commands.c(26): warning C182: pointer to different objects
-src\commands.c(46): warning C280: 'cmd_packet': unreferenced local variable
+src\commands.c(9): warning C173: missing return-expression
+src\commands.c(6): warning C280: 'cmd_packet': unreferenced local variable
+src\commands.c(31): warning C182: pointer to different objects
+src\commands.c(9): warning C290: missing return value
 compiling commands_parser.c...
 src\commands_parser.c(184): warning C280: 'parser_result': unreferenced local variable
-src\commands_parser.c(280): warning C182: pointer to different objects
-src\commands_parser.c(291): warning C182: pointer to different objects
-src\commands_parser.c(335): warning C280: 'parser_result': unreferenced local variable
+src\commands_parser.c(285): warning C182: pointer to different objects
+src\commands_parser.c(312): warning C182: pointer to different objects
+src\commands_parser.c(342): warning C280: 'parser_result': unreferenced local variable
 compiling main.c...
 compiling telemetres.c...
 compiling serializer.c...
@@ -43,8 +44,8 @@ linking...
     SEGMENT: ?PR?MESURE?TELEMETRES
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?INIT?TELEMETRES
-Program Size: data=21.4 xdata=1300 code=7397
-".\Objects\robot_V1" - 0 Error(s), 10 Warning(s).
+Program Size: data=21.4 xdata=432 code=6489
+".\Objects\robot_V1" - 0 Error(s), 11 Warning(s).
 </pre>
 </body>
 </html>
