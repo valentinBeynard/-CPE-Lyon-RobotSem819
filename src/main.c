@@ -116,13 +116,14 @@ int main (void)
   {
     //parser_process(state, &parser_result);
     cmd_parser_process(&parser_result);
-    if( parser_result.commands.Etat_Epreuve == Stop_Urgence)
+    
+		if( parser_result.commands.Etat_Epreuve == Stop_Urgence)
     {
       USART_print("Quit");
 			break;
     }
-		
-		serializer_send('H');
+		serializer_process(&(parser_result.commands));
+		//serializer_send('H');
     //USART_send('A');
     //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
   }

@@ -1,6 +1,7 @@
 #ifndef COMMAND_H
+
 #define COMMAND_H
-#endif
+
 
 #define byte unsigned char
 #define signed_byte char
@@ -164,3 +165,9 @@ byte rigth_rotation_cmd(CMD_PACKET* cmd_packet);
 byte left_rotation_cmd(CMD_PACKET* cmd_packet);
 byte complete_rotation_cmd(CMD_PACKET* cmd_packet);
 byte angle_rotation_cmd(CMD_PACKET* cmd_packet);
+
+#else
+
+//#error Multiple define !
+
+#endif

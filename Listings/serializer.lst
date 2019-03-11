@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   SERIALIZER                                                            03/11/2019 18:16:19 PAGE 1   
+C51 COMPILER V9.55   SERIALIZER                                                            03/11/2019 23:13:37 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE SERIALIZER
@@ -10,71 +10,158 @@ line level    source
 
    1          #include "serializer.h"
    2          #include <string.h>
-   3          /*
-   4          #############################################################################
-   5                  Pour µP 8051F020
-   6          #############################################################################
-   7          */
-   8          
-   9          /**
-  10            8051 µP :
-  11            Initialize devices for commands_parser : UART0 and Timer 2
-  12          **/
-  13          byte init_serializer_UART1()
-  14          {
-  15   1        
-  16   1        /****** INIT UART1 *****/
-  17   1        SCON1 = 0x50;
-  18   1        
-  19   1        // Réglage timer 4
-  20   1        T4CON = 0x3D; // Baud Generator for UART1 + Enable TR4
-  21   1        
-  22   1        RCAP4L = 0xDC;  // Reload value for BaudRate 19200
-  23   1        RCAP4H = 0xFF;
-  24   1        
-  25   1        return 0;
-  26   1      }
-  27          
-  28          void serializer_receive(byte* read_byte)
-  29          {
-  30   1        if( (SCON1 & 0x01) == 1)
-  31   1        {
-  32   2          *read_byte = SBUF1;
-  33   2          SCON1 &= 0xFE;  // Remise à 0 de RI1
-  34   2        }else{
-  35   2          *read_byte = '*';
-  36   2        }
-  37   1      }
-  38          
-  39          void serializer_send(byte ch)
-  40          {
-  41   1        SBUF1 = ch;
-  42   1        
-  43   1        while( (SCON1 & 0x02) == 0){} // Tant que TI1 == 0
-  44   1        SCON1 &= 0xFD;  // Remise à 0 de TI1
-  45   1      }
-  46          
-  47          void serializer_print(char* str)
-  48          {
-  49   1        byte i = 0;
-  50   1        for(i = 0 ; i < strlen(str); i++)
-  51   1        {
-  52   2          serializer_send(*(str+i));
-  53   2        }
-  54   1      }
-C51 COMPILER V9.55   SERIALIZER                                                            03/11/2019 18:16:19 PAGE 2   
+   3          #include <stdio.h>
+   4          /*
+   5          const SERIALIZER_FSM_PROCESS full_state_machine[3] = {
+   6              {WAIT, &wait},
+   7              {GET_COMMAND, &get_command},
+   8              {SEND_COMMAND, &wait}
+   9          };*/
+  10          
+  11          /* Etat courant de la machine d'Etat */
+  12          //enum Mouvement serializer_state = Mouvement_non;
+  13          
+  14          
+  15          /*
+  16          #############################################################################
+  17                  UART1 related function for µP 8051F020
+  18          #############################################################################
+  19          */
+  20          
+  21          /**
+  22            8051 µP :
+  23            Initialize devices for commands_parser : UART0 and Timer 2
+  24          **/
+  25          byte init_serializer_UART1()
+  26          {
+  27   1        
+  28   1        /****** INIT UART1 *****/
+  29   1        SCON1 = 0x50;
+  30   1        
+  31   1        // Réglage timer 4
+  32   1        T4CON = 0x3D; // Baud Generator for UART1 + Enable TR4
+  33   1        
+  34   1        RCAP4L = 0xDC;  // Reload value for BaudRate 19200
+  35   1        RCAP4H = 0xFF;
+  36   1        
+  37   1        return 0;
+  38   1      }
+  39          
+  40          void serializer_receive(byte* read_byte)
+  41          {
+  42   1        if( (SCON1 & 0x01) == 1)
+  43   1        {
+  44   2          *read_byte = SBUF1;
+  45   2          SCON1 &= 0xFE;  // Remise à 0 de RI1
+  46   2        }else{
+  47   2          *read_byte = '*';
+  48   2        }
+  49   1      }
+  50          
+  51          void serializer_send(byte ch)
+  52          {
+  53   1        SBUF1 = ch;
+  54   1        while( (SCON1 & 0x02) == 0){} // Tant que TI1 == 0
+C51 COMPILER V9.55   SERIALIZER                                                            03/11/2019 23:13:37 PAGE 2   
 
+  55   1        SCON1 &= 0xFD;  // Remise à 0 de TI1
+  56   1      }
+  57          
+  58          void serializer_print(char* str)
+  59          {
+  60   1        byte i = 0;
+  61   1        for(i = 0 ; i < strlen(str); i++)
+  62   1        {
+  63   2          serializer_send(*(str+i));
+  64   2        }
+  65   1      }
+  66          
+  67          /*
+  68          #############################################################################
+  69                  Serializer related functions
+  70          #############################################################################
+  71          */
+  72          
+  73          void serializer_process(OUT_M1* cmd)
+  74          {
+  75   1        if(cmd->Etat_Mouvement != Mouvement_non)
+  76   1        {
+  77   2          simple_mvt(cmd);
+  78   2      
+  79   2        }else{
+  80   2          //serializer_print(cmd);
+  81   2        }
+  82   1        
+  83   1      }
+  84          
+  85          byte simple_mvt(OUT_M1* cmd)
+  86          {
+  87   1        int speed = 10;
+  88   1        
+  89   1        if(cmd->Vitesse == 0)
+  90   1        {
+  91   2          return 0;
+  92   2        }
+  93   1        
+  94   1        speed = cmd->Vitesse;
+  95   1        
+  96   1        switch(cmd->Etat_Mouvement)
+  97   1        {
+  98   2          case Avancer:
+  99   2            setMotors(speed, speed);
+ 100   2            cmd->Etat_Mouvement = Mouvement_non;
+ 101   2            break;
+ 102   2          
+ 103   2          case Reculer:
+ 104   2            setMotors((-1) * speed, (-1) * speed);
+ 105   2            cmd->Etat_Mouvement = Mouvement_non;
+ 106   2            break;
+ 107   2          
+ 108   2          case Stopper:
+ 109   2            
+ 110   2            break;
+ 111   2      
+ 112   2          case Rot_90D:
+ 113   2            
+ 114   2            break;
+ 115   2          
+ 116   2          case Rot_90G:
+C51 COMPILER V9.55   SERIALIZER                                                            03/11/2019 23:13:37 PAGE 3   
 
+ 117   2            
+ 118   2            break;
+ 119   2          
+ 120   2          case Rot_180D:
+ 121   2            
+ 122   2            break;
+ 123   2          
+ 124   2          case Rot_180G:
+ 125   2            
+ 126   2            break;
+ 127   2      
+ 128   2          case Rot_AngD:
+ 129   2            
+ 130   2            break;
+ 131   2      
+ 132   2          case Rot_AngG:
+ 133   2            
+ 134   2            break;*/
+*** ERROR C141 IN LINE 134 OF src\serializer.c: syntax error near '/'
+ 135   2        }
+ 136   1      }
+ 137          
+ 138          void setMotors(int mtr_speed_1, int mtr_speed_2)
+ 139          {
+ 140   1        char cmd[MOGO_CMD_SIZE] = "mogo 1:";
+ 141   1        
+ 142   1        sprintf(cmd, "mogo 1:%u 2:%u\n", mtr_speed_1, mtr_speed_2);
+ 143   1      
+ 144   1        serializer_print(cmd);
+ 145   1      }
+ 146          
+ 147          void stopMotors()
+ 148          {
+ 149   1        serializer_print("stop\n");
+ 150   1      }
 
-MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    119    ----
-   CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =   ----       4
-   PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
-   IDATA SIZE       =   ----    ----
-   BIT SIZE         =   ----    ----
-END OF MODULE INFORMATION.
-
-
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

@@ -1,6 +1,5 @@
 #ifndef COMMAND_PARSER_H
 #define COMMAND_PARSER_H
-#endif
 
 #include "c8051F020.h"
 #include "commands.h"
@@ -86,7 +85,7 @@ void USART_print(char* str);
 /*
 
 */
-const FSM_PROCESS* cmd_parser_next_state();
+//const FSM_PROCESS* cmd_parser_next_state();
 
 /*
   Execute un cycle de la machine d'Etat commands_parser.c
@@ -126,3 +125,5 @@ Renvoie la séquence définie par le CdC lorsque la commande est éronnée : "\n
 void error_cmd_flag();
 
 void clear_buffer(char** data_buffer, byte buffer_size);
+
+#endif

@@ -1,7 +1,22 @@
+#ifndef SERIALIZER_H
+
+#define SERIALIZER_H
+
 #include "c8051F020.h"
+#include "commands.h"
 
 #define byte unsigned char
 #define SIGNED_BYTE char
+
+#define MOGO_CMD_SIZE	20
+
+typedef struct
+{
+  char* state_name;
+  void(*state_process)(OUT_M1*);
+}SERIALIZER_FSM_PROCESS;
+
+
 
 /*
 typedef unsigned char byte;
@@ -72,3 +87,13 @@ byte init_serializer_UART1();
 void serializer_receive(byte* read_byte);
 void serializer_send(byte ch);
 void serializer_print(char* str);
+
+void serializer_process(OUT_M1* cmd);
+
+byte simple_mvt(OUT_M1* cmd);
+void setMotors(int mtr_speed_1, int mtr_speed_2);
+void stopMotors();
+
+#else
+
+#endif
