@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.14.2.1
 Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Valentin BEYNARD, CPE Lyon, LIC=----
+License Information: Valentin BEYNARD, CPE Lyon, LIC=BU3WG-V4SJE-L5XQ4-TS5ZQ-WVZY4-PS1SI
  
 Tool Versions:
 Toolchain:       PK51 Prof. Developers Kit for SiLabs  Version: 9.55
@@ -37,8 +37,30 @@ src\commands_parser.c(337): warning C280: 'parser_result': unreferenced local va
 compiling main.c...
 compiling telemetres.c...
 compiling serializer.c...
-src\serializer.c(134): error C141: syntax error near '/'
-Target not created.
+src\serializer.c(161): warning C173: missing return-expression
+src\serializer.c(181): warning C173: missing return-expression
+src\serializer.c(161): warning C290: missing return value
+src\serializer.c(181): warning C290: missing return value
+src\serializer.c(239): warning C290: missing return value
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_READ_COMMAND?COMMANDS_PARSER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?MESURE?TELEMETRES
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?INIT?TELEMETRES
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_TRANSLATE?SERIALIZER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ROTATE?SERIALIZER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?STOPMOTORS?SERIALIZER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GETENCODERDISTANCE?SERIALIZER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?GETENCORDERANGLE?SERIALIZER
+Program Size: data=27.5 xdata=544 code=9122
+".\Objects\robot_V1" - 0 Error(s), 21 Warning(s).
 </pre>
 </body>
 </html>

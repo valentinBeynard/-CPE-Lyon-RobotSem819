@@ -10,12 +10,56 @@
 
 #define MOGO_CMD_SIZE	20
 
+#define ENC_RSLT_SIZE	10
+
+// Byte retourné par le sérializer à la fin de son retour
+#define END_RSLT_BYTE	0x3E
+
+/* Diametre des roues */
+#define WHEEL_DIAMETER	60
+
+/* Nombre de Ticks d'un encoder pour 1 tour de roue */
+#define TICK_PER_CYCLE	624
+
+#define M_PI 3.14159265358979323846
+
+#define ENC_2_MM(ticks)	( ticks * (M_PI * WHEEL_DIAMETER) / TICK_PER_CYCLE)
+
+#define TURN_SPEED	20
+
+/*
+#define ABS(X)	(X >= 0 ? X : (-1) * X)
+*/
+
+
+typedef enum
+{
+	IDLE = 0,
+	TRANSLATE,
+	ROTATE,
+	NAVIGATE
+}SERIALIZER_STATE;
+
+typedef enum
+{
+	LEFT = 0,
+	RIGHT
+}ENCODER_ID;
+
 typedef struct
 {
-  char* state_name;
-  void(*state_process)(OUT_M1*);
-}SERIALIZER_FSM_PROCESS;
+	char x;
+	char y;
+	float angle;
+	byte speed;
+}PTS_2DA;
 
+
+typedef struct
+{
+  SERIALIZER_STATE state_name;
+  void(*state_process)(PTS_2DA*);
+}SERIALIZER_FSM_PROCESS;
 
 
 /*
@@ -87,12 +131,19 @@ byte init_serializer_UART1();
 void serializer_receive(byte* read_byte);
 void serializer_send(byte ch);
 void serializer_print(char* str);
+void serializer_clear_serial();
 
 void serializer_process(OUT_M1* cmd);
 
-byte simple_mvt(OUT_M1* cmd);
 void setMotors(int mtr_speed_1, int mtr_speed_2);
 void stopMotors();
+
+int getRawEncoders(ENCODER_ID encoder_id);
+int getEncoderDistance(ENCODER_ID encoder_id);
+int getEncorderAngle();
+
+byte translate(PTS_2DA* pts);
+byte rotate(PTS_2DA* pts);
 
 #else
 

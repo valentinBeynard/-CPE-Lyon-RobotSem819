@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   TELEMETRES                                                            03/11/2019 23:13:37 PAGE 1   
+C51 COMPILER V9.55   TELEMETRES                                                            03/12/2019 12:31:42 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE TELEMETRES
@@ -62,7 +62,7 @@ line level    source
   52   1        OSCICN |= 0x08; // Mise à 1 du bit 3
   53   1        
   54   1        
-C51 COMPILER V9.55   TELEMETRES                                                            03/11/2019 23:13:37 PAGE 2   
+C51 COMPILER V9.55   TELEMETRES                                                            03/12/2019 12:31:42 PAGE 2   
 
   55   1      }
   56          
@@ -126,7 +126,7 @@ line level    source
                   AD0BUSY=0;
                 }
                 
-C51 COMPILER V9.55   TELEMETRES                                                            03/11/2019 23:13:37 PAGE 3   
+C51 COMPILER V9.55   TELEMETRES                                                            03/12/2019 12:31:42 PAGE 3   
 
               }
               

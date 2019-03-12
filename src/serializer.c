@@ -1,16 +1,18 @@
 #include "serializer.h"
 #include <string.h>
 #include <stdio.h>
-/*
-const SERIALIZER_FSM_PROCESS full_state_machine[3] = {
-    {WAIT, &wait},
-    {GET_COMMAND, &get_command},
-    {SEND_COMMAND, &wait}
-};*/
+
+const SERIALIZER_FSM_PROCESS serializer_state_machine[4] = {
+    {IDLE, NULL},
+    {TRANSLATE, NULL},
+    {ROTATE, NULL},
+		{NAVIGATE, NULL}
+};
 
 /* Etat courant de la machine d'Etat */
-//enum Mouvement serializer_state = Mouvement_non;
+SERIALIZER_STATE serializer_state = IDLE;
 
+byte is_processing = 0;
 
 /*
 #############################################################################
@@ -64,6 +66,17 @@ void serializer_print(char* str)
   }
 }
 
+void serializer_clear_serial()
+{
+	char c = 0;
+	
+	do
+	{
+		serializer_receive(&c);
+	}while(c != END_RSLT_BYTE);
+	
+}
+
 /*
 #############################################################################
         Serializer related functions
@@ -72,67 +85,98 @@ void serializer_print(char* str)
 
 void serializer_process(OUT_M1* cmd)
 {
-	if(cmd->Etat_Mouvement != Mouvement_non)
+	PTS_2DA pts = {1, 0, 0, 0};
+	
+	if(serializer_state != IDLE)
 	{
-		simple_mvt(cmd);
-
+		// TO DO
 	}else{
-		//serializer_print(cmd);
+		
+		pts.speed = cmd->Vitesse;
+		
+		switch(cmd->Etat_Mouvement)
+		{
+			case Avancer:
+				serializer_state = TRANSLATE;
+				cmd->Etat_Mouvement = Mouvement_non;
+				break;
+			
+			case Reculer:
+				serializer_state = TRANSLATE;
+				cmd->Etat_Mouvement = Mouvement_non;
+				break;
+			
+			case Stopper:
+				serializer_state = IDLE;
+				cmd->Etat_Mouvement = Mouvement_non;
+				break;
+
+			case Rot_90D:
+				serializer_state = ROTATE;
+				cmd->Etat_Mouvement = Mouvement_non;
+				break;
+			
+			case Rot_90G:
+				serializer_state = ROTATE;
+				cmd->Etat_Mouvement = Mouvement_non;
+				break;
+			
+			case Rot_180D:
+				serializer_state = ROTATE;
+				cmd->Etat_Mouvement = Mouvement_non;
+				break;
+			
+			case Rot_180G:
+				serializer_state = ROTATE;
+				cmd->Etat_Mouvement = Mouvement_non;
+				break;
+
+			case Rot_AngD:
+				serializer_state = ROTATE;
+				cmd->Etat_Mouvement = Mouvement_non;
+				break;
+
+			case Rot_AngG:
+				serializer_state = ROTATE;
+				cmd->Etat_Mouvement = Mouvement_non;
+				break;
+		}
 	}
+	
+	serializer_state_machine[serializer_state].state_process(&pts);
 	
 }
 
-byte simple_mvt(OUT_M1* cmd)
+byte translate(PTS_2DA* pts)
 {
-	int speed = 10;
+	char speed = 10;
 	
-	if(cmd->Vitesse == 0)
+	if(pts->speed != 0)
 	{
-		return 0;
+		speed = pts->speed;
 	}
 	
-	speed = cmd->Vitesse;
+	setMotors(pts->x * speed, pts->x * speed);
 	
-	switch(cmd->Etat_Mouvement)
+}
+
+byte rotate(PTS_2DA* pts)
+{
+	//static int angle_consigne = 0;
+	char speed = TURN_SPEED;
+	char sens = 0;
+	
+	if(is_processing)
 	{
-		case Avancer:
-			setMotors(speed, speed);
-			cmd->Etat_Mouvement = Mouvement_non;
-			break;
-		
-		case Reculer:
-			setMotors((-1) * speed, (-1) * speed);
-			cmd->Etat_Mouvement = Mouvement_non;
-			break;
-		
-		case Stopper:
-			stopMotors();
-			cmd->Etat_Mouvement = Mouvement_non;
-			break;
-
-		case Rot_90D:
+		// ANGLE CALCULATION : TO DO
+		/*if()
+		{
 			
-			break;
-		
-		case Rot_90G:
-			
-			break;
-		
-		case Rot_180D:
-			
-			break;
-		
-		case Rot_180G:
-			
-			break;
-
-		case Rot_AngD:
-			
-			break;
-
-		case Rot_AngG:
-			
-			break;*/
+		}*/
+	}
+	else{
+		sens = (pts->angle >= 0 ? 1 : -1 );
+		setMotors((-1) * sens * speed, sens * speed);
 	}
 }
 
@@ -143,9 +187,53 @@ void setMotors(int mtr_speed_1, int mtr_speed_2)
 	sprintf(cmd, "mogo 1:%u 2:%u\n", mtr_speed_1, mtr_speed_2);
 
 	serializer_print(cmd);
+	
+	serializer_clear_serial();
 }
 
 void stopMotors()
 {
 	serializer_print("stop\n");
+	serializer_clear_serial();
+}
+
+int getRawEncoders(ENCODER_ID encoder_id)
+{
+	int enc_value = 0;
+	char result[ENC_RSLT_SIZE];
+	char c = 0;
+	byte ptr = 0;
+	
+	if(encoder_id == LEFT)
+	{
+		serializer_print("getenc 1\n");
+	}
+	else{
+		serializer_print("getenc 2\n");
+	}
+	
+	do
+	{
+		serializer_receive(&c);
+		result[ptr] = c;
+		ptr++;
+	}while(c != END_RSLT_BYTE);
+	
+	sscanf(result, "%d", &enc_value);
+	
+	return enc_value;
+}
+
+int getEncoderDistance(ENCODER_ID encoder_id)
+{
+	int enc_value = 0;
+	
+	enc_value = getRawEncoders(encoder_id);
+	
+	return ENC_2_MM(enc_value);
+}
+
+int getEncorderAngle()
+{
+	
 }
