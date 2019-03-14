@@ -132,6 +132,7 @@ void serializer_receive(byte* read_byte);
 void serializer_send(byte ch);
 void serializer_print(char* str);
 void serializer_clear_serial();
+void serializer_init_serial();
 
 void serializer_process(OUT_M1* cmd);
 

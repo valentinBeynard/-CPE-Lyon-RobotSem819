@@ -20,13 +20,13 @@ void Init_Crossbar()
 	XBR0 = 0x04;
 	
 	// Init UART1 on Crossbar
-	XBR2 = 0x04;
+	XBR2 |= 0x04;
 	
 	// Push Pull mode
 	P0MDOUT = 0xFF;
 	
 	// Enable Crossbar
-	XBR2 = 0x40;
+	XBR2 |= 0x40;
 }
 
 
@@ -64,6 +64,7 @@ int main (void)
 
   PARSER_RESULT parser_result = {
 		
+
 											1 ,
 		
 											{Epreuve_non, // Numéro Epreuve
@@ -111,10 +112,17 @@ int main (void)
 	Init_Crossbar();
 
 	USART_print("Start Routine \n\n");
+							
+	serializer_init_serial();
+							
+	USART_print("#############################\n\n");
 
+	//serializer_print("mogo 1:50 2:50");
+						
   while(1)
   {
-    //parser_process(state, &parser_result);
+    
+		//parser_process(state, &parser_result);
     cmd_parser_process(&parser_result);
     
 		if( parser_result.commands.Etat_Epreuve == Stop_Urgence)
@@ -126,7 +134,11 @@ int main (void)
 		//serializer_send('H');
     //USART_send('A');
     //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
-  }
+  
+		
+		//serializer_print("mogo 1:50 2:50\r");
+		
+	}
 	
 	USART_print("Fin Soft");
 	

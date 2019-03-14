@@ -1,10 +1,10 @@
-C51 COMPILER V9.55   SERIALIZER                                                            03/12/2019 12:31:43 PAGE 1   
+C51 COMPILER V9.52.0.0   SERIALIZER                                                        03/14/2019 17:26:16 PAGE 1   
 
 
-C51 COMPILER V9.55, COMPILATION OF MODULE SERIALIZER
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE SERIALIZER
 OBJECT MODULE PLACED IN .\Objects\serializer.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\serializer.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
-                    -(.\Listings\serializer.lst) TABS(2) OBJECT(.\Objects\serializer.obj)
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\serializer.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\
+                    -Listings\serializer.lst) TABS(2) OBJECT(.\Objects\serializer.obj)
 
 line level    source
 
@@ -62,210 +62,252 @@ line level    source
   52          
   53          void serializer_send(byte ch)
   54          {
-C51 COMPILER V9.55   SERIALIZER                                                            03/12/2019 12:31:43 PAGE 2   
+C51 COMPILER V9.52.0.0   SERIALIZER                                                        03/14/2019 17:26:16 PAGE 2   
 
   55   1        SBUF1 = ch;
   56   1        while( (SCON1 & 0x02) == 0){} // Tant que TI1 == 0
   57   1        SCON1 &= 0xFD;  // Remise à 0 de TI1
   58   1      }
   59          
-  60          void serializer_print(char* str)
+  60          void UART_send(byte ch)
   61          {
-  62   1        byte i = 0;
-  63   1        for(i = 0 ; i < strlen(str); i++)
-  64   1        {
-  65   2          serializer_send(*(str+i));
-  66   2        }
-  67   1      }
-  68          
-  69          void serializer_clear_serial()
-  70          {
-  71   1        char c = 0;
-  72   1        
-  73   1        do
-  74   1        {
-  75   2          serializer_receive(&c);
-  76   2        }while(c != END_RSLT_BYTE);
-  77   1        
-  78   1      }
-  79          
-  80          /*
-  81          #############################################################################
-  82                  Serializer related functions
-  83          #############################################################################
-  84          */
-  85          
-  86          void serializer_process(OUT_M1* cmd)
-  87          {
-  88   1        PTS_2DA pts = {1, 0, 0, 0};
-  89   1        
-  90   1        if(serializer_state != IDLE)
-  91   1        {
-  92   2          // TO DO
-  93   2        }else{
-  94   2          
-  95   2          pts.speed = cmd->Vitesse;
-  96   2          
-  97   2          switch(cmd->Etat_Mouvement)
-  98   2          {
-  99   3            case Avancer:
- 100   3              serializer_state = TRANSLATE;
- 101   3              cmd->Etat_Mouvement = Mouvement_non;
- 102   3              break;
- 103   3            
- 104   3            case Reculer:
- 105   3              serializer_state = TRANSLATE;
- 106   3              cmd->Etat_Mouvement = Mouvement_non;
- 107   3              break;
- 108   3            
- 109   3            case Stopper:
- 110   3              serializer_state = IDLE;
- 111   3              cmd->Etat_Mouvement = Mouvement_non;
- 112   3              break;
- 113   3      
- 114   3            case Rot_90D:
- 115   3              serializer_state = ROTATE;
- 116   3              cmd->Etat_Mouvement = Mouvement_non;
-C51 COMPILER V9.55   SERIALIZER                                                            03/12/2019 12:31:43 PAGE 3   
+  62   1        SBUF0 = ch;
+  63   1        while(TI0 == 0){}
+  64   1        TI0 = 0;
+  65   1      }
+  66          
+  67          void serializer_print(char* str)
+  68          {
+  69   1        byte i = 0;
+  70   1        for(i = 0 ; i < strlen(str); i++)
+  71   1        {
+  72   2          UART_send(*(str+i));
+  73   2          serializer_send(*(str+i));
+  74   2        }
+  75   1        
+  76   1        serializer_send(0x0D);
+  77   1      }
+  78          
+  79          void serializer_init_serial()
+  80          {
+  81   1        char c = 0;
+  82   1        do
+  83   1        {
+  84   2          serializer_receive(&c);
+  85   2          UART_send(c);
+  86   2        }while(c != END_RSLT_BYTE);
+  87   1        
+  88   1      }
+  89          
+  90          void serializer_clear_serial()
+  91          {
+  92   1        char c = 0;
+  93   1        //UART_send('!');
+  94   1        do
+  95   1        {
+  96   2          serializer_receive(&c);
+  97   2          UART_send(c);
+  98   2        }while(c != END_RSLT_BYTE && c != '*');
+  99   1        
+ 100   1      }
+ 101          
+ 102          /*
+ 103          #############################################################################
+ 104                  Serializer related functions
+ 105          #############################################################################
+ 106          */
+ 107          
+ 108          void serializer_process(OUT_M1* cmd)
+ 109          {
+ 110   1        PTS_2DA pts = {1, 0, 0, 0};
+ 111   1        
+ 112   1        if(cmd->Etat_Mouvement != Mouvement_non)
+ 113   1        {
+ 114   2          if(serializer_state != IDLE)
+ 115   2          {
+ 116   3            // TO DO
+C51 COMPILER V9.52.0.0   SERIALIZER                                                        03/14/2019 17:26:16 PAGE 3   
 
- 117   3              break;
+ 117   3          }else{
  118   3            
- 119   3            case Rot_90G:
- 120   3              serializer_state = ROTATE;
- 121   3              cmd->Etat_Mouvement = Mouvement_non;
- 122   3              break;
- 123   3            
- 124   3            case Rot_180D:
- 125   3              serializer_state = ROTATE;
- 126   3              cmd->Etat_Mouvement = Mouvement_non;
- 127   3              break;
- 128   3            
- 129   3            case Rot_180G:
- 130   3              serializer_state = ROTATE;
- 131   3              cmd->Etat_Mouvement = Mouvement_non;
- 132   3              break;
- 133   3      
- 134   3            case Rot_AngD:
- 135   3              serializer_state = ROTATE;
- 136   3              cmd->Etat_Mouvement = Mouvement_non;
- 137   3              break;
- 138   3      
- 139   3            case Rot_AngG:
- 140   3              serializer_state = ROTATE;
- 141   3              cmd->Etat_Mouvement = Mouvement_non;
- 142   3              break;
- 143   3          }
- 144   2        }
- 145   1        
- 146   1        serializer_state_machine[serializer_state].state_process(&pts);
- 147   1        
- 148   1      }
- 149          
- 150          byte translate(PTS_2DA* pts)
- 151          {
- 152   1        char speed = 10;
- 153   1        
- 154   1        if(pts->speed != 0)
- 155   1        {
- 156   2          speed = pts->speed;
- 157   2        }
- 158   1        
- 159   1        setMotors(pts->x * speed, pts->x * speed);
- 160   1        
- 161   1      }
-*** WARNING C173 IN LINE 161 OF src\serializer.c: missing return-expression
- 162          
- 163          byte rotate(PTS_2DA* pts)
- 164          {
- 165   1        //static int angle_consigne = 0;
- 166   1        char speed = TURN_SPEED;
- 167   1        char sens = 0;
- 168   1        
- 169   1        if(is_processing)
- 170   1        {
- 171   2          // ANGLE CALCULATION : TO DO
- 172   2          /*if()
- 173   2          {
- 174   2            
- 175   2          }*/
- 176   2        }
- 177   1        else{
-C51 COMPILER V9.55   SERIALIZER                                                            03/12/2019 12:31:43 PAGE 4   
+ 119   3            pts.speed = cmd->Vitesse;
+ 120   3            
+ 121   3            switch(cmd->Etat_Mouvement)
+ 122   3            {
+ 123   4              case Avancer:
+ 124   4                serializer_state = TRANSLATE;
+ 125   4                cmd->Etat_Mouvement = Mouvement_non;
+ 126   4                break;
+ 127   4              
+ 128   4              case Reculer:
+ 129   4                serializer_state = TRANSLATE;
+ 130   4                cmd->Etat_Mouvement = Mouvement_non;
+ 131   4                break;
+ 132   4              
+ 133   4              case Stopper:
+ 134   4                serializer_state = IDLE;
+ 135   4                cmd->Etat_Mouvement = Mouvement_non;
+ 136   4                break;
+ 137   4      
+ 138   4              case Rot_90D:
+ 139   4                serializer_state = ROTATE;
+ 140   4                cmd->Etat_Mouvement = Mouvement_non;
+ 141   4                break;
+ 142   4              
+ 143   4              case Rot_90G:
+ 144   4                serializer_state = ROTATE;
+ 145   4                cmd->Etat_Mouvement = Mouvement_non;
+ 146   4                break;
+ 147   4              
+ 148   4              case Rot_180D:
+ 149   4                serializer_state = ROTATE;
+ 150   4                cmd->Etat_Mouvement = Mouvement_non;
+ 151   4                break;
+ 152   4              
+ 153   4              case Rot_180G:
+ 154   4                serializer_state = ROTATE;
+ 155   4                cmd->Etat_Mouvement = Mouvement_non;
+ 156   4                break;
+ 157   4      
+ 158   4              case Rot_AngD:
+ 159   4                serializer_state = ROTATE;
+ 160   4                cmd->Etat_Mouvement = Mouvement_non;
+ 161   4                break;
+ 162   4      
+ 163   4              case Rot_AngG:
+ 164   4                serializer_state = ROTATE;
+ 165   4                cmd->Etat_Mouvement = Mouvement_non;
+ 166   4                break;
+ 167   4            }
+ 168   3              //serializer_state_machine[serializer_state].state_process(&pts);
+ 169   3            
+ 170   3            if(serializer_state == TRANSLATE)
+ 171   3            {       
+ 172   4              translate(&pts);
+ 173   4              serializer_state = IDLE;
+ 174   4            }
+ 175   3            else//(serializer_state = ROTATE)
+ 176   3            {
+ 177   4              rotate(&pts);
+ 178   4            }
+C51 COMPILER V9.52.0.0   SERIALIZER                                                        03/14/2019 17:26:16 PAGE 4   
 
- 178   2          sens = (pts->angle >= 0 ? 1 : -1 );
- 179   2          setMotors((-1) * sens * speed, sens * speed);
- 180   2        }
- 181   1      }
-*** WARNING C173 IN LINE 181 OF src\serializer.c: missing return-expression
- 182          
- 183          void setMotors(int mtr_speed_1, int mtr_speed_2)
- 184          {
- 185   1        char cmd[MOGO_CMD_SIZE] = "mogo 1:";
+ 179   3          }
+ 180   2          
+ 181   2        }else{
+ 182   2          serializer_state = IDLE;
+ 183   2        }
+ 184   1        
+ 185   1        
  186   1        
- 187   1        sprintf(cmd, "mogo 1:%u 2:%u\n", mtr_speed_1, mtr_speed_2);
- 188   1      
- 189   1        serializer_print(cmd);
- 190   1        
- 191   1        serializer_clear_serial();
- 192   1      }
- 193          
- 194          void stopMotors()
- 195          {
- 196   1        serializer_print("stop\n");
- 197   1        serializer_clear_serial();
- 198   1      }
- 199          
- 200          int getRawEncoders(ENCODER_ID encoder_id)
- 201          {
- 202   1        int enc_value = 0;
- 203   1        char result[ENC_RSLT_SIZE];
- 204   1        char c = 0;
- 205   1        byte ptr = 0;
- 206   1        
- 207   1        if(encoder_id == LEFT)
- 208   1        {
- 209   2          serializer_print("getenc 1\n");
- 210   2        }
- 211   1        else{
- 212   2          serializer_print("getenc 2\n");
- 213   2        }
- 214   1        
- 215   1        do
- 216   1        {
- 217   2          serializer_receive(&c);
- 218   2          result[ptr] = c;
- 219   2          ptr++;
- 220   2        }while(c != END_RSLT_BYTE);
- 221   1        
- 222   1        sscanf(result, "%d", &enc_value);
- 223   1        
- 224   1        return enc_value;
- 225   1      }
- 226          
- 227          int getEncoderDistance(ENCODER_ID encoder_id)
- 228          {
- 229   1        int enc_value = 0;
+ 187   1      }
+ 188          
+ 189          byte translate(PTS_2DA* pts)
+ 190          {
+ 191   1        char speed = 10;
+ 192   1        
+ 193   1        if(pts->speed != 0)
+ 194   1        {
+ 195   2          speed = pts->speed;
+ 196   2        }
+ 197   1        
+ 198   1        setMotors(pts->x * speed, pts->x * speed);
+ 199   1        
+ 200   1      }
+*** WARNING C173 IN LINE 200 OF src\serializer.c: missing return-expression
+ 201          
+ 202          byte rotate(PTS_2DA* pts)
+ 203          {
+ 204   1        //static int angle_consigne = 0;
+ 205   1        char speed = TURN_SPEED;
+ 206   1        char sens = 0;
+ 207   1        
+ 208   1        if(is_processing)
+ 209   1        {
+ 210   2          // ANGLE CALCULATION : TO DO
+ 211   2          /*if()
+ 212   2          {
+ 213   2            
+ 214   2          }*/
+ 215   2        }
+ 216   1        else{
+ 217   2          sens = (pts->angle >= 0 ? 1 : -1 );
+ 218   2          setMotors((-1) * sens * speed, sens * speed);
+ 219   2        }
+ 220   1      }
+*** WARNING C173 IN LINE 220 OF src\serializer.c: missing return-expression
+ 221          
+ 222          void setMotors(int mtr_speed_1, int mtr_speed_2)
+ 223          {
+ 224   1        char cmd[MOGO_CMD_SIZE] = "mogo 1:";
+ 225   1        
+ 226   1        //sprintf(cmd, "mogo 1:%u 2:%u\n", mtr_speed_1, mtr_speed_2);
+ 227   1      
+ 228   1        serializer_print("mogo 1:50 2:50");
+ 229   1        //serializer_print(cmd);
  230   1        
- 231   1        enc_value = getRawEncoders(encoder_id);
- 232   1        
- 233   1        return ENC_2_MM(enc_value);
- 234   1      }
- 235          
- 236          int getEncorderAngle()
- 237          {
- 238   1        
-C51 COMPILER V9.55   SERIALIZER                                                            03/12/2019 12:31:43 PAGE 5   
+ 231   1        serializer_clear_serial();
+ 232   1      }
+*** WARNING C280 IN LINE 222 OF src\serializer.c: 'mtr_speed_1': unreferenced local variable
+*** WARNING C280 IN LINE 222 OF src\serializer.c: 'mtr_speed_2': unreferenced local variable
+ 233          
+ 234          void stopMotors()
+ 235          {
+ 236   1        serializer_print("stop\n");
+C51 COMPILER V9.52.0.0   SERIALIZER                                                        03/14/2019 17:26:16 PAGE 5   
 
- 239   1      }
-*** WARNING C290 IN LINE 161 OF src\serializer.c: missing return value
-*** WARNING C290 IN LINE 181 OF src\serializer.c: missing return value
-*** WARNING C290 IN LINE 239 OF src\serializer.c: missing return value
+ 237   1        serializer_clear_serial();
+ 238   1      }
+ 239          
+ 240          int getRawEncoders(ENCODER_ID encoder_id)
+ 241          {
+ 242   1        int enc_value = 0;
+ 243   1        char result[ENC_RSLT_SIZE];
+ 244   1        char c = 0;
+ 245   1        byte ptr = 0;
+ 246   1        
+ 247   1        if(encoder_id == LEFT)
+ 248   1        {
+ 249   2          serializer_print("getenc 1\n");
+ 250   2        }
+ 251   1        else{
+ 252   2          serializer_print("getenc 2\n");
+ 253   2        }
+ 254   1        
+ 255   1        do
+ 256   1        {
+ 257   2          serializer_receive(&c);
+ 258   2          result[ptr] = c;
+ 259   2          ptr++;
+ 260   2        }while(c != END_RSLT_BYTE);
+ 261   1        
+ 262   1        sscanf(result, "%d", &enc_value);
+ 263   1        
+ 264   1        return enc_value;
+ 265   1      }
+ 266          
+ 267          int getEncoderDistance(ENCODER_ID encoder_id)
+ 268          {
+ 269   1        int enc_value = 0;
+ 270   1        
+ 271   1        enc_value = getRawEncoders(encoder_id);
+ 272   1        
+ 273   1        return ENC_2_MM(enc_value);
+ 274   1      }
+ 275          
+ 276          int getEncorderAngle()
+ 277          {
+ 278   1        
+ 279   1      }
+*** WARNING C290 IN LINE 200 OF src\serializer.c: missing return value
+*** WARNING C290 IN LINE 220 OF src\serializer.c: missing return value
+*** WARNING C290 IN LINE 279 OF src\serializer.c: missing return value
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    758    ----
-   CONSTANT SIZE    =     72    ----
-   XDATA SIZE       =     18      56
+   CODE SIZE        =   1379    ----
+   CONSTANT SIZE    =     71    ----
+   XDATA SIZE       =     18      72
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
@@ -273,4 +315,4 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  5 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  7 WARNING(S),  0 ERROR(S)

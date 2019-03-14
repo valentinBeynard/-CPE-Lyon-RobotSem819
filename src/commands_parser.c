@@ -225,7 +225,7 @@ void get_command(PARSER_RESULT* parser_result)
 byte parse(PARSER_RESULT* parser_result)
 {
   // Tableau dans lequel on va ranger : [Nom_Commande][Param1][Valeur1][...]
-  char commands_data[MAX_COMMAND_WORD][ARGS_BUFFER_SIZE] = {'H'};
+  char commands_data[MAX_COMMAND_WORD][ARGS_BUFFER_SIZE];
   // Pointers pour parcourir les différents buffers
   byte data_index = 0, ptr = 0, reading_ptr = 0;
 	byte ret = 0;

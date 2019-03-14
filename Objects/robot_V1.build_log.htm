@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.14.2.1
 Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Valentin BEYNARD, CPE Lyon, LIC=BU3WG-V4SJE-L5XQ4-TS5ZQ-WVZY4-PS1SI
+License Information: Valentin BEYNARD, CPE Lyon, LIC=GM8PD-85TP7-N34JA-E6CIG-62JWP-CILZ6
  
 Tool Versions:
 Toolchain:       PK51 Prof. Developers Kit for SiLabs  Version: 9.55
@@ -16,10 +16,13 @@ Linker/Locator:  BL51.exe V6.22
 Library Manager: LIB51.exe V4.30.1.0
 Hex Converter:   OH51.exe V2.7.0.0
 CPU DLL:         S8051.DLL V3.101.0.0
-Dialog DLL:      DCYG.DLL V2.73.0.0 
+Dialog DLL:      DCYG.DLL V2.73.0.0
+Target DLL:      SiC8051F.dll V4.3.0.0
+Dialog DLL:      TCYG.DLL V2.70
+ 
 <h2>Project:</h2>
-F:\Mes Documents\GitHub\-CPE-Lyon-RobotSem819\robot_V1.uvproj
-Project File Date:  03/11/2019
+C:\Users\BEYNARD\Documents\GitHub\-CPE-Lyon-RobotSem819\robot_V1.uvproj
+Project File Date:  03/14/2019
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
@@ -37,11 +40,13 @@ src\commands_parser.c(337): warning C280: 'parser_result': unreferenced local va
 compiling main.c...
 compiling telemetres.c...
 compiling serializer.c...
-src\serializer.c(161): warning C173: missing return-expression
-src\serializer.c(181): warning C173: missing return-expression
-src\serializer.c(161): warning C290: missing return value
-src\serializer.c(181): warning C290: missing return value
-src\serializer.c(239): warning C290: missing return value
+src\serializer.c(205): warning C173: missing return-expression
+src\serializer.c(225): warning C173: missing return-expression
+src\serializer.c(227): warning C280: 'mtr_speed_1': unreferenced local variable
+src\serializer.c(227): warning C280: 'mtr_speed_2': unreferenced local variable
+src\serializer.c(205): warning C290: missing return value
+src\serializer.c(225): warning C290: missing return value
+src\serializer.c(284): warning C290: missing return value
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_READ_COMMAND?COMMANDS_PARSER
@@ -50,16 +55,12 @@ linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?INIT?TELEMETRES
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_TRANSLATE?SERIALIZER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ROTATE?SERIALIZER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?STOPMOTORS?SERIALIZER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_GETENCODERDISTANCE?SERIALIZER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?GETENCORDERANGLE?SERIALIZER
-Program Size: data=27.5 xdata=544 code=9122
+Program Size: data=21.4 xdata=478 code=9317
 ".\Objects\robot_V1" - 0 Error(s), 21 Warning(s).
 </pre>
 </body>

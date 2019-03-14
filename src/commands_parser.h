@@ -11,7 +11,7 @@
 // Nombre de commandes implémentée
 #define NUMBER_OF_COMMAND 27
 
-#define COMMAND_MAX_BYTES 6
+#define COMMAND_MAX_BYTES 12
 #define MAX_PARAM_NUMBER  5
 
 // Byte de stop à la fin de chaque commande, imposé par le CdC

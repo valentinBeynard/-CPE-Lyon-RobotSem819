@@ -57,23 +57,45 @@ void serializer_send(byte ch)
 	SCON1 &= 0xFD;	// Remise à 0 de TI1
 }
 
+void UART_send(byte ch)
+{
+	SBUF0 = ch;
+	while(TI0 == 0){}
+	TI0 = 0;
+}
+
 void serializer_print(char* str)
 {
   byte i = 0;
 	for(i = 0 ; i < strlen(str); i++)
   {
-    serializer_send(*(str+i));
+    UART_send(*(str+i));
+		serializer_send(*(str+i));
   }
+	
+	serializer_send(0x0D);
+}
+
+void serializer_init_serial()
+{
+	char c = 0;
+	do
+	{
+		serializer_receive(&c);
+		UART_send(c);
+	}while(c != END_RSLT_BYTE);
+	
 }
 
 void serializer_clear_serial()
 {
 	char c = 0;
-	
+	//UART_send('!');
 	do
 	{
 		serializer_receive(&c);
-	}while(c != END_RSLT_BYTE);
+		UART_send(c);
+	}while(c != END_RSLT_BYTE && c != '*');
 	
 }
 
@@ -87,63 +109,80 @@ void serializer_process(OUT_M1* cmd)
 {
 	PTS_2DA pts = {1, 0, 0, 0};
 	
-	if(serializer_state != IDLE)
+	if(cmd->Etat_Mouvement != Mouvement_non)
 	{
-		// TO DO
-	}else{
-		
-		pts.speed = cmd->Vitesse;
-		
-		switch(cmd->Etat_Mouvement)
+		if(serializer_state != IDLE)
 		{
-			case Avancer:
-				serializer_state = TRANSLATE;
-				cmd->Etat_Mouvement = Mouvement_non;
-				break;
+			// TO DO
+		}else{
 			
-			case Reculer:
-				serializer_state = TRANSLATE;
-				cmd->Etat_Mouvement = Mouvement_non;
-				break;
+			pts.speed = cmd->Vitesse;
 			
-			case Stopper:
+			switch(cmd->Etat_Mouvement)
+			{
+				case Avancer:
+					serializer_state = TRANSLATE;
+					cmd->Etat_Mouvement = Mouvement_non;
+					break;
+				
+				case Reculer:
+					serializer_state = TRANSLATE;
+					cmd->Etat_Mouvement = Mouvement_non;
+					break;
+				
+				case Stopper:
+					serializer_state = IDLE;
+					cmd->Etat_Mouvement = Mouvement_non;
+					break;
+
+				case Rot_90D:
+					serializer_state = ROTATE;
+					cmd->Etat_Mouvement = Mouvement_non;
+					break;
+				
+				case Rot_90G:
+					serializer_state = ROTATE;
+					cmd->Etat_Mouvement = Mouvement_non;
+					break;
+				
+				case Rot_180D:
+					serializer_state = ROTATE;
+					cmd->Etat_Mouvement = Mouvement_non;
+					break;
+				
+				case Rot_180G:
+					serializer_state = ROTATE;
+					cmd->Etat_Mouvement = Mouvement_non;
+					break;
+
+				case Rot_AngD:
+					serializer_state = ROTATE;
+					cmd->Etat_Mouvement = Mouvement_non;
+					break;
+
+				case Rot_AngG:
+					serializer_state = ROTATE;
+					cmd->Etat_Mouvement = Mouvement_non;
+					break;
+			}
+				//serializer_state_machine[serializer_state].state_process(&pts);
+			
+			if(serializer_state == TRANSLATE)
+			{				
+				translate(&pts);
 				serializer_state = IDLE;
-				cmd->Etat_Mouvement = Mouvement_non;
-				break;
-
-			case Rot_90D:
-				serializer_state = ROTATE;
-				cmd->Etat_Mouvement = Mouvement_non;
-				break;
-			
-			case Rot_90G:
-				serializer_state = ROTATE;
-				cmd->Etat_Mouvement = Mouvement_non;
-				break;
-			
-			case Rot_180D:
-				serializer_state = ROTATE;
-				cmd->Etat_Mouvement = Mouvement_non;
-				break;
-			
-			case Rot_180G:
-				serializer_state = ROTATE;
-				cmd->Etat_Mouvement = Mouvement_non;
-				break;
-
-			case Rot_AngD:
-				serializer_state = ROTATE;
-				cmd->Etat_Mouvement = Mouvement_non;
-				break;
-
-			case Rot_AngG:
-				serializer_state = ROTATE;
-				cmd->Etat_Mouvement = Mouvement_non;
-				break;
+			}
+			else//(serializer_state = ROTATE)
+			{
+				rotate(&pts);
+			}
 		}
+		
+	}else{
+		serializer_state = IDLE;
 	}
 	
-	serializer_state_machine[serializer_state].state_process(&pts);
+	
 	
 }
 
@@ -184,9 +223,10 @@ void setMotors(int mtr_speed_1, int mtr_speed_2)
 {
 	char cmd[MOGO_CMD_SIZE] = "mogo 1:";
 	
-	sprintf(cmd, "mogo 1:%u 2:%u\n", mtr_speed_1, mtr_speed_2);
+	//sprintf(cmd, "mogo 1:%u 2:%u\n", mtr_speed_1, mtr_speed_2);
 
-	serializer_print(cmd);
+	serializer_print("mogo 1:50 2:50");
+	//serializer_print(cmd);
 	
 	serializer_clear_serial();
 }
