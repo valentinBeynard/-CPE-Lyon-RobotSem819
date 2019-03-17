@@ -175,6 +175,7 @@ void serializer_process(OUT_M1* cmd)
 			else//(serializer_state = ROTATE)
 			{
 				rotate(&pts);
+				serializer_state = IDLE;
 			}
 		}
 		

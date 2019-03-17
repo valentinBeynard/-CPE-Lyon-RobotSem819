@@ -1,10 +1,10 @@
-C51 COMPILER V9.52.0.0   SERIALIZER                                                        03/14/2019 17:26:16 PAGE 1   
+C51 COMPILER V9.55   SERIALIZER                                                            03/17/2019 13:26:15 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE SERIALIZER
+C51 COMPILER V9.55, COMPILATION OF MODULE SERIALIZER
 OBJECT MODULE PLACED IN .\Objects\serializer.obj
-COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\serializer.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\
-                    -Listings\serializer.lst) TABS(2) OBJECT(.\Objects\serializer.obj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\serializer.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
+                    -(.\Listings\serializer.lst) TABS(2) OBJECT(.\Objects\serializer.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52          
   53          void serializer_send(byte ch)
   54          {
-C51 COMPILER V9.52.0.0   SERIALIZER                                                        03/14/2019 17:26:16 PAGE 2   
+C51 COMPILER V9.55   SERIALIZER                                                            03/17/2019 13:26:15 PAGE 2   
 
   55   1        SBUF1 = ch;
   56   1        while( (SCON1 & 0x02) == 0){} // Tant que TI1 == 0
@@ -126,7 +126,7 @@ line level    source
  114   2          if(serializer_state != IDLE)
  115   2          {
  116   3            // TO DO
-C51 COMPILER V9.52.0.0   SERIALIZER                                                        03/14/2019 17:26:16 PAGE 3   
+C51 COMPILER V9.55   SERIALIZER                                                            03/17/2019 13:26:15 PAGE 3   
 
  117   3          }else{
  118   3            
@@ -189,125 +189,126 @@ line level    source
  175   3            else//(serializer_state = ROTATE)
  176   3            {
  177   4              rotate(&pts);
- 178   4            }
-C51 COMPILER V9.52.0.0   SERIALIZER                                                        03/14/2019 17:26:16 PAGE 4   
+ 178   4              serializer_state = IDLE;
+C51 COMPILER V9.55   SERIALIZER                                                            03/17/2019 13:26:15 PAGE 4   
 
- 179   3          }
- 180   2          
- 181   2        }else{
- 182   2          serializer_state = IDLE;
- 183   2        }
- 184   1        
+ 179   4            }
+ 180   3          }
+ 181   2          
+ 182   2        }else{
+ 183   2          serializer_state = IDLE;
+ 184   2        }
  185   1        
  186   1        
- 187   1      }
- 188          
- 189          byte translate(PTS_2DA* pts)
- 190          {
- 191   1        char speed = 10;
- 192   1        
- 193   1        if(pts->speed != 0)
- 194   1        {
- 195   2          speed = pts->speed;
- 196   2        }
- 197   1        
- 198   1        setMotors(pts->x * speed, pts->x * speed);
- 199   1        
- 200   1      }
-*** WARNING C173 IN LINE 200 OF src\serializer.c: missing return-expression
- 201          
- 202          byte rotate(PTS_2DA* pts)
- 203          {
- 204   1        //static int angle_consigne = 0;
- 205   1        char speed = TURN_SPEED;
- 206   1        char sens = 0;
- 207   1        
- 208   1        if(is_processing)
- 209   1        {
- 210   2          // ANGLE CALCULATION : TO DO
- 211   2          /*if()
- 212   2          {
- 213   2            
- 214   2          }*/
- 215   2        }
- 216   1        else{
- 217   2          sens = (pts->angle >= 0 ? 1 : -1 );
- 218   2          setMotors((-1) * sens * speed, sens * speed);
- 219   2        }
- 220   1      }
-*** WARNING C173 IN LINE 220 OF src\serializer.c: missing return-expression
- 221          
- 222          void setMotors(int mtr_speed_1, int mtr_speed_2)
- 223          {
- 224   1        char cmd[MOGO_CMD_SIZE] = "mogo 1:";
- 225   1        
- 226   1        //sprintf(cmd, "mogo 1:%u 2:%u\n", mtr_speed_1, mtr_speed_2);
- 227   1      
- 228   1        serializer_print("mogo 1:50 2:50");
- 229   1        //serializer_print(cmd);
- 230   1        
- 231   1        serializer_clear_serial();
- 232   1      }
-*** WARNING C280 IN LINE 222 OF src\serializer.c: 'mtr_speed_1': unreferenced local variable
-*** WARNING C280 IN LINE 222 OF src\serializer.c: 'mtr_speed_2': unreferenced local variable
- 233          
- 234          void stopMotors()
- 235          {
- 236   1        serializer_print("stop\n");
-C51 COMPILER V9.52.0.0   SERIALIZER                                                        03/14/2019 17:26:16 PAGE 5   
+ 187   1        
+ 188   1      }
+ 189          
+ 190          byte translate(PTS_2DA* pts)
+ 191          {
+ 192   1        char speed = 10;
+ 193   1        
+ 194   1        if(pts->speed != 0)
+ 195   1        {
+ 196   2          speed = pts->speed;
+ 197   2        }
+ 198   1        
+ 199   1        setMotors(pts->x * speed, pts->x * speed);
+ 200   1        
+ 201   1      }
+*** WARNING C173 IN LINE 201 OF src\serializer.c: missing return-expression
+ 202          
+ 203          byte rotate(PTS_2DA* pts)
+ 204          {
+ 205   1        //static int angle_consigne = 0;
+ 206   1        char speed = TURN_SPEED;
+ 207   1        char sens = 0;
+ 208   1        
+ 209   1        if(is_processing)
+ 210   1        {
+ 211   2          // ANGLE CALCULATION : TO DO
+ 212   2          /*if()
+ 213   2          {
+ 214   2            
+ 215   2          }*/
+ 216   2        }
+ 217   1        else{
+ 218   2          sens = (pts->angle >= 0 ? 1 : -1 );
+ 219   2          setMotors((-1) * sens * speed, sens * speed);
+ 220   2        }
+ 221   1      }
+*** WARNING C173 IN LINE 221 OF src\serializer.c: missing return-expression
+ 222          
+ 223          void setMotors(int mtr_speed_1, int mtr_speed_2)
+ 224          {
+ 225   1        char cmd[MOGO_CMD_SIZE] = "mogo 1:";
+ 226   1        
+ 227   1        //sprintf(cmd, "mogo 1:%u 2:%u\n", mtr_speed_1, mtr_speed_2);
+ 228   1      
+ 229   1        serializer_print("mogo 1:50 2:50");
+ 230   1        //serializer_print(cmd);
+ 231   1        
+ 232   1        serializer_clear_serial();
+ 233   1      }
+*** WARNING C280 IN LINE 223 OF src\serializer.c: 'mtr_speed_1': unreferenced local variable
+*** WARNING C280 IN LINE 223 OF src\serializer.c: 'mtr_speed_2': unreferenced local variable
+ 234          
+ 235          void stopMotors()
+ 236          {
+C51 COMPILER V9.55   SERIALIZER                                                            03/17/2019 13:26:15 PAGE 5   
 
- 237   1        serializer_clear_serial();
- 238   1      }
- 239          
- 240          int getRawEncoders(ENCODER_ID encoder_id)
- 241          {
- 242   1        int enc_value = 0;
- 243   1        char result[ENC_RSLT_SIZE];
- 244   1        char c = 0;
- 245   1        byte ptr = 0;
- 246   1        
- 247   1        if(encoder_id == LEFT)
- 248   1        {
- 249   2          serializer_print("getenc 1\n");
- 250   2        }
- 251   1        else{
- 252   2          serializer_print("getenc 2\n");
- 253   2        }
- 254   1        
- 255   1        do
- 256   1        {
- 257   2          serializer_receive(&c);
- 258   2          result[ptr] = c;
- 259   2          ptr++;
- 260   2        }while(c != END_RSLT_BYTE);
- 261   1        
- 262   1        sscanf(result, "%d", &enc_value);
- 263   1        
- 264   1        return enc_value;
- 265   1      }
- 266          
- 267          int getEncoderDistance(ENCODER_ID encoder_id)
- 268          {
- 269   1        int enc_value = 0;
- 270   1        
- 271   1        enc_value = getRawEncoders(encoder_id);
- 272   1        
- 273   1        return ENC_2_MM(enc_value);
- 274   1      }
- 275          
- 276          int getEncorderAngle()
- 277          {
- 278   1        
- 279   1      }
-*** WARNING C290 IN LINE 200 OF src\serializer.c: missing return value
-*** WARNING C290 IN LINE 220 OF src\serializer.c: missing return value
-*** WARNING C290 IN LINE 279 OF src\serializer.c: missing return value
+ 237   1        serializer_print("stop\n");
+ 238   1        serializer_clear_serial();
+ 239   1      }
+ 240          
+ 241          int getRawEncoders(ENCODER_ID encoder_id)
+ 242          {
+ 243   1        int enc_value = 0;
+ 244   1        char result[ENC_RSLT_SIZE];
+ 245   1        char c = 0;
+ 246   1        byte ptr = 0;
+ 247   1        
+ 248   1        if(encoder_id == LEFT)
+ 249   1        {
+ 250   2          serializer_print("getenc 1\n");
+ 251   2        }
+ 252   1        else{
+ 253   2          serializer_print("getenc 2\n");
+ 254   2        }
+ 255   1        
+ 256   1        do
+ 257   1        {
+ 258   2          serializer_receive(&c);
+ 259   2          result[ptr] = c;
+ 260   2          ptr++;
+ 261   2        }while(c != END_RSLT_BYTE);
+ 262   1        
+ 263   1        sscanf(result, "%d", &enc_value);
+ 264   1        
+ 265   1        return enc_value;
+ 266   1      }
+ 267          
+ 268          int getEncoderDistance(ENCODER_ID encoder_id)
+ 269          {
+ 270   1        int enc_value = 0;
+ 271   1        
+ 272   1        enc_value = getRawEncoders(encoder_id);
+ 273   1        
+ 274   1        return ENC_2_MM(enc_value);
+ 275   1      }
+ 276          
+ 277          int getEncorderAngle()
+ 278          {
+ 279   1        
+ 280   1      }
+*** WARNING C290 IN LINE 201 OF src\serializer.c: missing return value
+*** WARNING C290 IN LINE 221 OF src\serializer.c: missing return value
+*** WARNING C290 IN LINE 280 OF src\serializer.c: missing return value
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1379    ----
+   CODE SIZE        =    780    ----
    CONSTANT SIZE    =     71    ----
-   XDATA SIZE       =     18      72
+   XDATA SIZE       =     18      57
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

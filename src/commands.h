@@ -15,10 +15,10 @@ typedef char signed_byte;
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 
 // Taille max du buffer pour un seul mot de commande/argument
-#define ARGS_BUFFER_SIZE  32
+#define ARGS_BUFFER_SIZE  20
 
 // Nombre max de mots composants une commande que l'on peut récupérer avec le buffer lors du parse
-#define MAX_COMMAND_WORD  3
+#define MAX_COMMAND_WORD  10
 
 
 ///*****************************************************************************************************************************************
@@ -135,7 +135,7 @@ typedef struct INFORMATIONS       // Cette structure contient toutes les informa
 
 typedef struct
 {
-	char** commands_data;
+	char* commands_data;
 	byte cmd_size;
 	OUT_M1* commands;
 }CMD_PACKET;

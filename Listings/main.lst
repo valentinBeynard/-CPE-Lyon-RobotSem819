@@ -1,10 +1,10 @@
-C51 COMPILER V9.52.0.0   MAIN                                                              03/14/2019 17:26:15 PAGE 1   
+C51 COMPILER V9.55   MAIN                                                                  03/17/2019 13:26:14 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
+C51 COMPILER V9.55, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN .\Objects\main.obj
-COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\main.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listin
-                    -gs\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\main.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Lis
+                    -tings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
 
 line level    source
 
@@ -44,7 +44,7 @@ line level    source
   34          
   35          int main (void)
   36          {
-  37   1        /*
+  37   1        
   38   1        OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
   39   1                            Mouvement_non,  // Etat mouvement
   40   1                            0,  //  Vitesse
@@ -62,7 +62,7 @@ line level    source
   52   1                            0,  // Nombre de cycles d'allumage
   53   1                            Servo_non,  // Commande de position du servo
   54   1                            0,  // Paramètre angle
-C51 COMPILER V9.52.0.0   MAIN                                                              03/14/2019 17:26:15 PAGE 2   
+C51 COMPILER V9.55   MAIN                                                                  03/17/2019 13:26:14 PAGE 2   
 
   55   1                            Energie_non,  // Commande relevée courant
   56   1                            Position_non, // Commande de gestion de position
@@ -72,100 +72,75 @@ line level    source
   60   1                            Photo_non,  // Commande de prise de phot
   61   1                            0,  // Temps entre deux photo
   62   1                            0 // Nbr de photo
-  63   1                            };*/
+  63   1                            };
   64   1      
-  65   1        PARSER_RESULT parser_result = {
-  66   1          
-  67   1      
-  68   1                            1 ,
-  69   1          
-  70   1                            {Epreuve_non, // Numéro Epreuve
-  71   1                            Mouvement_non,  // Etat mouvement
-  72   1                            0,  //  Vitesse
-  73   1                            0,  // Coord_X
-  74   1                            0,  // Coord_Y
-  75   1                            0,  // Angle
-  76   1                            ACQ_non,  // Commande d'acquisition du son
-  77   1                            0,  // Durée d'acquisition
-  78   1                            DCT_non,  // Commande de détection d'obstacle
-  79   1                            0,  // Résolution angulaire de la détection d'obstacle
-  80   1                            Lumiere_non,  // Commande d'allumage du pointeur lumineux
-  81   1                            0,  //Intensitée lumineuse
-  82   1                            0,  // Durée d'allumage
-  83   1                            0,  // Durée d'extinction
-  84   1                            0,  // Nombre de cycles d'allumage
-  85   1                            Servo_non,  // Commande de position du servo
-  86   1                            0,  // Paramètre angle
-  87   1                            Energie_non,  // Commande relevée courant
-  88   1                            Position_non, // Commande de gestion de position
-  89   1                            0,  // Coord X de position
-  90   1                            0,  // Coord Y de position
-  91   1                            0,  // Angle
-  92   1                            Photo_non,  // Commande de prise de phot
-  93   1                            0,  // Temps entre deux photo
-  94   1                            0 // Nbr de photo
-  95   1                            }
-  96   1      
-  97   1                    };
-  98   1        
-  99   1        
- 100   1        Reg = 0xDE;   // Dévalidation du watchdog 
- 101   1        Reg = 0xAD;
- 102   1        
- 103   1        // µP candencé sur clk extern à 22 MHz           
- 104   1        Init_External_clk();
- 105   1        
- 106   1        // Initialise l'UART0 et le Timer 2 pour le parser de commandes       
- 107   1        init_parser();
- 108   1          
- 109   1        // Initialise l'UART1 utilisé pour communiquer avec le sérializer
- 110   1        init_serializer_UART1();
- 111   1                    
- 112   1        Init_Crossbar();
- 113   1      
- 114   1        USART_print("Start Routine \n\n");
- 115   1                    
- 116   1        serializer_init_serial();
-C51 COMPILER V9.52.0.0   MAIN                                                              03/14/2019 17:26:15 PAGE 3   
+  65   1        PARSER_RESULT parser_result = {1 , &commands};
+  66   1        
+  67   1        
+  68   1        Reg = 0xDE;   // Dévalidation du watchdog 
+  69   1        Reg = 0xAD;
+  70   1        
+  71   1        // µP candencé sur clk extern à 22 MHz           
+  72   1        Init_External_clk();
+  73   1        
+  74   1        // Initialise l'UART0 et le Timer 2 pour le parser de commandes       
+  75   1        init_parser();
+  76   1          
+  77   1        // Initialise l'UART1 utilisé pour communiquer avec le sérializer
+  78   1        init_serializer_UART1();
+  79   1                    
+  80   1        Init_Crossbar();
+  81   1      
+  82   1        USART_print("Start Routine \n\n");
+  83   1        USART_print("Waiting for Serializer Init Processing... \n\n");
+  84   1                
+  85   1        serializer_init_serial();
+  86   1                    
+  87   1        USART_print("\n\n#############################\n\n>");
+  88   1      
+  89   1        //serializer_print("mogo 1:50 2:50");
+  90   1                  
+  91   1        while(1)
+  92   1        {
+  93   2          
+  94   2          //parser_process(state, &parser_result);
+  95   2          cmd_parser_process(&parser_result);
+  96   2          
+  97   2          if( parser_result.commands.Etat_Epreuve == Stop_Urgence)
+  98   2          {
+  99   3            USART_print("Quit");
+ 100   3            break;
+ 101   3          }
+ 102   2          
+ 103   2          if( parser_result.commands.Etat_Epreuve == epreuve1)
+ 104   2          {
+ 105   3            //USART_print("Epreuve 1 !");
+ 106   3            serializer_process(&(parser_result.commands));
+ 107   3          }
+ 108   2          
+ 109   2          //serializer_send('H');
+ 110   2          //USART_send('A');
+ 111   2          //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
+ 112   2        
+ 113   2          
+ 114   2          //serializer_print("mogo 1:50 2:50\r");
+ 115   2          
+ 116   2        }
+C51 COMPILER V9.55   MAIN                                                                  03/17/2019 13:26:14 PAGE 3   
 
- 117   1                    
- 118   1        USART_print("#############################\n\n");
- 119   1      
- 120   1        //serializer_print("mogo 1:50 2:50");
- 121   1                  
- 122   1        while(1)
- 123   1        {
- 124   2          
- 125   2          //parser_process(state, &parser_result);
- 126   2          cmd_parser_process(&parser_result);
- 127   2          
- 128   2          if( parser_result.commands.Etat_Epreuve == Stop_Urgence)
- 129   2          {
- 130   3            USART_print("Quit");
- 131   3            break;
- 132   3          }
- 133   2          serializer_process(&(parser_result.commands));
- 134   2          //serializer_send('H');
- 135   2          //USART_send('A');
- 136   2          //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
- 137   2        
- 138   2          
- 139   2          //serializer_print("mogo 1:50 2:50\r");
- 140   2          
- 141   2        }
- 142   1        
- 143   1        USART_print("Fin Soft");
- 144   1        
- 145   1        while(1);
- 146   1      }
- 147          
- 148          #endif
+ 117   1        
+ 118   1        USART_print("Fin Soft");
+ 119   1        
+ 120   1        while(1);
+ 121   1      }
+ 122          
+ 123          #endif
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    153    ----
-   CONSTANT SIZE    =     91    ----
-   XDATA SIZE       =   ----      28
+   CODE SIZE        =    167    ----
+   CONSTANT SIZE    =    166    ----
+   XDATA SIZE       =   ----      55
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

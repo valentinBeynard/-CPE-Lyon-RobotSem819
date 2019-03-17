@@ -277,7 +277,7 @@ byte parse(PARSER_RESULT* parser_result)
 	
 	// Préparation du packet
 	
-	cmd_packet.commands_data = &commands_data;
+	cmd_packet.commands_data = commands_data;
 	cmd_packet.cmd_size = data_index;
 	cmd_packet.commands = &(parser_result->commands);
 
@@ -330,6 +330,7 @@ void clear_buffer(char** data_buffer, byte buffer_size)
 	for(i = 0 ; i <= buffer_size; ++i)
 	{
 		memset(*(data_buffer + i), 0 , ARGS_BUFFER_SIZE);
+		memset(data_buffer + i, 0 , 1);
 	}
 	
 }

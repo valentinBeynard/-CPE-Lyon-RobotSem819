@@ -6,6 +6,9 @@
 byte default_process(CMD_PACKET* cmd_packet)
 {
   //printf("Non-implemented command !!");
+	cmd_packet->commands->Etat_Epreuve = (enum Epreuve)1;
+	
+	return 1;
 }
 
 /*
@@ -15,9 +18,7 @@ byte default_process(CMD_PACKET* cmd_packet)
 byte epreuve_cmd(CMD_PACKET* cmd_packet)
 {
   int epreuve_index = 1;
-	int c = 0;
-	char* str;
-	char** str_2;
+
 	// Trop d'argument
 	if(cmd_packet->cmd_size > 1)
 	{
@@ -28,10 +29,7 @@ byte epreuve_cmd(CMD_PACKET* cmd_packet)
   if(cmd_packet->cmd_size == 1)
   {
     // Si valeur non numérique
-		str = (cmd_packet->commands_data + 1);
-		str_2 = (cmd_packet->commands_data + 1);
-		c = sscanf(str, "%d", &epreuve_index);
-		if(c != 1)
+		if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%u", &epreuve_index) != 1)
 		{
 			return 0;
 		}
@@ -67,7 +65,7 @@ byte safety_break_cmd(CMD_PACKET* cmd_packet)
 
 byte set_default_speed_cmd(CMD_PACKET* cmd_packet)
 {
-	byte motor_speed = 20;
+	int motor_speed = 20;
 	
 	// Seu la commande TV valeur est acceptée
 	if(cmd_packet->cmd_size != 1)
@@ -76,7 +74,7 @@ byte set_default_speed_cmd(CMD_PACKET* cmd_packet)
 	}
 	
 	// Si valeur non numérique
-	if(sscanf(*(cmd_packet->commands_data + 1), "%d", motor_speed) == 0)
+	if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) != 1)
 	{
 		return 0;
 	}
@@ -94,7 +92,7 @@ byte set_default_speed_cmd(CMD_PACKET* cmd_packet)
 
 byte move_forward_cmd(CMD_PACKET* cmd_packet)
 {
-	byte motor_speed = 20;
+	int motor_speed = 20;
 	
 	if(cmd_packet->cmd_size > 1)
 	{
@@ -106,7 +104,7 @@ byte move_forward_cmd(CMD_PACKET* cmd_packet)
 	if(cmd_packet->cmd_size == 1)
 	{
 		// Si valeur non numérique
-		if(sscanf(*(cmd_packet->commands_data + 1), "%d", motor_speed) == 0)
+		if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
 		{
 			return 0;
 		}
@@ -129,7 +127,7 @@ byte move_forward_cmd(CMD_PACKET* cmd_packet)
 
 byte move_backward_cmd(CMD_PACKET* cmd_packet)
 {
-	byte motor_speed = 20;
+	int motor_speed = 20;
 	
 	if(cmd_packet->cmd_size > 1)
 	{
@@ -141,7 +139,7 @@ byte move_backward_cmd(CMD_PACKET* cmd_packet)
 	if(cmd_packet->cmd_size == 1)
 	{
 		// Si valeur non numérique
-		if(sscanf(*(cmd_packet->commands_data + 1), "%d", motor_speed) == 0)
+		if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
 		{
 			return 0;
 		}
@@ -204,10 +202,10 @@ byte complete_rotation_cmd(CMD_PACKET* cmd_packet)
 	if(cmd_packet->cmd_size == 1)
 	{
 		
-		if(strcmp(*(cmd_packet->commands_data + 1), "D") == 0 
-			|| strcmp(*(cmd_packet->commands_data + 1), "G") == 0)
+		if(strcmp((cmd_packet->commands_data + 1), "D") == 0 
+			|| strcmp((cmd_packet->commands_data + 1), "G") == 0)
 		{
-			switch( *(*(cmd_packet->commands_data + 1)) )
+			switch( (*(cmd_packet->commands_data + 1)) )
 			{
 				case 'D':
 					cmd_packet->commands->Etat_Mouvement = Rot_180D;
@@ -235,10 +233,10 @@ byte angle_rotation_cmd(CMD_PACKET* cmd_packet)
 		return 0;
 	}
 	
-	if(strcmp(*(cmd_packet->commands_data + 1), "D") == 0 
-			|| strcmp(*(cmd_packet->commands_data + 1), "G") == 0)
+	if(strcmp((cmd_packet->commands_data + 1), "D") == 0 
+			|| strcmp((cmd_packet->commands_data + 1), "G") == 0)
 	{
-		switch( *(*(cmd_packet->commands_data + 1)) )
+		switch( (*(cmd_packet->commands_data + 1)) )
 		{
 			case 'D':
 				cmd_packet->commands->Etat_Mouvement = Rot_AngD;
@@ -248,7 +246,7 @@ byte angle_rotation_cmd(CMD_PACKET* cmd_packet)
 				break;
 		}
 		
-		if(sscanf(*(cmd_packet->commands_data + 2), "%d", angle) == 0)
+		if(sscanf((cmd_packet->commands_data + (2 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
 		{
 			return 0;
 		}
