@@ -49,6 +49,14 @@ byte epreuve_cmd(CMD_PACKET* cmd_packet)
 	return 1;
 }
 
+byte epreuve_stop(CMD_PACKET* cmd_packet)
+{
+  //printf("Non-implemented command !!");
+	cmd_packet->commands->Etat_Epreuve = Epreuve_non;
+	
+	return 1;
+}
+
 
 byte safety_break_cmd(CMD_PACKET* cmd_packet)
 {
@@ -166,7 +174,7 @@ byte move_stop_cmd(CMD_PACKET* cmd_packet)
 	{
 		return 0;
 	}
-	cmd_packet->commands->Vitesse = Stopper;
+	cmd_packet->commands->Etat_Mouvement = Stopper;
 	return 1;
 }
 

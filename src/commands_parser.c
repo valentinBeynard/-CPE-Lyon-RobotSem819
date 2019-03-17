@@ -23,7 +23,7 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
 	Les noms d'arg possible sont D, G, donc args_label = {"D", "G"}
 	*/
 		{"D", epreuve_cmd},
-    {"E", default_process},
+    {"E", epreuve_stop},
     {"Q", safety_break_cmd},
     {"TV", set_default_speed_cmd},
     {"A", move_forward_cmd},
@@ -304,8 +304,10 @@ byte parse(PARSER_RESULT* parser_result)
     }
   }
 
-	clear_buffer(commands_data, data_index+1);
-	clear_buffer(cmd_packet.commands_data, data_index+1);
+	//clear_buffer(commands_data, data_index+1);
+	memset(commands_data, 0 , MAX_COMMAND_WORD * ARGS_BUFFER_SIZE);
+	memset(cmd_packet.commands_data, 0 , MAX_COMMAND_WORD * ARGS_BUFFER_SIZE);
+	//clear_buffer(cmd_packet.commands_data, data_index+1);
 
   return ret;
 }
@@ -327,11 +329,13 @@ void error_cmd_flag()
 void clear_buffer(char** data_buffer, byte buffer_size)
 {
 	byte i = 0;
+	/*
 	for(i = 0 ; i <= buffer_size; ++i)
 	{
 		memset(*(data_buffer + i), 0 , ARGS_BUFFER_SIZE);
 		memset(data_buffer + i, 0 , 1);
 	}
+	*/
 	
 }
 

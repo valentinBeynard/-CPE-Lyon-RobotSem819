@@ -1,9 +1,9 @@
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 13:26:14 PAGE 1   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 18:14:07 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS_PARSER
 OBJECT MODULE PLACED IN .\Objects\commands_parser.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\commands_parser.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND 
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\commands_parser.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND 
                     -PRINT(.\Listings\commands_parser.lst) TABS(2) OBJECT(.\Objects\commands_parser.obj)
 
 line level    source
@@ -33,7 +33,7 @@ line level    source
   23            Les noms d'arg possible sont D, G, donc args_label = {"D", "G"}
   24            */
   25              {"D", epreuve_cmd},
-  26              {"E", default_process},
+  26              {"E", epreuve_stop},
   27              {"Q", safety_break_cmd},
   28              {"TV", set_default_speed_cmd},
   29              {"A", move_forward_cmd},
@@ -62,7 +62,7 @@ line level    source
   52          };
   53          
   54          /*
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 13:26:14 PAGE 2   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 18:14:07 PAGE 2   
 
   55              FULL STATE MACHINE
   56          
@@ -126,7 +126,7 @@ line level    source
  114   1        {
  115   2          *read_byte = SBUF0;
  116   2          RI0 = 0;
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 13:26:14 PAGE 3   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 18:14:07 PAGE 3   
 
  117   2        }else{
  118   2          *read_byte = '*';
@@ -190,7 +190,7 @@ line level    source
  176   1        //wait(result);
  177   1      }
  178          
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 13:26:14 PAGE 4   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 18:14:07 PAGE 4   
 
  179          void wait(PARSER_RESULT* parser_result)
  180          {
@@ -254,7 +254,7 @@ line level    source
  237   1        char* v = 0;*/
  238   1      
  239   1        CMD_PACKET cmd_packet;
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 13:26:14 PAGE 5   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 18:14:07 PAGE 5   
 
  240   1      
  241   1        // Dispatches commands and arguments in commands_data buffer
@@ -318,7 +318,7 @@ line level    source
  298   3            /*
  299   3            USART_print("Find Command : ");
  300   3            USART_print(dispatch_table[i].name);
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 13:26:14 PAGE 6   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 18:14:07 PAGE 6   
 
  301   3            USART_send('\n');
  302   3            */
@@ -326,64 +326,68 @@ line level    source
  304   3          }
  305   2        }
  306   1      
- 307   1        clear_buffer(commands_data, data_index+1);
-*** WARNING C182 IN LINE 307 OF src\commands_parser.c: pointer to different objects
- 308   1        clear_buffer(cmd_packet.commands_data, data_index+1);
-*** WARNING C182 IN LINE 308 OF src\commands_parser.c: pointer to different objects
- 309   1      
- 310   1        return ret;
- 311   1      }
- 312          
- 313          void valid_cmd_flag()
- 314          {
- 315   1        USART_send(0x0D);
- 316   1        USART_send(0x0A);
- 317   1        USART_send(COMMAND_CONFIRM_BYTE);
- 318   1      }
- 319          
- 320          void error_cmd_flag()
- 321          {
- 322   1        USART_send(0x0D);
- 323   1        USART_send(0x0A);
- 324   1        USART_send(COMMAND_ERROR_BYTE); 
- 325   1      }
- 326          
- 327          void clear_buffer(char** data_buffer, byte buffer_size)
- 328          {
- 329   1        byte i = 0;
- 330   1        for(i = 0 ; i <= buffer_size; ++i)
- 331   1        {
- 332   2          memset(*(data_buffer + i), 0 , ARGS_BUFFER_SIZE);
- 333   2          memset(data_buffer + i, 0 , 1);
- 334   2        }
- 335   1        
- 336   1      }
- 337          
- 338          void read_command(PARSER_RESULT* parser_result)
- 339          {
- 340   1          // Nothing TODO
- 341   1      }
-*** WARNING C280 IN LINE 338 OF src\commands_parser.c: 'parser_result': unreferenced local variable
- 342          
- 343          /*
- 344          char encode_data()
- 345          {
+ 307   1        //clear_buffer(commands_data, data_index+1);
+ 308   1        memset(commands_data, 0 , MAX_COMMAND_WORD * ARGS_BUFFER_SIZE);
+ 309   1        memset(cmd_packet.commands_data, 0 , MAX_COMMAND_WORD * ARGS_BUFFER_SIZE);
+ 310   1        //clear_buffer(cmd_packet.commands_data, data_index+1);
+ 311   1      
+ 312   1        return ret;
+ 313   1      }
+ 314          
+ 315          void valid_cmd_flag()
+ 316          {
+ 317   1        USART_send(0x0D);
+ 318   1        USART_send(0x0A);
+ 319   1        USART_send(COMMAND_CONFIRM_BYTE);
+ 320   1      }
+ 321          
+ 322          void error_cmd_flag()
+ 323          {
+ 324   1        USART_send(0x0D);
+ 325   1        USART_send(0x0A);
+ 326   1        USART_send(COMMAND_ERROR_BYTE); 
+ 327   1      }
+ 328          
+ 329          void clear_buffer(char** data_buffer, byte buffer_size)
+ 330          {
+ 331   1        byte i = 0;
+ 332   1        /*
+ 333   1        for(i = 0 ; i <= buffer_size; ++i)
+ 334   1        {
+ 335   1          memset(*(data_buffer + i), 0 , ARGS_BUFFER_SIZE);
+ 336   1          memset(data_buffer + i, 0 , 1);
+ 337   1        }
+ 338   1        */
+ 339   1        
+ 340   1      }
+*** WARNING C280 IN LINE 329 OF src\commands_parser.c: 'data_buffer': unreferenced local variable
+*** WARNING C280 IN LINE 329 OF src\commands_parser.c: 'buffer_size': unreferenced local variable
+ 341          
+ 342          void read_command(PARSER_RESULT* parser_result)
+ 343          {
+ 344   1          // Nothing TODO
+ 345   1      }
+*** WARNING C280 IN LINE 342 OF src\commands_parser.c: 'parser_result': unreferenced local variable
  346          
- 347          
- 348          }*/
+ 347          /*
+ 348          char encode_data()
+ 349          {
+ 350          
+ 351          
+ 352          }*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    915    ----
+   CODE SIZE        =   1105    ----
    CONSTANT SIZE    =     98    ----
-   XDATA SIZE       =    276     235
+   XDATA SIZE       =    276     243
    PDATA SIZE       =   ----    ----
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 18:14:07 PAGE 7   
+
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
-
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/17/2019 13:26:14 PAGE 7   
 
 
 C51 COMPILATION COMPLETE.  5 WARNING(S),  0 ERROR(S)

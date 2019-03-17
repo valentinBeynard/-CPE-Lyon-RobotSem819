@@ -105,6 +105,9 @@ int main (void)
       //USART_print("Epreuve 1 !");
 			serializer_process(&(parser_result.commands));
     }
+		else{
+			parser_result.commands.Etat_Mouvement = Mouvement_non;
+		}
 		
 		//serializer_send('H');
     //USART_send('A');

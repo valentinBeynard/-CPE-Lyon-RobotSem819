@@ -155,6 +155,7 @@ byte default_process(CMD_PACKET* cmd_packet);
   Si aucun paramètre rentré, alors on démarre à l'épreuve 1
 */
 byte epreuve_cmd(CMD_PACKET* cmd_packet);
+byte epreuve_stop(CMD_PACKET* cmd_packet);
 
 byte safety_break_cmd(CMD_PACKET* cmd_packet);
 byte set_default_speed_cmd(CMD_PACKET* cmd_packet);

@@ -1,9 +1,9 @@
-C51 COMPILER V9.55   COMMANDS                                                              03/17/2019 13:26:14 PAGE 1   
+C51 COMPILER V9.55   COMMANDS                                                              03/17/2019 18:14:07 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS
 OBJECT MODULE PLACED IN .\Objects\commands.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\commands.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\commands.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.
                     -\Listings\commands.lst) TABS(2) OBJECT(.\Objects\commands.obj)
 
 line level    source
@@ -59,228 +59,236 @@ line level    source
   49   1        return 1;
   50   1      }
   51          
-  52          
-  53          byte safety_break_cmd(CMD_PACKET* cmd_packet)
-  54          {
-C51 COMPILER V9.55   COMMANDS                                                              03/17/2019 13:26:14 PAGE 2   
+  52          byte epreuve_stop(CMD_PACKET* cmd_packet)
+  53          {
+  54   1        //printf("Non-implemented command !!");
+C51 COMPILER V9.55   COMMANDS                                                              03/17/2019 18:14:07 PAGE 2   
 
-  55   1        // Trop d'argument
-  56   1        if(cmd_packet->cmd_size > 0)
-  57   1        {
-  58   2          return 0;
-  59   2        }
-  60   1      
-  61   1        cmd_packet->commands->Etat_Epreuve = Stop_Urgence;
-  62   1        
-  63   1        return 1;
-  64   1      }
-  65          
-  66          byte set_default_speed_cmd(CMD_PACKET* cmd_packet)
-  67          {
-  68   1        int motor_speed = 20;
-  69   1        
-  70   1        // Seu la commande TV valeur est acceptée
-  71   1        if(cmd_packet->cmd_size != 1)
-  72   1        {
-  73   2          return 0;
-  74   2        }
-  75   1        
-  76   1        // Si valeur non numérique
-  77   1        if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) != 1)
-  78   1        {
-  79   2          return 0;
-  80   2        }
-  81   1        
-  82   1        // Si pas dans l'intervalle de valeur acceptées
-  83   1        if(motor_speed < 0 || motor_speed > 100)
-  84   1        {
-  85   2          return 0;
-  86   2        }
-  87   1        
-  88   1        cmd_packet->commands->Vitesse = motor_speed;
-  89   1      
-  90   1        return 1;
-  91   1      }
-  92          
-  93          byte move_forward_cmd(CMD_PACKET* cmd_packet)
-  94          {
-  95   1        int motor_speed = 20;
-  96   1        
-  97   1        if(cmd_packet->cmd_size > 1)
-  98   1        {
-  99   2          return 0;
- 100   2        }
- 101   1          
- 102   1        cmd_packet->commands->Etat_Mouvement = Avancer;
- 103   1      
- 104   1        if(cmd_packet->cmd_size == 1)
- 105   1        {
- 106   2          // Si valeur non numérique
- 107   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
- 108   2          {
- 109   3            return 0;
- 110   3          }
- 111   2          
- 112   2          // Si pas dans l'intervalle de valeur acceptées
- 113   2          if(motor_speed < 0 || motor_speed > 100)
- 114   2          {
- 115   3            return 0;
- 116   3          }
-C51 COMPILER V9.55   COMMANDS                                                              03/17/2019 13:26:14 PAGE 3   
+  55   1        cmd_packet->commands->Etat_Epreuve = Epreuve_non;
+  56   1        
+  57   1        return 1;
+  58   1      }
+  59          
+  60          
+  61          byte safety_break_cmd(CMD_PACKET* cmd_packet)
+  62          {
+  63   1        // Trop d'argument
+  64   1        if(cmd_packet->cmd_size > 0)
+  65   1        {
+  66   2          return 0;
+  67   2        }
+  68   1      
+  69   1        cmd_packet->commands->Etat_Epreuve = Stop_Urgence;
+  70   1        
+  71   1        return 1;
+  72   1      }
+  73          
+  74          byte set_default_speed_cmd(CMD_PACKET* cmd_packet)
+  75          {
+  76   1        int motor_speed = 20;
+  77   1        
+  78   1        // Seu la commande TV valeur est acceptée
+  79   1        if(cmd_packet->cmd_size != 1)
+  80   1        {
+  81   2          return 0;
+  82   2        }
+  83   1        
+  84   1        // Si valeur non numérique
+  85   1        if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) != 1)
+  86   1        {
+  87   2          return 0;
+  88   2        }
+  89   1        
+  90   1        // Si pas dans l'intervalle de valeur acceptées
+  91   1        if(motor_speed < 0 || motor_speed > 100)
+  92   1        {
+  93   2          return 0;
+  94   2        }
+  95   1        
+  96   1        cmd_packet->commands->Vitesse = motor_speed;
+  97   1      
+  98   1        return 1;
+  99   1      }
+ 100          
+ 101          byte move_forward_cmd(CMD_PACKET* cmd_packet)
+ 102          {
+ 103   1        int motor_speed = 20;
+ 104   1        
+ 105   1        if(cmd_packet->cmd_size > 1)
+ 106   1        {
+ 107   2          return 0;
+ 108   2        }
+ 109   1          
+ 110   1        cmd_packet->commands->Etat_Mouvement = Avancer;
+ 111   1      
+ 112   1        if(cmd_packet->cmd_size == 1)
+ 113   1        {
+ 114   2          // Si valeur non numérique
+ 115   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
+ 116   2          {
+C51 COMPILER V9.55   COMMANDS                                                              03/17/2019 18:14:07 PAGE 3   
 
- 117   2          
- 118   2          cmd_packet->commands->Vitesse = motor_speed;
- 119   2        }else{
- 120   2          if(cmd_packet->commands->Vitesse == 0)
- 121   2          {
- 122   3            cmd_packet->commands->Vitesse = motor_speed;
- 123   3          }
- 124   2        }
- 125   1        return 1;
- 126   1      }
- 127          
- 128          byte move_backward_cmd(CMD_PACKET* cmd_packet)
- 129          {
- 130   1        int motor_speed = 20;
- 131   1        
- 132   1        if(cmd_packet->cmd_size > 1)
- 133   1        {
- 134   2          return 0;
- 135   2        }
- 136   1          
- 137   1        cmd_packet->commands->Etat_Mouvement = Reculer;
- 138   1      
- 139   1        if(cmd_packet->cmd_size == 1)
- 140   1        {
- 141   2          // Si valeur non numérique
- 142   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
- 143   2          {
- 144   3            return 0;
- 145   3          }
- 146   2          
- 147   2          // Si pas dans l'intervalle de valeur acceptées
- 148   2          if(motor_speed < 0 || motor_speed > 100)
- 149   2          {
- 150   3            return 0;
- 151   3          }
- 152   2          
- 153   2          cmd_packet->commands->Vitesse = motor_speed;
- 154   2        }else{
- 155   2          if(cmd_packet->commands->Vitesse == 0)
- 156   2          {
- 157   3            cmd_packet->commands->Vitesse = motor_speed;
- 158   3          }
- 159   2        }
- 160   1        return 1;
- 161   1      }
- 162          
- 163          byte move_stop_cmd(CMD_PACKET* cmd_packet)
- 164          { 
- 165   1        if(cmd_packet->cmd_size != 0)
- 166   1        {
- 167   2          return 0;
- 168   2        }
- 169   1        cmd_packet->commands->Vitesse = Stopper;
- 170   1        return 1;
- 171   1      }
- 172          
- 173          byte rigth_rotation_cmd(CMD_PACKET* cmd_packet)
- 174          {
- 175   1        if(cmd_packet->cmd_size != 0)
- 176   1        {
- 177   2          return 0;
- 178   2        }
-C51 COMPILER V9.55   COMMANDS                                                              03/17/2019 13:26:14 PAGE 4   
+ 117   3            return 0;
+ 118   3          }
+ 119   2          
+ 120   2          // Si pas dans l'intervalle de valeur acceptées
+ 121   2          if(motor_speed < 0 || motor_speed > 100)
+ 122   2          {
+ 123   3            return 0;
+ 124   3          }
+ 125   2          
+ 126   2          cmd_packet->commands->Vitesse = motor_speed;
+ 127   2        }else{
+ 128   2          if(cmd_packet->commands->Vitesse == 0)
+ 129   2          {
+ 130   3            cmd_packet->commands->Vitesse = motor_speed;
+ 131   3          }
+ 132   2        }
+ 133   1        return 1;
+ 134   1      }
+ 135          
+ 136          byte move_backward_cmd(CMD_PACKET* cmd_packet)
+ 137          {
+ 138   1        int motor_speed = 20;
+ 139   1        
+ 140   1        if(cmd_packet->cmd_size > 1)
+ 141   1        {
+ 142   2          return 0;
+ 143   2        }
+ 144   1          
+ 145   1        cmd_packet->commands->Etat_Mouvement = Reculer;
+ 146   1      
+ 147   1        if(cmd_packet->cmd_size == 1)
+ 148   1        {
+ 149   2          // Si valeur non numérique
+ 150   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
+ 151   2          {
+ 152   3            return 0;
+ 153   3          }
+ 154   2          
+ 155   2          // Si pas dans l'intervalle de valeur acceptées
+ 156   2          if(motor_speed < 0 || motor_speed > 100)
+ 157   2          {
+ 158   3            return 0;
+ 159   3          }
+ 160   2          
+ 161   2          cmd_packet->commands->Vitesse = motor_speed;
+ 162   2        }else{
+ 163   2          if(cmd_packet->commands->Vitesse == 0)
+ 164   2          {
+ 165   3            cmd_packet->commands->Vitesse = motor_speed;
+ 166   3          }
+ 167   2        }
+ 168   1        return 1;
+ 169   1      }
+ 170          
+ 171          byte move_stop_cmd(CMD_PACKET* cmd_packet)
+ 172          { 
+ 173   1        if(cmd_packet->cmd_size != 0)
+ 174   1        {
+ 175   2          return 0;
+ 176   2        }
+ 177   1        cmd_packet->commands->Etat_Mouvement = Stopper;
+ 178   1        return 1;
+C51 COMPILER V9.55   COMMANDS                                                              03/17/2019 18:14:07 PAGE 4   
 
- 179   1        
- 180   1        cmd_packet->commands->Etat_Mouvement = Rot_90D;
- 181   1        return 1;
- 182   1      }
- 183          
- 184          byte left_rotation_cmd(CMD_PACKET* cmd_packet)
- 185          {
- 186   1        if(cmd_packet->cmd_size != 0)
- 187   1        {
- 188   2          return 0;
- 189   2        }
- 190   1        
- 191   1        cmd_packet->commands->Etat_Mouvement = Rot_90G;
- 192   1        return 1;
- 193   1      }
- 194          
- 195          byte complete_rotation_cmd(CMD_PACKET* cmd_packet)
- 196          {
- 197   1        if(cmd_packet->cmd_size > 1)
- 198   1        {
- 199   2          return 0;
- 200   2        }
- 201   1      
- 202   1        if(cmd_packet->cmd_size == 1)
- 203   1        {
- 204   2          
- 205   2          if(strcmp((cmd_packet->commands_data + 1), "D") == 0 
- 206   2            || strcmp((cmd_packet->commands_data + 1), "G") == 0)
- 207   2          {
- 208   3            switch( (*(cmd_packet->commands_data + 1)) )
- 209   3            {
- 210   4              case 'D':
- 211   4                cmd_packet->commands->Etat_Mouvement = Rot_180D;
- 212   4                break;
- 213   4              default :
- 214   4                cmd_packet->commands->Etat_Mouvement = Rot_180G;
- 215   4                break;
- 216   4            }
- 217   3          }else{
- 218   3            return 0;
- 219   3          }
- 220   2      
- 221   2        }else{
- 222   2          cmd_packet->commands->Etat_Mouvement = Rot_180D;
- 223   2        }
- 224   1        return 1;
- 225   1      }
- 226          
- 227          byte angle_rotation_cmd(CMD_PACKET* cmd_packet)
- 228          {
- 229   1        unsigned int angle = 90;
- 230   1        
- 231   1        if(cmd_packet->cmd_size != 2)
- 232   1        {
- 233   2          return 0;
- 234   2        }
- 235   1        
- 236   1        if(strcmp((cmd_packet->commands_data + 1), "D") == 0 
- 237   1            || strcmp((cmd_packet->commands_data + 1), "G") == 0)
- 238   1        {
- 239   2          switch( (*(cmd_packet->commands_data + 1)) )
- 240   2          {
-C51 COMPILER V9.55   COMMANDS                                                              03/17/2019 13:26:14 PAGE 5   
+ 179   1      }
+ 180          
+ 181          byte rigth_rotation_cmd(CMD_PACKET* cmd_packet)
+ 182          {
+ 183   1        if(cmd_packet->cmd_size != 0)
+ 184   1        {
+ 185   2          return 0;
+ 186   2        }
+ 187   1        
+ 188   1        cmd_packet->commands->Etat_Mouvement = Rot_90D;
+ 189   1        return 1;
+ 190   1      }
+ 191          
+ 192          byte left_rotation_cmd(CMD_PACKET* cmd_packet)
+ 193          {
+ 194   1        if(cmd_packet->cmd_size != 0)
+ 195   1        {
+ 196   2          return 0;
+ 197   2        }
+ 198   1        
+ 199   1        cmd_packet->commands->Etat_Mouvement = Rot_90G;
+ 200   1        return 1;
+ 201   1      }
+ 202          
+ 203          byte complete_rotation_cmd(CMD_PACKET* cmd_packet)
+ 204          {
+ 205   1        if(cmd_packet->cmd_size > 1)
+ 206   1        {
+ 207   2          return 0;
+ 208   2        }
+ 209   1      
+ 210   1        if(cmd_packet->cmd_size == 1)
+ 211   1        {
+ 212   2          
+ 213   2          if(strcmp((cmd_packet->commands_data + 1), "D") == 0 
+ 214   2            || strcmp((cmd_packet->commands_data + 1), "G") == 0)
+ 215   2          {
+ 216   3            switch( (*(cmd_packet->commands_data + 1)) )
+ 217   3            {
+ 218   4              case 'D':
+ 219   4                cmd_packet->commands->Etat_Mouvement = Rot_180D;
+ 220   4                break;
+ 221   4              default :
+ 222   4                cmd_packet->commands->Etat_Mouvement = Rot_180G;
+ 223   4                break;
+ 224   4            }
+ 225   3          }else{
+ 226   3            return 0;
+ 227   3          }
+ 228   2      
+ 229   2        }else{
+ 230   2          cmd_packet->commands->Etat_Mouvement = Rot_180D;
+ 231   2        }
+ 232   1        return 1;
+ 233   1      }
+ 234          
+ 235          byte angle_rotation_cmd(CMD_PACKET* cmd_packet)
+ 236          {
+ 237   1        unsigned int angle = 90;
+ 238   1        
+ 239   1        if(cmd_packet->cmd_size != 2)
+ 240   1        {
+C51 COMPILER V9.55   COMMANDS                                                              03/17/2019 18:14:07 PAGE 5   
 
- 241   3            case 'D':
- 242   3              cmd_packet->commands->Etat_Mouvement = Rot_AngD;
- 243   3              break;
- 244   3            default :
- 245   3              cmd_packet->commands->Etat_Mouvement = Rot_AngG;
- 246   3              break;
- 247   3          }
- 248   2          
- 249   2          if(sscanf((cmd_packet->commands_data + (2 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
- 250   2          {
- 251   3            return 0;
- 252   3          }
- 253   2          
- 254   2          cmd_packet->commands->Angle = (int)(100 * angle);
- 255   2        }else{
- 256   2          return 0;
- 257   2        }
- 258   1        return 1;
- 259   1      }
+ 241   2          return 0;
+ 242   2        }
+ 243   1        
+ 244   1        if(strcmp((cmd_packet->commands_data + 1), "D") == 0 
+ 245   1            || strcmp((cmd_packet->commands_data + 1), "G") == 0)
+ 246   1        {
+ 247   2          switch( (*(cmd_packet->commands_data + 1)) )
+ 248   2          {
+ 249   3            case 'D':
+ 250   3              cmd_packet->commands->Etat_Mouvement = Rot_AngD;
+ 251   3              break;
+ 252   3            default :
+ 253   3              cmd_packet->commands->Etat_Mouvement = Rot_AngG;
+ 254   3              break;
+ 255   3          }
+ 256   2          
+ 257   2          if(sscanf((cmd_packet->commands_data + (2 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
+ 258   2          {
+ 259   3            return 0;
+ 260   3          }
+ 261   2          
+ 262   2          cmd_packet->commands->Angle = (int)(100 * angle);
+ 263   2        }else{
+ 264   2          return 0;
+ 265   2        }
+ 266   1        return 1;
+ 267   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1396    ----
+   CODE SIZE        =   2214    ----
    CONSTANT SIZE    =     10    ----
-   XDATA SIZE       =   ----      28
+   XDATA SIZE       =   ----      46
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

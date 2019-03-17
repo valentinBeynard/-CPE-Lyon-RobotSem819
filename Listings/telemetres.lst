@@ -1,9 +1,9 @@
-C51 COMPILER V9.55   TELEMETRES                                                            03/17/2019 13:26:14 PAGE 1   
+C51 COMPILER V9.55   TELEMETRES                                                            03/17/2019 18:14:07 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE TELEMETRES
 OBJECT MODULE PLACED IN .\Objects\telemetres.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\telemetres.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\telemetres.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
                     -(.\Listings\telemetres.lst) TABS(2) OBJECT(.\Objects\telemetres.obj)
 
 line level    source
@@ -62,7 +62,7 @@ line level    source
   52   1        OSCICN |= 0x08; // Mise à 1 du bit 3
   53   1        
   54   1        
-C51 COMPILER V9.55   TELEMETRES                                                            03/17/2019 13:26:14 PAGE 2   
+C51 COMPILER V9.55   TELEMETRES                                                            03/17/2019 18:14:07 PAGE 2   
 
   55   1      }
   56          
@@ -126,7 +126,7 @@ line level    source
                   AD0BUSY=0;
                 }
                 
-C51 COMPILER V9.55   TELEMETRES                                                            03/17/2019 13:26:14 PAGE 3   
+C51 COMPILER V9.55   TELEMETRES                                                            03/17/2019 18:14:07 PAGE 3   
 
               }
               
@@ -134,9 +134,9 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    143    ----
+   CODE SIZE        =    191    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =   ----       4
+   XDATA SIZE       =   ----      10
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

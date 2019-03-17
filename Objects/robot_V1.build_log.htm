@@ -31,20 +31,17 @@ compiling commands.c...
 compiling commands_parser.c...
 src\commands_parser.c(179): warning C280: 'parser_result': unreferenced local variable
 src\commands_parser.c(280): warning C182: pointer to different objects
-src\commands_parser.c(307): warning C182: pointer to different objects
-src\commands_parser.c(308): warning C182: pointer to different objects
-src\commands_parser.c(338): warning C280: 'parser_result': unreferenced local variable
+src\commands_parser.c(329): warning C280: 'data_buffer': unreferenced local variable
+src\commands_parser.c(329): warning C280: 'buffer_size': unreferenced local variable
+src\commands_parser.c(342): warning C280: 'parser_result': unreferenced local variable
 compiling main.c...
 compiling telemetres.c...
 compiling serializer.c...
-src\serializer.c(201): warning C173: missing return-expression
-src\serializer.c(221): warning C173: missing return-expression
-src\serializer.c(223): warning C280: 'mtr_speed_1': unreferenced local variable
-src\serializer.c(223): warning C280: 'mtr_speed_2': unreferenced local variable
-src\serializer.c(201): warning C290: missing return value
-src\serializer.c(221): warning C290: missing return value
-src\serializer.c(280): warning C290: missing return value
+src\serializer.c(235): warning C280: 'pts': unreferenced local variable
+src\serializer.c(295): warning C280: 'pts': unreferenced local variable
 linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CLEAR_BUFFER?COMMANDS_PARSER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_READ_COMMAND?COMMANDS_PARSER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -52,13 +49,9 @@ linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?INIT?TELEMETRES
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?STOPMOTORS?SERIALIZER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_GETENCODERDISTANCE?SERIALIZER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?GETENCORDERANGLE?SERIALIZER
-Program Size: data=21.4 xdata=595 code=7746
-".\Objects\robot_V1" - 0 Error(s), 18 Warning(s).
+Program Size: data=21.4 xdata=618 code=11799
+".\Objects\robot_V1" - 0 Error(s), 12 Warning(s).
 </pre>
 </body>
 </html>

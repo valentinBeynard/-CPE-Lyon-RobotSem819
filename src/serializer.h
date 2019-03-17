@@ -10,7 +10,12 @@
 
 #define MOGO_CMD_SIZE	20
 
+#define DIGO_CMD_SIZE	40
+
+
 #define ENC_RSLT_SIZE	10
+
+#define PID_RSLT_SIZE	10
 
 // Byte retourné par le sérializer à la fin de son retour
 #define END_RSLT_BYTE	0x3E
@@ -25,6 +30,8 @@
 
 #define ENC_2_MM(ticks)	( ticks * (M_PI * WHEEL_DIAMETER) / TICK_PER_CYCLE)
 
+#define ANGLE_2_DIST(angle)	(TICK_PER_CYCLE * angle)/(2.0 * M_PI)
+
 #define TURN_SPEED	20
 
 /*
@@ -37,7 +44,8 @@ typedef enum
 	IDLE = 0,
 	TRANSLATE,
 	ROTATE,
-	NAVIGATE
+	NAVIGATE,
+	STOP
 }SERIALIZER_STATE;
 
 typedef enum
@@ -135,16 +143,20 @@ void serializer_clear_serial();
 void serializer_init_serial();
 
 void serializer_process(OUT_M1* cmd);
+void idle_next_state(OUT_M1* cmd, PTS_2DA* pts);
 
 void setMotors(int mtr_speed_1, int mtr_speed_2);
-void stopMotors();
+void moveAngle(float angle);
 
 int getRawEncoders(ENCODER_ID encoder_id);
 int getEncoderDistance(ENCODER_ID encoder_id);
-int getEncorderAngle();
 
-byte translate(PTS_2DA* pts);
-byte rotate(PTS_2DA* pts);
+char is_PID_processing();
+
+void idle(PTS_2DA* pts);
+void translate(PTS_2DA* pts);
+void rotate(PTS_2DA* pts);
+void stop(PTS_2DA* pts);
 
 #else
 
