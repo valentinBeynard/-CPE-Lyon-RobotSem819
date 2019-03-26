@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 22:17:59 PAGE 1   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 23:20:41 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS_PARSER
@@ -43,8 +43,8 @@ line level    source
   33              {"RG", left_rotation_cmd},
   34              {"RC", complete_rotation_cmd},
   35              {"RA", angle_rotation_cmd},
-  36              {"G", default_process},
-  37              {"ASS", default_process},
+  36              {"G", &move_to_cmd},
+  37              {"ASS", move_to_cmd},
   38              {"MI", default_process},
   39              {"ME", default_process},
   40              {"IPO", default_process},
@@ -62,7 +62,7 @@ line level    source
   52          };
   53          
   54          /*
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 22:17:59 PAGE 2   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 23:20:41 PAGE 2   
 
   55              FULL STATE MACHINE
   56          
@@ -126,7 +126,7 @@ line level    source
  114   1        {
  115   2          *read_byte = SBUF0;
  116   2          RI0 = 0;
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 22:17:59 PAGE 3   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 23:20:41 PAGE 3   
 
  117   2        }else{
  118   2          *read_byte = '*';
@@ -190,7 +190,7 @@ line level    source
  176   1        //wait(result);
  177   1      }
  178          
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 22:17:59 PAGE 4   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 23:20:41 PAGE 4   
 
  179          void wait(PARSER_RESULT* parser_result)
  180          {
@@ -254,7 +254,7 @@ line level    source
  237   1        char* v = 0;*/
  238   1      
  239   1        CMD_PACKET cmd_packet;
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 22:17:59 PAGE 5   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 23:20:41 PAGE 5   
 
  240   1      
  241   1        // Dispatches commands and arguments in commands_data buffer
@@ -318,7 +318,7 @@ line level    source
  298   3            /*
  299   3            USART_print("Find Command : ");
  300   3            USART_print(dispatch_table[i].name);
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 22:17:59 PAGE 6   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 23:20:41 PAGE 6   
 
  301   3            USART_send('\n');
  302   3            */
@@ -382,7 +382,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    CONSTANT SIZE    =     98    ----
    XDATA SIZE       =    276     243
    PDATA SIZE       =   ----    ----
-C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 22:17:59 PAGE 7   
+C51 COMPILER V9.55   COMMANDS_PARSER                                                       03/26/2019 23:20:41 PAGE 7   
 
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

@@ -166,6 +166,7 @@ byte rigth_rotation_cmd(CMD_PACKET* cmd_packet);
 byte left_rotation_cmd(CMD_PACKET* cmd_packet);
 byte complete_rotation_cmd(CMD_PACKET* cmd_packet);
 byte angle_rotation_cmd(CMD_PACKET* cmd_packet);
+byte move_to_cmd(CMD_PACKET* cmd_packet);
 
 
 byte detecte_obstacle(CMD_PACKET* cmd_packet);

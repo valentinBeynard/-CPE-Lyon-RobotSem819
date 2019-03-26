@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   MAIN                                                                  03/26/2019 22:18:00 PAGE 1   
+C51 COMPILER V9.55   MAIN                                                                  03/26/2019 23:20:41 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   52   1                            0,  // Durée d'acquisition
   53   1                            DCT_non,  // Commande de détection d'obstacle
   54   1                            0,  // Résolution angulaire de la détection d'obstacle
-C51 COMPILER V9.55   MAIN                                                                  03/26/2019 22:18:00 PAGE 2   
+C51 COMPILER V9.55   MAIN                                                                  03/26/2019 23:20:41 PAGE 2   
 
   55   1                            Lumiere_non,  // Commande d'allumage du pointeur lumineux
   56   1                            0,  //Intensitée lumineuse
@@ -126,7 +126,7 @@ line level    source
  114   1                
  115   1        serializer_init_serial();
  116   1                    
-C51 COMPILER V9.55   MAIN                                                                  03/26/2019 22:18:00 PAGE 3   
+C51 COMPILER V9.55   MAIN                                                                  03/26/2019 23:20:41 PAGE 3   
 
  117   1        USART_print("\n\n#############################\n\n>");
  118   1      
@@ -146,52 +146,53 @@ line level    source
  132   2          
  133   2          if( parser_result.commands.Etat_Epreuve == epreuve1)
  134   2          {
- 135   3            USART_print(parser_result.informations.MSG_Invit);
- 136   3            serializer_process(&parser_result);
- 137   3            
- 138   3            // Commande Télémètre
- 139   3            if(parser_result.commands.Etat_DCT_Obst == oui_180)
- 140   3            {
- 141   4              f = start_conversion();
- 142   4              sprintf(mes, "%f", f);
- 143   4              USART_print(mes);
- 144   4              memset(mes, 0, 10);
- 145   4              parser_result.commands.Etat_DCT_Obst = DCT_non;
- 146   4            }
- 147   3            
- 148   3            if(parser_result.informations.Etat_BUT_Mouvement == BUT_Atteint_oui)
- 149   3            {
- 150   4              USART_print("Target Reached !! Success !\n");
- 151   4              parser_result.informations.Etat_BUT_Mouvement = BUT_Atteint_non;
- 152   4            }
- 153   3            
- 154   3          }
- 155   2          else{
- 156   3            parser_result.commands.Etat_Mouvement = Mouvement_non;
- 157   3          }
- 158   2          
- 159   2          //serializer_send('H');
- 160   2          //USART_send('A');
- 161   2          //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
- 162   2        
- 163   2          
- 164   2          //serializer_print("mogo 1:50 2:50\r");
- 165   2          
- 166   2        }
- 167   1        
- 168   1        USART_print("Fin Soft");
- 169   1        
- 170   1        while(1);
- 171   1      }
- 172          
- 173          #endif
+ 135   3            //USART_print(parser_result.informations.MSG_Invit);
+ 136   3            
+ 137   3            serializer_process(&parser_result);
+ 138   3            
+ 139   3            // Commande Télémètre
+ 140   3            if(parser_result.commands.Etat_DCT_Obst == oui_180)
+ 141   3            {
+ 142   4              f = start_conversion();
+ 143   4              sprintf(mes, "%f", f);
+ 144   4              USART_print(mes);
+ 145   4              memset(mes, 0, 10);
+ 146   4              parser_result.commands.Etat_DCT_Obst = DCT_non;
+ 147   4            }
+ 148   3            
+ 149   3            if(parser_result.informations.Etat_BUT_Mouvement == BUT_Atteint_oui)
+ 150   3            {
+ 151   4              USART_print("Target Reached !! Success !\n");
+ 152   4              parser_result.informations.Etat_BUT_Mouvement = BUT_Atteint_non;
+ 153   4            }
+ 154   3            
+ 155   3          }
+ 156   2          else{
+ 157   3            parser_result.commands.Etat_Mouvement = Mouvement_non;
+ 158   3          }
+ 159   2          
+ 160   2          //serializer_send('H');
+ 161   2          //USART_send('A');
+ 162   2          //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
+ 163   2        
+ 164   2          
+ 165   2          //serializer_print("mogo 1:50 2:50\r");
+ 166   2          
+ 167   2        }
+ 168   1        
+ 169   1        USART_print("Fin Soft");
+ 170   1        
+ 171   1        while(1);
+ 172   1      }
+ 173          
+ 174          #endif
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    419    ----
-   CONSTANT SIZE    =    267    ----
-C51 COMPILER V9.55   MAIN                                                                  03/26/2019 22:18:00 PAGE 4   
+   CODE SIZE        =    405    ----
+C51 COMPILER V9.55   MAIN                                                                  03/26/2019 23:20:41 PAGE 4   
 
+   CONSTANT SIZE    =    267    ----
    XDATA SIZE       =   ----     121
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----

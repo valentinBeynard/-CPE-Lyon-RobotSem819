@@ -9,7 +9,7 @@ const SERIALIZER_FSM_PROCESS serializer_state_machine[6] = {
     {TRANSLATE, &translate},
 		{MOVETO, &moveTo},
     {ROTATE, &rotate},
-		{NAVIGATE, NULL},
+		{NAVIGATE, &navigate},
 		{STOP, &stop}
 };
 

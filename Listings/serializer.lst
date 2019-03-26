@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 22:18:00 PAGE 1   
+C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 23:20:41 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE SERIALIZER
@@ -19,7 +19,7 @@ line level    source
    9              {TRANSLATE, &translate},
   10              {MOVETO, &moveTo},
   11              {ROTATE, &rotate},
-  12              {NAVIGATE, NULL},
+  12              {NAVIGATE, &navigate},
   13              {STOP, &stop}
   14          };
   15          
@@ -62,7 +62,7 @@ line level    source
   52          void serializer_receive(byte* read_byte)
   53          {
   54   1        if( (SCON1 & 0x01) == 1)
-C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 22:18:00 PAGE 2   
+C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 23:20:41 PAGE 2   
 
   55   1        {
   56   2          *read_byte = SBUF1;
@@ -126,7 +126,7 @@ line level    source
  114          #############################################################################
  115                  Serializer related functions
  116          #############################################################################
-C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 22:18:00 PAGE 3   
+C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 23:20:41 PAGE 3   
 
  117          */
  118          
@@ -190,7 +190,7 @@ line level    source
  176   4              }
  177   3              break;
  178   3              
-C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 22:18:00 PAGE 4   
+C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 23:20:41 PAGE 4   
 
  179   3            case MOVETO:
  180   3              if(is_processing == 1)
@@ -254,7 +254,7 @@ line level    source
  238   2              serializer_state = ROTATE;
  239   2              pts->angle = (-1) * 90;
  240   2              pts->speed = 20;
-C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 22:18:00 PAGE 5   
+C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 23:20:41 PAGE 5   
 
  241   2              break;
  242   2            
@@ -318,7 +318,7 @@ line level    source
  299   1        {
  300   2          if(pts->speed != 0)
  301   2          {
-C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 22:18:00 PAGE 6   
+C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 23:20:41 PAGE 6   
 
  302   3            speed = pts->speed;
  303   3          }
@@ -382,7 +382,7 @@ line level    source
  361   2            temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
  362   2            serializer_state = ROTATE;
  363   2            navigation_step++;
-C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 22:18:00 PAGE 7   
+C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 23:20:41 PAGE 7   
 
  364   2            rotate(&temp_pts);
  365   2            break;
@@ -446,7 +446,7 @@ line level    source
  423   1        
  424   1        distance_in_tick = ANGLE_2_DIST(angle);
  425   1        
-C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 22:18:00 PAGE 8   
+C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 23:20:41 PAGE 8   
 
  426   1        l_dist = (-1) * distance_in_tick;
  427   1        
@@ -510,7 +510,7 @@ line level    source
  484   1      
  485   1        do
  486   1        {
-C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 22:18:00 PAGE 9   
+C51 COMPILER V9.55   SERIALIZER                                                            03/26/2019 23:20:41 PAGE 9   
 
  487   2          serializer_receive(&c);
  488   2          result[ptr] = c;

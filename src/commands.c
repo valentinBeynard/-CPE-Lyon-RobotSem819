@@ -266,6 +266,77 @@ byte angle_rotation_cmd(CMD_PACKET* cmd_packet)
 	return 1;
 }
 
+/*
+	Move to (X,Y,alpha) coordinate
+
+	Ex : "G X:10 Y:15 A:45"
+
+*/
+byte move_to_cmd(CMD_PACKET* cmd_packet)
+{
+	byte i = 0, j = 0;
+	char params[3][5] = {"X", "Y", "A"};
+	int angle = 0, x = 0, y = 0;
+	byte param_find = 0;
+	
+	// Not enougth args
+	if(cmd_packet->cmd_size != 6)
+	{
+		return 0;
+	}
+	
+	// Analyse each param:value couple
+	for(i = 0 ; i < 3 ; i++)
+	{
+		// For one couple, identify the param
+		for(j = 0 ; j < 3 ; j++)
+		{
+			if( strcmp((cmd_packet->commands_data + ( ((i*2) + 1) * ARGS_BUFFER_SIZE)), params[j]) == 0 )
+			{
+				switch(j)
+				{
+					case 0:
+						if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &x) == 0)
+						{
+							return 0;
+						}					
+						break;
+					
+					case 1:
+						if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &y) == 0)
+						{
+							return 0;
+						}		
+						break;
+					
+					case 2:
+						if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
+						{
+							return 0;
+						}	
+						break;
+					
+				}
+				param_find = 1;
+				break;
+			}
+		}
+		
+		if(param_find == 0)
+		{
+			return 0;
+		}else{
+			param_find = 0;
+		}
+	}
+	
+	cmd_packet->commands->Angle = angle;
+	cmd_packet->commands->Coord_X = (byte)x;
+	cmd_packet->commands->Coord_Y = (byte)y;
+	cmd_packet->commands->Etat_Mouvement = Depl_Coord;
+	return 1;
+}
+
 byte detecte_obstacle(CMD_PACKET* cmd_packet)
 {
 	if(cmd_packet->cmd_size != 0)

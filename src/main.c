@@ -132,7 +132,8 @@ int main (void)
 		
 		if( parser_result.commands.Etat_Epreuve == epreuve1)
     {
-      USART_print(parser_result.informations.MSG_Invit);
+      //USART_print(parser_result.informations.MSG_Invit);
+			
 			serializer_process(&parser_result);
 			
 			// Commande Télémètre
