@@ -1,6 +1,8 @@
 #include "serializer.h"
 #include <string.h>
 #include <stdio.h>
+#include "motion.h"
+
 
 const SERIALIZER_FSM_PROCESS serializer_state_machine[5] = {
     {IDLE, &idle},
@@ -14,6 +16,12 @@ const SERIALIZER_FSM_PROCESS serializer_state_machine[5] = {
 volatile SERIALIZER_STATE serializer_state = IDLE;
 
 byte is_processing = 0;
+
+byte is_navigating = 0;
+
+int pids_timer = 0;
+
+PTS_2DA robot_position = {0, 0, 0, 0};
 
 /*
 #############################################################################
@@ -70,12 +78,12 @@ void serializer_print(char* str)
   byte i = 0;
 	for(i = 0 ; i < strlen(str); i++)
   {
-    UART_send(*(str+i));
+    //UART_send(*(str+i));
 		serializer_send(*(str+i));
   }
 	
 	serializer_send(0x0D);
-	UART_send('\n');
+	//UART_send('\n');
 }
 
 void serializer_init_serial()
@@ -84,7 +92,7 @@ void serializer_init_serial()
 	do
 	{
 		serializer_receive(&c);
-		UART_send(c);
+		//UART_send(c);
 	}while(c != END_RSLT_BYTE);
 	
 }
@@ -96,8 +104,9 @@ void serializer_clear_serial()
 	do
 	{
 		serializer_receive(&c);
+		//UART_send(c);
 	}while(c != END_RSLT_BYTE);
-	
+	//UART_send('\n');
 }
 
 /*
@@ -148,9 +157,26 @@ void serializer_process(OUT_M1* cmd)
 				}
 				break;
 				
+			case NAVIGATE:
+				if(is_processing == 1)
+				{
+					serializer_state = NAVIGATE;
+				}
+				else
+				{
+					serializer_state = STOP;
+				}
+				break;
+				
 			case STOP:
-				serializer_state = IDLE;
-				cmd->Etat_Mouvement = Mouvement_non;
+				if(is_navigating == 0)
+				{
+					serializer_state = IDLE;
+					cmd->Etat_Mouvement = Mouvement_non;
+				}
+				else{
+					serializer_state = NAVIGATE;
+				}
 				break;
 			
 			default:
@@ -191,7 +217,7 @@ void idle_next_state(OUT_M1* cmd, PTS_2DA* pts)
 
 			case Rot_90D:
 				serializer_state = ROTATE;
-				pts->angle = -90;
+				pts->angle = (-1) * 90;
 				pts->speed = 20;
 				break;
 			
@@ -249,7 +275,13 @@ void translate(PTS_2DA* pts)
 			speed = pts->speed;
 		}
 		
-		setMotors(pts->x * speed, pts->x * speed);
+		if(is_navigating == 1)
+		{
+			moveTo();
+			
+		}else{
+			setMotors(pts->x * speed, pts->x * speed);
+		}
 		is_processing = 1;
 	}
 	
@@ -261,12 +293,50 @@ void rotate(PTS_2DA* pts)
 	
 	if(is_processing == 0)
 	{
+		//clear_encoder();
+		//getEncoderDistance(LEFT);
 		moveAngle(pts->angle);
 		is_processing = 1;
 	}
 	else{
-		is_processing = is_PID_processing();
+		
+		if(pids_timer >= 5000)
+		{
+			is_processing = is_PID_processing();
+			pids_timer = 0;
+		}
+		else{
+			pids_timer++;
+		}
 	}
+}
+
+void navigate(PTS_2DA* pts)
+{
+	static byte navigation_step = 0;
+	PTS_2DA temp_pts = {0, 0, 0, 0};
+	
+	switch(navigation_step)
+	{
+		case 0:
+			is_navigating = 1;
+			temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
+			rotate(&temp_pts);
+			navigation_step++;
+			break;
+		
+		case 1:
+			temp_pts.x = (robot_position.x - pts->x);
+			temp_pts.y = (robot_position.y - pts->y);
+			temp_pts.speed = pts->speed;
+			translate
+			//move(temp_pts);
+			navigation_step++;
+			break;
+		
+	}
+	
+	
 }
 
 void setMotors(int mtr_speed_1, int mtr_speed_2)
@@ -280,22 +350,43 @@ void setMotors(int mtr_speed_1, int mtr_speed_2)
 	serializer_clear_serial();
 }
 
-void moveAngle(float angle)
+void moveTo(PTS_2DA* pts)
 {
 	char cmd[DIGO_CMD_SIZE];
-	int distance_in_tick = 0;
+	int distance_in_tick = 0, l_dist = 0;
 	
-	distance_in_tick = (int)(ANGLE_2_DIST(angle));
+	distance_in_tick = distance(pts->x, pts->y);
 	
-	sprintf(cmd, "digo 1 : %d : 28 2 : %d : 28", -1 * distance_in_tick, distance_in_tick);
+	// TODO : Pour le moment, la vitesse du digo est de 28%, donc pas la valeur set par TV
+	// On est obligé car ce 28 est fixé par le DPID et le VPID du sérializer ...
+	sprintf(cmd, "digo 1:%d:20 2:%d:20", distance_in_tick, distance_in_tick);
+	
 	serializer_print(cmd);
 	serializer_clear_serial();
+	
+}
+
+void moveAngle(int angle)
+{
+	char cmd[DIGO_CMD_SIZE];
+	int distance_in_tick = 0, l_dist = 0;
+	
+	distance_in_tick = ANGLE_2_DIST(angle);
+	
+	l_dist = (-1) * distance_in_tick;
+	
+	sprintf(cmd, "digo 1:%d:20 2:%d:20", l_dist, distance_in_tick);
+	serializer_print(cmd);
+	serializer_clear_serial();
+	
+	//memset(cmd, 0, DIGO_CMD_SIZE);
 }
 
 void stop(PTS_2DA* pts)
 {
-	serializer_print("stop");
+	serializer_print("stop");	
 	serializer_clear_serial();
+	//clear_encoder();
 }
 
 int getRawEncoders(ENCODER_ID encoder_id)
@@ -334,11 +425,12 @@ int getEncoderDistance(ENCODER_ID encoder_id)
 	return ENC_2_MM(enc_value);
 }
 
-char is_PID_processing()
+void clear_encoder()
 {
 	char result[PID_RSLT_SIZE];
-	int pid_state = 0;
 	char ptr = 0, c = 0;
+	
+	serializer_print("clrenc 1 2");
 
 	do
 	{
@@ -347,7 +439,32 @@ char is_PID_processing()
 		ptr++;
 	}while(c != END_RSLT_BYTE);
 	
+	
+}
+
+char is_PID_processing()
+{
+	char result[PID_RSLT_SIZE];
+	int pid_state = 1;
+	char ptr = 0;
+	byte c = 0;
+	
+	serializer_print("pids");
+		
+	do
+	{
+		serializer_receive(&c);
+		if(c != '*')
+		{
+			result[ptr] = c;
+			ptr++;
+			UART_send(c);
+		}
+	}while(c != END_RSLT_BYTE);
+	
 	sscanf(result, "%d", &pid_state);
+	
+	memset(result, 0, PID_RSLT_SIZE);
 	
 	return (char)pid_state;
 }

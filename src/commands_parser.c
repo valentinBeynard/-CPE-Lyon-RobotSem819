@@ -39,7 +39,7 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     {"ME", default_process},
     {"IPO", default_process},
     {"POS", default_process},
-    {"MOU", default_process},
+    {"MOU", detecte_obstacle},
     {"MOB", default_process},
     {"MOS", default_process},
     {"SD", default_process},

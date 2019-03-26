@@ -1,6 +1,11 @@
 #include "debug.h"
 #include "commands_parser.h"
 #include "serializer.h"
+#include "telemetres.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 sfr Reg =	0xFF;
 
@@ -34,7 +39,9 @@ void Init_Crossbar()
 
 int main (void)
 {
-  
+  char mes[10];
+	float f = 0.0;
+	
 	OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
                       Mouvement_non,  // Etat mouvement
                       0,  //  Vitesse
@@ -61,8 +68,29 @@ int main (void)
                       0,  // Temps entre deux photo
                       0 // Nbr de photo
                       };
-
-  PARSER_RESULT parser_result = {1 , &commands};
+											
+	IN_M1 informations = { Invite_non,	// Identifieur de l'etat d'Invite
+													0,	// Ptr sur la chaine contenant le msg d'invite
+													BUT_Atteint_non,	// Arrivée au point transmit
+													BUT_Servo_non,	// Information position servomoteur
+													DCT_Obst_non,	// Mode de détection d'obstacle
+													0,	// ptr vers tableau des distances
+													0,	// taille du tableau 
+													RESULT_Courant_non,	// Identificateur pour la mesure de courant
+													0,	// Valeur de courant relevée
+													RESULT_Energie_non,	// Identificateur pour la mesure d'énergie
+													0,	// Valeur d'énergie relevée
+													RESULT_Position_non,	// Identificateur de position du robot
+													0,	// Coord X
+													0,	// Coord Y
+													0,	// Angle
+													Aux_non,	// Identificateur pour la commande auxiliare
+													0	// ptr vers la chaîne de caractère auxiliare
+											};
+											
+											
+ 
+  PARSER_RESULT parser_result = {1 , &commands, &informations};
   
 	
 	Reg = 0xDE;   // Dévalidation du watchdog 
@@ -78,6 +106,8 @@ int main (void)
 	init_serializer_UART1();
 							
 	Init_Crossbar();
+	
+	init_telemeter();
 
 	USART_print("Start Routine \n\n");
 	USART_print("Waiting for Serializer Init Processing... \n\n");
@@ -104,6 +134,16 @@ int main (void)
     {
       //USART_print("Epreuve 1 !");
 			serializer_process(&(parser_result.commands));
+			
+			
+			if(parser_result.commands.Etat_DCT_Obst == oui_180)
+			{
+				f = start_conversion();
+				sprintf(mes, "%f", f);
+				USART_print(mes);
+				memset(mes, 0, 10);
+				parser_result.commands.Etat_DCT_Obst = DCT_non;
+			}
     }
 		else{
 			parser_result.commands.Etat_Mouvement = Mouvement_non;

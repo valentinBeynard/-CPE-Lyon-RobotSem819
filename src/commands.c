@@ -210,10 +210,10 @@ byte complete_rotation_cmd(CMD_PACKET* cmd_packet)
 	if(cmd_packet->cmd_size == 1)
 	{
 		
-		if(strcmp((cmd_packet->commands_data + 1), "D") == 0 
-			|| strcmp((cmd_packet->commands_data + 1), "G") == 0)
+		if(strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "D") == 0 
+			|| strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "G") == 0)
 		{
-			switch( (*(cmd_packet->commands_data + 1)) )
+			switch( (*(cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE))) )
 			{
 				case 'D':
 					cmd_packet->commands->Etat_Mouvement = Rot_180D;
@@ -241,10 +241,10 @@ byte angle_rotation_cmd(CMD_PACKET* cmd_packet)
 		return 0;
 	}
 	
-	if(strcmp((cmd_packet->commands_data + 1), "D") == 0 
-			|| strcmp((cmd_packet->commands_data + 1), "G") == 0)
+	if(strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "D") == 0 
+			|| strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "G") == 0)
 	{
-		switch( (*(cmd_packet->commands_data + 1)) )
+		switch( (*(cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE))) )
 		{
 			case 'D':
 				cmd_packet->commands->Etat_Mouvement = Rot_AngD;
@@ -259,9 +259,20 @@ byte angle_rotation_cmd(CMD_PACKET* cmd_packet)
 			return 0;
 		}
 		
-		cmd_packet->commands->Angle = (int)(100 * angle);
+		cmd_packet->commands->Angle = (int)(angle);
 	}else{
 		return 0;
 	}
+	return 1;
+}
+
+byte detecte_obstacle(CMD_PACKET* cmd_packet)
+{
+	if(cmd_packet->cmd_size != 0)
+	{
+		return 0;
+	}
+	
+	cmd_packet->commands->Etat_DCT_Obst = oui_180;
 	return 1;
 }

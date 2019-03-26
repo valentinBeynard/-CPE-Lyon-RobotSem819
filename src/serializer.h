@@ -15,13 +15,15 @@
 
 #define ENC_RSLT_SIZE	10
 
-#define PID_RSLT_SIZE	10
+#define PID_RSLT_SIZE	20
 
 // Byte retourné par le sérializer à la fin de son retour
 #define END_RSLT_BYTE	0x3E
 
 /* Diametre des roues */
 #define WHEEL_DIAMETER	60
+
+#define ROBOT_ENTRAX	112
 
 /* Nombre de Ticks d'un encoder pour 1 tour de roue */
 #define TICK_PER_CYCLE	624
@@ -30,7 +32,9 @@
 
 #define ENC_2_MM(ticks)	( ticks * (M_PI * WHEEL_DIAMETER) / TICK_PER_CYCLE)
 
-#define ANGLE_2_DIST(angle)	(TICK_PER_CYCLE * angle)/(2.0 * M_PI)
+//#define ANGLE_2_DIST(angle)	(ROBOT_ENTRAX * angle * TICK_PER_CYCLE)/(360.0 * WHEEL_DIAMETER/2.0)
+
+#define ANGLE_2_DIST(angle)	(5 * (float)(angle))
 
 #define TURN_SPEED	20
 
@@ -58,7 +62,7 @@ typedef struct
 {
 	char x;
 	char y;
-	float angle;
+	int angle;
 	byte speed;
 }PTS_2DA;
 
@@ -146,16 +150,19 @@ void serializer_process(OUT_M1* cmd);
 void idle_next_state(OUT_M1* cmd, PTS_2DA* pts);
 
 void setMotors(int mtr_speed_1, int mtr_speed_2);
-void moveAngle(float angle);
+void moveTo(PTS_2DA* pts);
+void moveAngle(int angle);
 
 int getRawEncoders(ENCODER_ID encoder_id);
 int getEncoderDistance(ENCODER_ID encoder_id);
+void clear_encoder();
 
 char is_PID_processing();
 
 void idle(PTS_2DA* pts);
 void translate(PTS_2DA* pts);
 void rotate(PTS_2DA* pts);
+void navigate(PTS_2DA* pts);
 void stop(PTS_2DA* pts);
 
 #else
