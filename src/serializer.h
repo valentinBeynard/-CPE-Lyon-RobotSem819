@@ -3,7 +3,7 @@
 #define SERIALIZER_H
 
 #include "c8051F020.h"
-#include "commands.h"
+#include "commands_parser.h"
 
 #define byte unsigned char
 #define SIGNED_BYTE char
@@ -47,6 +47,7 @@ typedef enum
 {
 	IDLE = 0,
 	TRANSLATE,
+	MOVETO,
 	ROTATE,
 	NAVIGATE,
 	STOP
@@ -146,8 +147,13 @@ void serializer_print(char* str);
 void serializer_clear_serial();
 void serializer_init_serial();
 
+
+/*
 void serializer_process(OUT_M1* cmd);
+*/
+void serializer_process(PARSER_RESULT* parser);
 void idle_next_state(OUT_M1* cmd, PTS_2DA* pts);
+
 
 void setMotors(int mtr_speed_1, int mtr_speed_2);
 void moveTo(PTS_2DA* pts);

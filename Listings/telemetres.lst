@@ -1,10 +1,10 @@
-C51 COMPILER V9.52.0.0   TELEMETRES                                                        03/21/2019 17:13:06 PAGE 1   
+C51 COMPILER V9.55   TELEMETRES                                                            03/26/2019 22:18:00 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE TELEMETRES
+C51 COMPILER V9.55, COMPILATION OF MODULE TELEMETRES
 OBJECT MODULE PLACED IN .\Objects\telemetres.obj
-COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\telemetres.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\
-                    -Listings\telemetres.lst) OBJECT(.\Objects\telemetres.obj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\telemetres.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
+                    -(.\Listings\telemetres.lst) TABS(2) OBJECT(.\Objects\telemetres.obj)
 
 line level    source
 
@@ -31,48 +31,48 @@ line level    source
   21          // Configuration du crossbar
   22          void config_XBAR()
   23          {
-  24   1              /* Le crossbar permet d'activer les ports entrées/sorties du C8051F020. 
-  25   1              C'est une fonction de configuration des ports entrées/sorties de la carte du microcontroleur. 
-  26   1              Pas d'arguments ni en entrée ni en sortie. */
-  27   1              
-  28   1              /* On va modifier les paramètres suivants: XBR0, XBR1, XBR2. */
-  29   1              
-  30   1              XBR1 |= 0x80;
-  31   1              XBR2 |= 0x40;
+  24   1        /* Le crossbar permet d'activer les ports entrées/sorties du C8051F020. 
+  25   1        C'est une fonction de configuration des ports entrées/sorties de la carte du microcontroleur. 
+  26   1        Pas d'arguments ni en entrée ni en sortie. */
+  27   1        
+  28   1        /* On va modifier les paramètres suivants: XBR0, XBR1, XBR2. */
+  29   1        
+  30   1        XBR1 |= 0x80;
+  31   1        XBR2 |= 0x40;
   32   1      
   33   1      }
   34          /*
   35          // Configuration de l'UART
   36          void config_UART()
   37          {
-  38                  /* L'UART permet la réception et la transmission de données via un port série.
-  39                  C'est une fonction de gestion de périphérique. 
-  40                  Pas de paramètres d'entrée et de sortie. 
-  41                  On teste à l'aide des fonctions getchar et putchar et on observe sur PuTTY la bonne reception et transmis
+  38            /* L'UART permet la réception et la transmission de données via un port série.
+  39            C'est une fonction de gestion de périphérique. 
+  40            Pas de paramètres d'entrée et de sortie. 
+  41            On teste à l'aide des fonctions getchar et putchar et on observe sur PuTTY la bonne reception et transmis
              -sion des données.
-  42                  */
-  43                  
-  44                  /* On va modifier les paramètres suivants: SCON0, PCON. *//*
-  45                  SCON0 |= 0x70;
-  46                  SCON0 &= 0x7F;
-  47                  
-  48                  PCON |= 0x80;
-  49                  PCON &= ~0x40;
+  42            */
+  43            
+  44            /* On va modifier les paramètres suivants: SCON0, PCON. *//*
+  45            SCON0 |= 0x70;
+  46            SCON0 &= 0x7F;
+  47            
+  48            PCON |= 0x80;
+  49            PCON &= ~0x40;
   50          }
   51          */
   52          
   53          
-C51 COMPILER V9.52.0.0   TELEMETRES                                                        03/21/2019 17:13:06 PAGE 2   
+C51 COMPILER V9.55   TELEMETRES                                                            03/26/2019 22:18:00 PAGE 2   
 
   54          void config_DAC_ADC() {
   55   1      /* -role: cette fonction permet de configurer les convertisseurs digital <-> analogique. Le convertisseur 
              -DAC nous permet d'interpréter le signal de sortie du télémètre en le convertissant en signal analogique. Le convertisseu
              -r ADC nous permet de vérifier le bon fonctionnement du DAC en visualisant le signal reconverti à l'oscillateur. Le signa
              -l de référence est imposé à 3.3V.
-  56   1               -fonction de configuration des convertisseurs.
-  57   1               -arguments d'entree: none.
-  58   1               -argument de sortie: none.
-  59   1                       1. Configuration de la tension de référence : tension externe VREF0=3V
+  56   1         -fonction de configuration des convertisseurs.
+  57   1         -arguments d'entree: none.
+  58   1         -argument de sortie: none.
+  59   1           1. Configuration de la tension de référence : tension externe VREF0=3V
   60   1      2. Configuration des voies Unipolaires : AIN0.0=Tension en sortie du telemetre infrarouge; AIN1=Tension co
              -nsigne min; AIN2=Tension consigne max
   61   1      3. Gain: 1
@@ -85,112 +85,112 @@ line level    source
   68   1      • Lancer la conversion en continue sur ADC0 et réinjecter sur DAC0
   69   1      • Contrôler sur oscilloscope la correspondance entre entrée ADC et sortie DAC
   70   1      */
-  71   1              ADC0CN |=0x81;
-  72   1              ADC0CN &= ~0x4C;
-  73   1              ADC0CF &= 0x00;
-  74   1              //AMX0SL&=0xF0;
-  75   1              //AMX0CF&=0xF0;
+  71   1        ADC0CN |=0x81;
+  72   1        ADC0CN &= ~0x4C;
+  73   1        ADC0CF &= 0x00;
+  74   1        //AMX0SL&=0xF0;
+  75   1        //AMX0CF&=0xF0;
   76   1      
-  77   1              REF0CN&=0xEB;
-  78   1              REF0CN|=0x03;
-  79   1              
-  80   1              DAC0CN |=0x80;
-  81   1              DAC0CN &=0xE0;
+  77   1        REF0CN&=0xEB;
+  78   1        REF0CN|=0x03;
+  79   1        
+  80   1        DAC0CN |=0x80;
+  81   1        DAC0CN &=0xE0;
   82   1      } 
   83          /*
   84          void uart_0_int() interrupt 4
   85          {
-  86                  if(TI0 == 1)
-  87                          TI0 = 0;
-  88                  if(RI0 == 1)
-  89                  {
-  90                          received_byte = SBUF0;
-  91                          RI0 = 0;
-  92                  }
+  86            if(TI0 == 1)
+  87              TI0 = 0;
+  88            if(RI0 == 1)
+  89            {
+  90              received_byte = SBUF0;
+  91              RI0 = 0;
+  92            }
   93          }*/
   94          /*
   95          
   96          void putchar(char c){
   97          /* -role: cette fonction permet d'afficher la distance et l'angle de mesure sur Putty.
-  98                   -fonction d'utilisation du périphérique UART0.
-  99                   -arguments d'entree: angle de mesure demandé par l'utilisateur et distance de l'obstacle.
- 100                   -argument de sortie: none.
- 101                   -Test: Appel de la fonction avec 2 valeurs numériques et vérification de leur affichage sur Putty.
- 102                  */
- 103                  /*
- 104                  TI0=0;
- 105                  SBUF0=c;
- 106                  // si TI0 == 1, alors transmission finie sinon on attend
- 107                  while(TI0!=1);
+  98             -fonction d'utilisation du périphérique UART0.
+  99             -arguments d'entree: angle de mesure demandé par l'utilisateur et distance de l'obstacle.
+ 100             -argument de sortie: none.
+ 101             -Test: Appel de la fonction avec 2 valeurs numériques et vérification de leur affichage sur Putty.
+ 102            */
+ 103            /*
+ 104            TI0=0;
+ 105            SBUF0=c;
+ 106            // si TI0 == 1, alors transmission finie sinon on attend
+ 107            while(TI0!=1);
  108          }
  109          */
  110          
  111          float mesure(){
-C51 COMPILER V9.52.0.0   TELEMETRES                                                        03/21/2019 17:13:06 PAGE 3   
+C51 COMPILER V9.55   TELEMETRES                                                            03/26/2019 22:18:00 PAGE 3   
 
  112   1      /* -role: cette fonction permet de mesurer la distance entre le servomoteur et l'obstacle.
- 113   1               -fonction d'utilisation.
- 114   1               -arguments d'entree: none.
- 115   1               -argument de sortie: distance.
- 116   1               -Test: 
+ 113   1         -fonction d'utilisation.
+ 114   1         -arguments d'entree: none.
+ 115   1         -argument de sortie: distance.
+ 116   1         -Test: 
  117   1      
- 118   1              */      
- 119   1              float d;
- 120   1              float V_mes;
- 121   1              
- 122   1              //lecture de la tension mesurée sur AIN2
- 123   1              AMX0SL&=0x00;
- 124   1              AMX0SL|=0x01;
- 125   1              
- 126   1              V_mes=ADC0/(POW*5.6);
- 127   1              
- 128   1              //Calcul des distances
- 129   1              d=-16.669*V_mes+67.367; 
- 130   1              //putchar((char)d);
- 131   1              
- 132   1              return d;
- 133   1              
+ 118   1        */  
+ 119   1        float d;
+ 120   1        float V_mes;
+ 121   1        
+ 122   1        //lecture de la tension mesurée sur AIN2
+ 123   1        AMX0SL&=0x00;
+ 124   1        AMX0SL|=0x01;
+ 125   1        
+ 126   1        V_mes=ADC0/(POW*5.6);
+ 127   1        
+ 128   1        //Calcul des distances
+ 129   1        d=-16.669*V_mes+67.367; 
+ 130   1        //putchar((char)d);
+ 131   1        
+ 132   1        return d;
+ 133   1        
  134   1      }
  135          
  136          
  137          void init_telemeter(){
- 138   1              config_XBAR();
- 139   1              //config_UART();
- 140   1      //      config_timer2();
- 141   1              config_DAC_ADC();
- 142   1              //init_interrupt();
+ 138   1        config_XBAR();
+ 139   1        //config_UART();
+ 140   1      //  config_timer2();
+ 141   1        config_DAC_ADC();
+ 142   1        //init_interrupt();
  143   1      }
  144          
  145          
  146          float start_conversion(){
- 147   1              float conv;
- 148   1              unsigned int j;
- 149   1              AD0INT=0;
- 150   1              AD0BUSY=1;
- 151   1              mesure();
- 152   1              AD0BUSY=0;
- 153   1              
- 154   1              for(j=0;j<1000;j++); //On temporise pour atteindre la stabilité
- 155   1              
- 156   1              AD0INT=0;
- 157   1              AD0BUSY=1;
- 158   1              conv =mesure();
- 159   1              AD0BUSY=0;
- 160   1              
- 161   1              return conv;
+ 147   1        float conv;
+ 148   1        unsigned int j;
+ 149   1        AD0INT=0;
+ 150   1        AD0BUSY=1;
+ 151   1        mesure();
+ 152   1        AD0BUSY=0;
+ 153   1        
+ 154   1        for(j=0;j<1000;j++); //On temporise pour atteindre la stabilité
+ 155   1        
+ 156   1        AD0INT=0;
+ 157   1        AD0BUSY=1;
+ 158   1        conv =mesure();
+ 159   1        AD0BUSY=0;
+ 160   1        
+ 161   1        return conv;
  162   1      }
  163          /*
  164          float m;
  165          
  166          void main()
  167          {
- 168                  init();
- 169                  m=start_conversion();
- 170                  
- 171                  //read_command();
- 172                  //mesure();
+ 168            init();
+ 169            m=start_conversion();
+ 170            
+ 171            //read_command();
+ 172            //mesure();
  173          }*/
-C51 COMPILER V9.52.0.0   TELEMETRES                                                        03/21/2019 17:13:06 PAGE 4   
+C51 COMPILER V9.55   TELEMETRES                                                            03/26/2019 22:18:00 PAGE 4   
 
 
 

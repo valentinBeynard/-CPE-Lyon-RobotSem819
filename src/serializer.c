@@ -4,9 +4,10 @@
 #include "motion.h"
 
 
-const SERIALIZER_FSM_PROCESS serializer_state_machine[5] = {
+const SERIALIZER_FSM_PROCESS serializer_state_machine[6] = {
     {IDLE, &idle},
     {TRANSLATE, &translate},
+		{MOVETO, &moveTo},
     {ROTATE, &rotate},
 		{NAVIGATE, NULL},
 		{STOP, &stop}
@@ -115,24 +116,25 @@ void serializer_clear_serial()
 #############################################################################
 */
 
-void serializer_process(OUT_M1* cmd)
+//void serializer_process(OUT_M1* cmd)
+void serializer_process(PARSER_RESULT* parser)
 {
 	PTS_2DA pts = {1, 0, 0, 0};
 	
 	// Si une commande de mvt est demandé
-	if(cmd->Etat_Mouvement == Stopper)
+	if(parser->commands.Etat_Mouvement == Stopper)
 	{
 		serializer_state = STOP;
 		is_processing = 0;
-		cmd->Etat_Mouvement = Mouvement_non;
+		parser->commands.Etat_Mouvement = Mouvement_non;
 	}
-	else if(cmd->Etat_Mouvement != Mouvement_non)
+	else if(parser->commands.Etat_Mouvement != Mouvement_non)
 	{
 		// Transition d'état de la FSM
 		switch(serializer_state)
 		{
 			case IDLE:
-				idle_next_state(cmd, &pts);
+				idle_next_state(&(parser->commands), &pts);
 				break;
 			
 			case TRANSLATE:
@@ -147,6 +149,7 @@ void serializer_process(OUT_M1* cmd)
 				break;
 				
 			case ROTATE:
+				// If already rotating
 				if(is_processing == 1)
 				{
 					serializer_state = ROTATE;
@@ -158,9 +161,25 @@ void serializer_process(OUT_M1* cmd)
 				break;
 				
 			case NAVIGATE:
-				if(is_processing == 1)
+				if(is_navigating == 1)
 				{
 					serializer_state = NAVIGATE;
+				}
+				else
+				{
+					parser->informations.Etat_BUT_Mouvement = BUT_Atteint_oui;
+					robot_position.angle = 1 * parser->commands.Angle;
+					robot_position.x = parser->commands.Coord_X;
+					robot_position.y = parser->commands.Coord_Y;
+					robot_position.speed = parser->commands.Vitesse;
+					serializer_state = IDLE;
+				}
+				break;
+				
+			case MOVETO:
+				if(is_processing == 1)
+				{
+					serializer_state = MOVETO;
 				}
 				else
 				{
@@ -172,7 +191,7 @@ void serializer_process(OUT_M1* cmd)
 				if(is_navigating == 0)
 				{
 					serializer_state = IDLE;
-					cmd->Etat_Mouvement = Mouvement_non;
+					parser->commands.Etat_Mouvement = Mouvement_non;
 				}
 				else{
 					serializer_state = NAVIGATE;
@@ -251,6 +270,14 @@ void idle_next_state(OUT_M1* cmd, PTS_2DA* pts)
 				pts->speed = 20;
 				break;
 			
+			case Depl_Coord:
+				serializer_state = NAVIGATE;
+				pts->angle = 1 * cmd->Angle;
+				pts->x = cmd->Coord_X;
+				pts->y = cmd->Coord_Y;
+				pts->speed = cmd->Vitesse;
+				break;
+			
 			default:
 				serializer_state = IDLE;
 				break;
@@ -274,14 +301,8 @@ void translate(PTS_2DA* pts)
 		{
 			speed = pts->speed;
 		}
-		
-		if(is_navigating == 1)
-		{
-			moveTo();
-			
-		}else{
-			setMotors(pts->x * speed, pts->x * speed);
-		}
+	
+		setMotors(pts->x * speed, pts->x * speed);
 		is_processing = 1;
 	}
 	
@@ -319,19 +340,33 @@ void navigate(PTS_2DA* pts)
 	switch(navigation_step)
 	{
 		case 0:
+			// Start Navigation Flag
 			is_navigating = 1;
 			temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
-			rotate(&temp_pts);
+			serializer_state = ROTATE;
 			navigation_step++;
+			rotate(&temp_pts);
 			break;
 		
 		case 1:
 			temp_pts.x = (robot_position.x - pts->x);
 			temp_pts.y = (robot_position.y - pts->y);
 			temp_pts.speed = pts->speed;
-			translate
-			//move(temp_pts);
+			serializer_state = MOVETO;
 			navigation_step++;
+			moveTo(&temp_pts);
+			break;
+		
+		case 2:
+			temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
+			serializer_state = ROTATE;
+			navigation_step++;
+			rotate(&temp_pts);
+			break;
+		
+		case 3:
+			is_navigating = 0;
+			navigation_step = 0;
 			break;
 		
 	}
@@ -353,17 +388,32 @@ void setMotors(int mtr_speed_1, int mtr_speed_2)
 void moveTo(PTS_2DA* pts)
 {
 	char cmd[DIGO_CMD_SIZE];
-	int distance_in_tick = 0, l_dist = 0;
+	int distance_in_tick = 0;
 	
-	distance_in_tick = distance(pts->x, pts->y);
+	if(is_processing == 0)
+	{
+		distance_in_tick = distance(pts->x, pts->y);
+		
+		// TODO : Pour le moment, la vitesse du digo est de 28%, donc pas la valeur set par TV
+		// On est obligé car ce 28 est fixé par le DPID et le VPID du sérializer ...
+		sprintf(cmd, "digo 1:%d:28 2:%d:28", distance_in_tick, distance_in_tick);
 	
-	// TODO : Pour le moment, la vitesse du digo est de 28%, donc pas la valeur set par TV
-	// On est obligé car ce 28 est fixé par le DPID et le VPID du sérializer ...
-	sprintf(cmd, "digo 1:%d:20 2:%d:20", distance_in_tick, distance_in_tick);
-	
-	serializer_print(cmd);
-	serializer_clear_serial();
-	
+		serializer_print(cmd);
+		serializer_clear_serial();
+		
+		is_processing = 1;
+	}
+	else{
+		
+		if(pids_timer >= 5000)
+		{
+			is_processing = is_PID_processing();
+			pids_timer = 0;
+		}
+		else{
+			pids_timer++;
+		}
+	}
 }
 
 void moveAngle(int angle)

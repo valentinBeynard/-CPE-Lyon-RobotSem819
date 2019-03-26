@@ -70,7 +70,7 @@ int main (void)
                       };
 											
 	IN_M1 informations = { Invite_non,	// Identifieur de l'etat d'Invite
-													0,	// Ptr sur la chaine contenant le msg d'invite
+													"Start Epreuve !\n",	// Ptr sur la chaine contenant le msg d'invite
 													BUT_Atteint_non,	// Arrivée au point transmit
 													BUT_Servo_non,	// Information position servomoteur
 													DCT_Obst_non,	// Mode de détection d'obstacle
@@ -132,10 +132,10 @@ int main (void)
 		
 		if( parser_result.commands.Etat_Epreuve == epreuve1)
     {
-      //USART_print("Epreuve 1 !");
-			serializer_process(&(parser_result.commands));
+      USART_print(parser_result.informations.MSG_Invit);
+			serializer_process(&parser_result);
 			
-			
+			// Commande Télémètre
 			if(parser_result.commands.Etat_DCT_Obst == oui_180)
 			{
 				f = start_conversion();
@@ -144,6 +144,13 @@ int main (void)
 				memset(mes, 0, 10);
 				parser_result.commands.Etat_DCT_Obst = DCT_non;
 			}
+			
+			if(parser_result.informations.Etat_BUT_Mouvement == BUT_Atteint_oui)
+			{
+				USART_print("Target Reached !! Success !\n");
+				parser_result.informations.Etat_BUT_Mouvement = BUT_Atteint_non;
+			}
+			
     }
 		else{
 			parser_result.commands.Etat_Mouvement = Mouvement_non;
