@@ -2,7 +2,7 @@
 #include <math.h>
 
 
-int angle_distance_target(int * angle_robot, byte x_target, byte y_target)
+int angle_target(int * angle_robot, byte x_target, byte y_target)
 {
 	float f_angle = 0;
 	int angle = 0;
@@ -16,26 +16,64 @@ int angle_distance_target(int * angle_robot, byte x_target, byte y_target)
 }
 
 
-int delta_angle(int * current_angle, int * angle_2)
+int delta_angle(int * alpha, int * beta)
 {
 	int angle = 0;
 	
+	/*
 	// Si signes opposés
-	if((*current_angle) * (*angle_2) < 0)
+	if((*alpha) * (*beta) < 0)
 	{
-		angle = (ABS(*current_angle) + ABS(*angle_2));
+		angle = (ABS(*alpha) + ABS(*beta));
 	}else{
-		angle = ABS((*current_angle) - (*angle_2));
+		angle = ABS((*alpha) - (*beta));
 	}
 	
-	if(current_angle <= 0)
+	if(alpha <= 0)
 	{
 		return (-1) * angle;
 	}
 	else
 	{
 		return angle;
+	}*/
+	
+		// Si signes opposés
+	if((*alpha) * (*beta) < 0)
+	{
+		if((*alpha) < (*beta))
+		{
+			if((*beta) < (*alpha +180))
+			{
+				angle = (ABS(*alpha) + ABS(*beta));
+			}
+			else{
+				angle = (-1) * (360 - (ABS(*alpha) + ABS(*beta)));
+			}
+		}
+		else
+		{
+			if((*beta) < (*alpha - 180))
+			{
+				angle = (-1) * (ABS(*alpha) + ABS(*beta));
+			}
+			else{
+				angle = (360 - (ABS(*alpha) + ABS(*beta)));
+			}
+		}	
 	}
+	else{
+		if((*alpha) < (*beta))
+		{
+			angle = ABS((*alpha) - (*beta));
+		}
+		else
+		{
+			angle = (-1) * ABS((*alpha) - (*beta));
+		}
+	}
+	
+	return angle;
 }
 
 float distance(byte x, byte y)

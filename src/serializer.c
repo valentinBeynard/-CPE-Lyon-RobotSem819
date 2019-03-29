@@ -346,8 +346,8 @@ void navigate(PTS_2DA* pts)
 			is_navigating = 1;
 			pts->x = 10;
 			pts->y = 10;
-			target_angle = angle_distance_target(&(robot_position.angle), pts->x, pts->y);
-			temp_pts.angle = delta_angle(&angle_robot, &target_angle);
+			target_angle = angle_target(&(robot_position.angle), pts->x, pts->y);
+			temp_pts.angle = delta_angle(&(robot_position.angle), &target_angle);
 			//temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
 			serializer_state = ROTATE;
 			navigation_step++;

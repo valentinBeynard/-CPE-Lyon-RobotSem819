@@ -22,7 +22,7 @@ Dialog DLL:      TCYG.DLL V2.70
  
 <h2>Project:</h2>
 F:\Mes Documents\GitHub\-CPE-Lyon-RobotSem819\robot_V1.uvproj
-Project File Date:  03/26/2019
+Project File Date:  03/29/2019
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
@@ -35,11 +35,15 @@ src\commands_parser.c(329): warning C280: 'data_buffer': unreferenced local vari
 src\commands_parser.c(329): warning C280: 'buffer_size': unreferenced local variable
 src\commands_parser.c(342): warning C280: 'parser_result': unreferenced local variable
 compiling main.c...
+src\main.c(90): warning C280: 'mes': unreferenced local variable
 compiling serializer.c...
-src\serializer.c(288): warning C280: 'pts': unreferenced local variable
-src\serializer.c(435): warning C280: 'pts': unreferenced local variable
+src\serializer.c(289): warning C280: 'pts': unreferenced local variable
+src\serializer.c(350): warning C182: pointer to different objects
+src\serializer.c(372): warning C182: pointer to different objects
+src\serializer.c(448): warning C280: 'pts': unreferenced local variable
 compiling telemetres.c...
 compiling motion.c...
+src\motion.c(5): warning C280: 'angle_robot': unreferenced local variable
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_CLEAR_BUFFER?COMMANDS_PARSER
@@ -49,8 +53,10 @@ linking...
     SEGMENT: ?PR?_GETENCODERDISTANCE?SERIALIZER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?CLEAR_ENCODER?SERIALIZER
-Program Size: data=21.4 xdata=710 code=14539
-".\Objects\robot_V1" - 0 Error(s), 11 Warning(s).
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?START_CONVERSION?TELEMETRES
+Program Size: data=21.4 xdata=678 code=15509
+".\Objects\robot_V1" - 0 Error(s), 16 Warning(s).
 </pre>
 </body>
 </html>
