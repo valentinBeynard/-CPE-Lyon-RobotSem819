@@ -279,7 +279,7 @@ byte parse(PARSER_RESULT* parser_result)
 	
 	cmd_packet.commands_data = commands_data;
 	cmd_packet.cmd_size = data_index;
-	cmd_packet.commands = &(parser_result->commands);
+	cmd_packet.commands = (parser_result->commands);
 
 	
   // Looking for the command in the Command Dictionnary
@@ -306,7 +306,7 @@ byte parse(PARSER_RESULT* parser_result)
 
 	//clear_buffer(commands_data, data_index+1);
 	memset(commands_data, 0 , MAX_COMMAND_WORD * ARGS_BUFFER_SIZE);
-	memset(cmd_packet.commands_data, 0 , MAX_COMMAND_WORD * ARGS_BUFFER_SIZE);
+	//memset(cmd_packet.commands_data, 0 , MAX_COMMAND_WORD * ARGS_BUFFER_SIZE);
 	//clear_buffer(cmd_packet.commands_data, data_index+1);
 
   return ret;

@@ -1,10 +1,10 @@
-C51 COMPILER V9.55   COMMANDS                                                              03/26/2019 23:20:41 PAGE 1   
+C51 COMPILER V9.52.0.0   COMMANDS                                                          03/28/2019 19:13:44 PAGE 1   
 
 
-C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE COMMANDS
 OBJECT MODULE PLACED IN .\Objects\commands.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\commands.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.
-                    -\Listings\commands.lst) TABS(2) OBJECT(.\Objects\commands.obj)
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\commands.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Li
+                    -stings\commands.lst) TABS(2) OBJECT(.\Objects\commands.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52          byte epreuve_stop(CMD_PACKET* cmd_packet)
   53          {
   54   1        //printf("Non-implemented command !!");
-C51 COMPILER V9.55   COMMANDS                                                              03/26/2019 23:20:41 PAGE 2   
+C51 COMPILER V9.52.0.0   COMMANDS                                                          03/28/2019 19:13:44 PAGE 2   
 
   55   1        cmd_packet->commands->Etat_Epreuve = Epreuve_non;
   56   1        
@@ -126,7 +126,7 @@ line level    source
  114   2          // Si valeur non numérique
  115   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
  116   2          {
-C51 COMPILER V9.55   COMMANDS                                                              03/26/2019 23:20:41 PAGE 3   
+C51 COMPILER V9.52.0.0   COMMANDS                                                          03/28/2019 19:13:44 PAGE 3   
 
  117   3            return 0;
  118   3          }
@@ -190,7 +190,7 @@ line level    source
  176   2        }
  177   1        cmd_packet->commands->Etat_Mouvement = Stopper;
  178   1        return 1;
-C51 COMPILER V9.55   COMMANDS                                                              03/26/2019 23:20:41 PAGE 4   
+C51 COMPILER V9.52.0.0   COMMANDS                                                          03/28/2019 19:13:44 PAGE 4   
 
  179   1      }
  180          
@@ -250,11 +250,11 @@ line level    source
  234          
  235          byte angle_rotation_cmd(CMD_PACKET* cmd_packet)
  236          {
- 237   1        unsigned int angle = 90;
+ 237   1        unsigned int angle = 0;
  238   1        
  239   1        if(cmd_packet->cmd_size != 2)
  240   1        {
-C51 COMPILER V9.55   COMMANDS                                                              03/26/2019 23:20:41 PAGE 5   
+C51 COMPILER V9.52.0.0   COMMANDS                                                          03/28/2019 19:13:44 PAGE 5   
 
  241   2          return 0;
  242   2        }
@@ -303,74 +303,76 @@ line level    source
  285   2          return 0;
  286   2        }
  287   1        
- 288   1        // Analyse each param:value couple
- 289   1        for(i = 0 ; i < 3 ; i++)
- 290   1        {
- 291   2          // For one couple, identify the param
- 292   2          for(j = 0 ; j < 3 ; j++)
- 293   2          {
- 294   3            if( strcmp((cmd_packet->commands_data + ( ((i*2) + 1) * ARGS_BUFFER_SIZE)), params[j]) == 0 )
- 295   3            {
- 296   4              switch(j)
- 297   4              {
- 298   5                case 0:
- 299   5                  if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &x) == 0)
- 300   5                  {
- 301   6                    return 0;
- 302   6                  }         
-C51 COMPILER V9.55   COMMANDS                                                              03/26/2019 23:20:41 PAGE 6   
+ 288   1        /*
+ 289   1        // Analyse each param:value couple
+ 290   1        for(i = 0 ; i < 3 ; i++)
+ 291   1        {
+ 292   1          // For one couple, identify the param
+ 293   1          for(j = 0 ; j < 3 ; j++)
+ 294   1          {
+ 295   1            if( strcmp((cmd_packet->commands_data + ( ((i*2) + 1) * ARGS_BUFFER_SIZE)), params[j]) == 0 )
+ 296   1            {
+ 297   1              switch(j)
+ 298   1              {
+ 299   1                case 0:
+ 300   1                  if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &x) == 0)
+ 301   1                  {
+ 302   1                    return 0;
+C51 COMPILER V9.52.0.0   COMMANDS                                                          03/28/2019 19:13:44 PAGE 6   
 
- 303   5                  break;
- 304   5                
- 305   5                case 1:
- 306   5                  if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &y) == 0)
- 307   5                  {
- 308   6                    return 0;
- 309   6                  }   
- 310   5                  break;
- 311   5                
- 312   5                case 2:
- 313   5                  if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
- 314   5                  {
- 315   6                    return 0;
- 316   6                  } 
- 317   5                  break;
- 318   5                
- 319   5              }
- 320   4              param_find = 1;
- 321   4              break;
- 322   4            }
- 323   3          }
- 324   2          
- 325   2          if(param_find == 0)
- 326   2          {
- 327   3            return 0;
- 328   3          }else{
- 329   3            param_find = 0;
- 330   3          }
- 331   2        }
- 332   1        
- 333   1        cmd_packet->commands->Angle = angle;
- 334   1        cmd_packet->commands->Coord_X = (byte)x;
- 335   1        cmd_packet->commands->Coord_Y = (byte)y;
- 336   1        cmd_packet->commands->Etat_Mouvement = Depl_Coord;
- 337   1        return 1;
- 338   1      }
- 339          
- 340          byte detecte_obstacle(CMD_PACKET* cmd_packet)
- 341          {
- 342   1        if(cmd_packet->cmd_size != 0)
- 343   1        {
- 344   2          return 0;
- 345   2        }
- 346   1        
- 347   1        cmd_packet->commands->Etat_DCT_Obst = oui_180;
- 348   1        return 1;
- 349   1      }
+ 303   1                  }         
+ 304   1                  break;
+ 305   1                
+ 306   1                case 1:
+ 307   1                  if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &y) == 0)
+ 308   1                  {
+ 309   1                    return 0;
+ 310   1                  }   
+ 311   1                  break;
+ 312   1                
+ 313   1                case 2:
+ 314   1                  if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
+ 315   1                  {
+ 316   1                    return 0;
+ 317   1                  } 
+ 318   1                  break;
+ 319   1                
+ 320   1              }
+ 321   1              param_find = 1;
+ 322   1              break;
+ 323   1            }
+ 324   1          }
+ 325   1          
+ 326   1          if(param_find == 0)
+ 327   1          {
+ 328   1            return 0;
+ 329   1          }else{
+ 330   1            param_find = 0;
+ 331   1          }
+ 332   1          
+ 333   1        }*/
+ 334   1        
+ 335   1        cmd_packet->commands->Angle = angle;
+ 336   1        cmd_packet->commands->Coord_X = (byte)x;
+ 337   1        cmd_packet->commands->Coord_Y = (byte)y;
+ 338   1        cmd_packet->commands->Etat_Mouvement = Depl_Coord;
+ 339   1        return 1;
+ 340   1      }
+ 341          
+ 342          byte detecte_obstacle(CMD_PACKET* cmd_packet)
+ 343          {
+ 344   1        if(cmd_packet->cmd_size != 0)
+ 345   1        {
+ 346   2          return 0;
+ 347   2        }
+ 348   1        
+ 349   1        cmd_packet->commands->Etat_DCT_Obst = oui_180;
+ 350   1        return 1;
+ 351   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   3044    ----
+   CODE SIZE        =   2544    ----
    CONSTANT SIZE    =     25    ----
    XDATA SIZE       =   ----      76
    PDATA SIZE       =   ----    ----

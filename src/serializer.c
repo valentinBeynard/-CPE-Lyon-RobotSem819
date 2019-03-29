@@ -122,19 +122,19 @@ void serializer_process(PARSER_RESULT* parser)
 	PTS_2DA pts = {1, 0, 0, 0};
 	
 	// Si une commande de mvt est demandé
-	if(parser->commands.Etat_Mouvement == Stopper)
+	if(parser->commands->Etat_Mouvement == Stopper)
 	{
 		serializer_state = STOP;
 		is_processing = 0;
-		parser->commands.Etat_Mouvement = Mouvement_non;
+		parser->commands->Etat_Mouvement = Mouvement_non;
 	}
-	else if(parser->commands.Etat_Mouvement != Mouvement_non)
+	else if(parser->commands->Etat_Mouvement != Mouvement_non)
 	{
 		// Transition d'état de la FSM
 		switch(serializer_state)
 		{
 			case IDLE:
-				idle_next_state(&(parser->commands), &pts);
+				idle_next_state(parser->commands, &pts);
 				break;
 			
 			case TRANSLATE:
@@ -167,11 +167,12 @@ void serializer_process(PARSER_RESULT* parser)
 				}
 				else
 				{
-					parser->informations.Etat_BUT_Mouvement = BUT_Atteint_oui;
-					robot_position.angle = 1 * parser->commands.Angle;
-					robot_position.x = parser->commands.Coord_X;
-					robot_position.y = parser->commands.Coord_Y;
-					robot_position.speed = parser->commands.Vitesse;
+					parser->informations->Etat_BUT_Mouvement = BUT_Atteint_oui;
+					parser->commands->Etat_Mouvement = Mouvement_non;
+					robot_position.angle = 1 * parser->commands->Angle;
+					robot_position.x = parser->commands->Coord_X;
+					robot_position.y = parser->commands->Coord_Y;
+					robot_position.speed = parser->commands->Vitesse;
 					serializer_state = IDLE;
 				}
 				break;
@@ -191,7 +192,7 @@ void serializer_process(PARSER_RESULT* parser)
 				if(is_navigating == 0)
 				{
 					serializer_state = IDLE;
-					parser->commands.Etat_Mouvement = Mouvement_non;
+					parser->commands->Etat_Mouvement = Mouvement_non;
 				}
 				else{
 					serializer_state = NAVIGATE;
@@ -335,6 +336,7 @@ void rotate(PTS_2DA* pts)
 void navigate(PTS_2DA* pts)
 {
 	static byte navigation_step = 0;
+	static char target_angle = 0;
 	PTS_2DA temp_pts = {0, 0, 0, 0};
 	
 	switch(navigation_step)
@@ -342,23 +344,32 @@ void navigate(PTS_2DA* pts)
 		case 0:
 			// Start Navigation Flag
 			is_navigating = 1;
-			temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
+			pts->x = 10;
+			pts->y = 10;
+			target_angle = angle_distance_target(&(robot_position.angle), pts->x, pts->y);
+			temp_pts.angle = delta_angle(&angle_robot, &target_angle);
+			//temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
 			serializer_state = ROTATE;
 			navigation_step++;
 			rotate(&temp_pts);
 			break;
 		
 		case 1:
+			/*
 			temp_pts.x = (robot_position.x - pts->x);
 			temp_pts.y = (robot_position.y - pts->y);
 			temp_pts.speed = pts->speed;
+		*/
+			temp_pts.x = 10;
+			temp_pts.y = 10;
+			temp_pts.speed = 20;
 			serializer_state = MOVETO;
 			navigation_step++;
 			moveTo(&temp_pts);
 			break;
 		
 		case 2:
-			temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
+			temp_pts.angle = delta_angle(&target_angle, &(robot_position.angle) );
 			serializer_state = ROTATE;
 			navigation_step++;
 			rotate(&temp_pts);
@@ -367,6 +378,7 @@ void navigate(PTS_2DA* pts)
 		case 3:
 			is_navigating = 0;
 			navigation_step = 0;
+			target_angle = 0;
 			break;
 		
 	}
@@ -393,6 +405,7 @@ void moveTo(PTS_2DA* pts)
 	if(is_processing == 0)
 	{
 		distance_in_tick = distance(pts->x, pts->y);
+		distance_in_tick = (int)(3.3 * 100 * distance_in_tick);
 		
 		// TODO : Pour le moment, la vitesse du digo est de 28%, donc pas la valeur set par TV
 		// On est obligé car ce 28 est fixé par le DPID et le VPID du sérializer ...
@@ -402,7 +415,7 @@ void moveTo(PTS_2DA* pts)
 		serializer_clear_serial();
 		
 		is_processing = 1;
-	}
+	} 
 	else{
 		
 		if(pids_timer >= 5000)
@@ -419,13 +432,13 @@ void moveTo(PTS_2DA* pts)
 void moveAngle(int angle)
 {
 	char cmd[DIGO_CMD_SIZE];
-	int distance_in_tick = 0, l_dist = 0;
+	int distance_in_tick = 0, r_dist = 0;
 	
 	distance_in_tick = ANGLE_2_DIST(angle);
 	
-	l_dist = (-1) * distance_in_tick;
+	r_dist = (-1) * distance_in_tick;
 	
-	sprintf(cmd, "digo 1:%d:20 2:%d:20", l_dist, distance_in_tick);
+	sprintf(cmd, "digo 1:%d:20 2:%d:20", distance_in_tick, r_dist);
 	serializer_print(cmd);
 	serializer_clear_serial();
 	

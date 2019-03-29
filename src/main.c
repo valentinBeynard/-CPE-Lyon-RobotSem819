@@ -9,39 +9,6 @@
 
 sfr Reg =	0xFF;
 
-void Init_External_clk()
-{
-	// Config External Osci
-	OSCXCN = 0x67;
-	while(OSCXCN != 0xE7) {}
-	
-	// Use Exern CLK
-	OSCICN = 0x08;
-}
-
-void Init_Crossbar()
-{
-	// Init UART0 on Crossbar
-	XBR0 = 0x04;
-	
-	// Init UART1 on Crossbar
-	XBR2 |= 0x04;
-	
-	// Push Pull mode
-	P0MDOUT = 0xFF;
-	
-	// Enable Crossbar
-	XBR2 |= 0x40;
-}
-
-
-#ifdef ROBOT
-
-int main (void)
-{
-  char mes[10];
-	float f = 0.0;
-	
 	OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
                       Mouvement_non,  // Etat mouvement
                       0,  //  Vitesse
@@ -88,9 +55,40 @@ int main (void)
 													0	// ptr vers la chaîne de caractère auxiliare
 											};
 											
-											
- 
-  PARSER_RESULT parser_result = {1 , &commands, &informations};
+PARSER_RESULT parser_result = {1 , &commands, &informations};
+
+void Init_External_clk()
+{
+	// Config External Osci
+	OSCXCN = 0x67;
+	while(OSCXCN != 0xE7) {}
+	
+	// Use Exern CLK
+	OSCICN = 0x08;
+}
+
+void Init_Crossbar()
+{
+	// Init UART0 on Crossbar
+	XBR0 = 0x04;
+	
+	// Init UART1 on Crossbar
+	XBR2 |= 0x04;
+	
+	// Push Pull mode
+	P0MDOUT = 0xFF;
+	
+	// Enable Crossbar
+	XBR2 |= 0x40;
+}
+
+
+#ifdef ROBOT
+
+int main (void)
+{
+  char mes[10];
+	float f = 0.0;								
   
 	
 	Reg = 0xDE;   // Dévalidation du watchdog 
@@ -124,19 +122,20 @@ int main (void)
 		//parser_process(state, &parser_result);
     cmd_parser_process(&parser_result);
     
-		if( parser_result.commands.Etat_Epreuve == Stop_Urgence)
+		if( parser_result.commands->Etat_Epreuve == Stop_Urgence)
     {
       USART_print("Quit");
 			break;
     }
 		
-		if( parser_result.commands.Etat_Epreuve == epreuve1)
+		if( parser_result.commands->Etat_Epreuve == epreuve1)
     {
       //USART_print(parser_result.informations.MSG_Invit);
 			
 			serializer_process(&parser_result);
 			
 			// Commande Télémètre
+			/*
 			if(parser_result.commands.Etat_DCT_Obst == oui_180)
 			{
 				f = start_conversion();
@@ -145,16 +144,16 @@ int main (void)
 				memset(mes, 0, 10);
 				parser_result.commands.Etat_DCT_Obst = DCT_non;
 			}
-			
-			if(parser_result.informations.Etat_BUT_Mouvement == BUT_Atteint_oui)
+			*/
+			if(parser_result.informations->Etat_BUT_Mouvement == BUT_Atteint_oui)
 			{
 				USART_print("Target Reached !! Success !\n");
-				parser_result.informations.Etat_BUT_Mouvement = BUT_Atteint_non;
+				parser_result.informations->Etat_BUT_Mouvement = BUT_Atteint_non;
 			}
 			
     }
 		else{
-			parser_result.commands.Etat_Mouvement = Mouvement_non;
+			parser_result.commands->Etat_Mouvement = Mouvement_non;
 		}
 		
 		//serializer_send('H');

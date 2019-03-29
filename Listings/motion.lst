@@ -1,39 +1,69 @@
-C51 COMPILER V9.55   MOTION                                                                03/26/2019 23:20:41 PAGE 1   
+C51 COMPILER V9.52.0.0   MOTION                                                            03/28/2019 19:13:44 PAGE 1   
 
 
-C51 COMPILER V9.55, COMPILATION OF MODULE MOTION
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MOTION
 OBJECT MODULE PLACED IN .\Objects\motion.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\motion.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
-                    -istings\motion.lst) TABS(2) OBJECT(.\Objects\motion.obj)
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\motion.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\List
+                    -ings\motion.lst) TABS(2) OBJECT(.\Objects\motion.obj)
 
 line level    source
 
    1          #include "motion.h"
    2          #include <math.h>
    3          
-   4          int delta_angle(int * angle_1, int * angle_2)
-   5          {
-   6   1        // Si signes opposés
-   7   1        if((*angle_1) * (*angle_2) < 0)
-   8   1        {
-   9   2          return (ABS(*angle_1) + ABS(*angle_2));
-  10   2        }else{
-  11   2          return ABS((*angle_1) - (*angle_2));
-  12   2        }
-  13   1      }
-  14          
-  15          int distance(byte x, byte y)
-  16          {
-  17   1        return sqrt(x*x + y*y);
-  18   1      }
-  19          
-  20          
+   4          
+   5          int angle_distance_target(int * angle_robot, byte x_target, byte y_target)
+   6          {
+   7   1        float f_angle = 0;
+   8   1        int angle = 0;
+   9   1        
+  10   1        f_angle = atan((x_target/(float)y_target));
+  11   1        f_angle = (180 * f_angle) / M_PI; 
+  12   1        
+  13   1        angle = (int)f_angle;
+  14   1        
+  15   1        return angle;
+  16   1      }
+*** WARNING C280 IN LINE 5 OF src\motion.c: 'angle_robot': unreferenced local variable
+  17          
+  18          
+  19          int delta_angle(int * current_angle, int * angle_2)
+  20          {
+  21   1        int angle = 0;
+  22   1        
+  23   1        // Si signes opposés
+  24   1        if((*current_angle) * (*angle_2) < 0)
+  25   1        {
+  26   2          angle = (ABS(*current_angle) + ABS(*angle_2));
+  27   2        }else{
+  28   2          angle = ABS((*current_angle) - (*angle_2));
+  29   2        }
+  30   1        
+  31   1        if(current_angle <= 0)
+  32   1        {
+  33   2          return (-1) * angle;
+  34   2        }
+  35   1        else
+  36   1        {
+  37   2          return angle;
+  38   2        }
+  39   1      }
+  40          
+  41          float distance(byte x, byte y)
+  42          {
+  43   1        
+  44   1        return sqrt(x*x + y*y);
+  45   1      }
+  46          
+  47          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    424    ----
+   CODE SIZE        =    651    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =   ----       8
+   XDATA SIZE       =   ----      21
+C51 COMPILER V9.52.0.0   MOTION                                                            03/28/2019 19:13:44 PAGE 2   
+
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
@@ -41,4 +71,4 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

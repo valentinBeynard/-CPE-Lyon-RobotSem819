@@ -1,10 +1,10 @@
-C51 COMPILER V9.55   MAIN                                                                  03/26/2019 23:20:41 PAGE 1   
+C51 COMPILER V9.52.0.0   MAIN                                                              03/28/2019 19:13:44 PAGE 1   
 
 
-C51 COMPILER V9.55, COMPILATION OF MODULE MAIN
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN .\Objects\main.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\main.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Lis
-                    -tings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\main.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listin
+                    -gs\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
 
 line level    source
 
@@ -19,181 +19,181 @@ line level    source
    9          
   10          sfr Reg = 0xFF;
   11          
-  12          void Init_External_clk()
-  13          {
-  14   1        // Config External Osci
-  15   1        OSCXCN = 0x67;
-  16   1        while(OSCXCN != 0xE7) {}
-  17   1        
-  18   1        // Use Exern CLK
-  19   1        OSCICN = 0x08;
-  20   1      }
-  21          
-  22          void Init_Crossbar()
-  23          {
-  24   1        // Init UART0 on Crossbar
-  25   1        XBR0 = 0x04;
-  26   1        
-  27   1        // Init UART1 on Crossbar
-  28   1        XBR2 |= 0x04;
-  29   1        
-  30   1        // Push Pull mode
-  31   1        P0MDOUT = 0xFF;
-  32   1        
-  33   1        // Enable Crossbar
-  34   1        XBR2 |= 0x40;
-  35   1      }
-  36          
-  37          
-  38          #ifdef ROBOT
-  39          
-  40          int main (void)
-  41          {
-  42   1        char mes[10];
-  43   1        float f = 0.0;
-  44   1        
-  45   1        OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
-  46   1                            Mouvement_non,  // Etat mouvement
-  47   1                            0,  //  Vitesse
-  48   1                            0,  // Coord_X
-  49   1                            0,  // Coord_Y
-  50   1                            0,  // Angle
-  51   1                            ACQ_non,  // Commande d'acquisition du son
-  52   1                            0,  // Durée d'acquisition
-  53   1                            DCT_non,  // Commande de détection d'obstacle
-  54   1                            0,  // Résolution angulaire de la détection d'obstacle
-C51 COMPILER V9.55   MAIN                                                                  03/26/2019 23:20:41 PAGE 2   
+  12            OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
+  13                                Mouvement_non,  // Etat mouvement
+  14                                0,  //  Vitesse
+  15                                0,  // Coord_X
+  16                                0,  // Coord_Y
+  17                                0,  // Angle
+  18                                ACQ_non,  // Commande d'acquisition du son
+  19                                0,  // Durée d'acquisition
+  20                                DCT_non,  // Commande de détection d'obstacle
+  21                                0,  // Résolution angulaire de la détection d'obstacle
+  22                                Lumiere_non,  // Commande d'allumage du pointeur lumineux
+  23                                0,  //Intensitée lumineuse
+  24                                0,  // Durée d'allumage
+  25                                0,  // Durée d'extinction
+  26                                0,  // Nombre de cycles d'allumage
+  27                                Servo_non,  // Commande de position du servo
+  28                                0,  // Paramètre angle
+  29                                Energie_non,  // Commande relevée courant
+  30                                Position_non, // Commande de gestion de position
+  31                                0,  // Coord X de position
+  32                                0,  // Coord Y de position
+  33                                0,  // Angle
+  34                                Photo_non,  // Commande de prise de phot
+  35                                0,  // Temps entre deux photo
+  36                                0 // Nbr de photo
+  37                                };
+  38                                
+  39            IN_M1 informations = { Invite_non,  // Identifieur de l'etat d'Invite
+  40                                    "Start Epreuve !\n",  // Ptr sur la chaine contenant le msg d'invite
+  41                                    BUT_Atteint_non,  // Arrivée au point transmit
+  42                                    BUT_Servo_non,  // Information position servomoteur
+  43                                    DCT_Obst_non, // Mode de détection d'obstacle
+  44                                    0,  // ptr vers tableau des distances
+  45                                    0,  // taille du tableau 
+  46                                    RESULT_Courant_non, // Identificateur pour la mesure de courant
+  47                                    0,  // Valeur de courant relevée
+  48                                    RESULT_Energie_non, // Identificateur pour la mesure d'énergie
+  49                                    0,  // Valeur d'énergie relevée
+  50                                    RESULT_Position_non,  // Identificateur de position du robot
+  51                                    0,  // Coord X
+  52                                    0,  // Coord Y
+  53                                    0,  // Angle
+  54                                    Aux_non,  // Identificateur pour la commande auxiliare
+C51 COMPILER V9.52.0.0   MAIN                                                              03/28/2019 19:13:44 PAGE 2   
 
-  55   1                            Lumiere_non,  // Commande d'allumage du pointeur lumineux
-  56   1                            0,  //Intensitée lumineuse
-  57   1                            0,  // Durée d'allumage
-  58   1                            0,  // Durée d'extinction
-  59   1                            0,  // Nombre de cycles d'allumage
-  60   1                            Servo_non,  // Commande de position du servo
-  61   1                            0,  // Paramètre angle
-  62   1                            Energie_non,  // Commande relevée courant
-  63   1                            Position_non, // Commande de gestion de position
-  64   1                            0,  // Coord X de position
-  65   1                            0,  // Coord Y de position
-  66   1                            0,  // Angle
-  67   1                            Photo_non,  // Commande de prise de phot
-  68   1                            0,  // Temps entre deux photo
-  69   1                            0 // Nbr de photo
-  70   1                            };
-  71   1                            
-  72   1        IN_M1 informations = { Invite_non,  // Identifieur de l'etat d'Invite
-  73   1                                "Start Epreuve !\n",  // Ptr sur la chaine contenant le msg d'invite
-  74   1                                BUT_Atteint_non,  // Arrivée au point transmit
-  75   1                                BUT_Servo_non,  // Information position servomoteur
-  76   1                                DCT_Obst_non, // Mode de détection d'obstacle
-  77   1                                0,  // ptr vers tableau des distances
-  78   1                                0,  // taille du tableau 
-  79   1                                RESULT_Courant_non, // Identificateur pour la mesure de courant
-  80   1                                0,  // Valeur de courant relevée
-  81   1                                RESULT_Energie_non, // Identificateur pour la mesure d'énergie
-  82   1                                0,  // Valeur d'énergie relevée
-  83   1                                RESULT_Position_non,  // Identificateur de position du robot
-  84   1                                0,  // Coord X
-  85   1                                0,  // Coord Y
-  86   1                                0,  // Angle
-  87   1                                Aux_non,  // Identificateur pour la commande auxiliare
-  88   1                                0 // ptr vers la chaîne de caractère auxiliare
-  89   1                            };
-  90   1                            
-  91   1                            
-  92   1       
-  93   1        PARSER_RESULT parser_result = {1 , &commands, &informations};
-  94   1        
-  95   1        
-  96   1        Reg = 0xDE;   // Dévalidation du watchdog 
-  97   1        Reg = 0xAD;
-  98   1        
-  99   1        // µP candencé sur clk extern à 22 MHz           
- 100   1        Init_External_clk();
- 101   1        
- 102   1        // Initialise l'UART0 et le Timer 2 pour le parser de commandes       
- 103   1        init_parser();
- 104   1          
- 105   1        // Initialise l'UART1 utilisé pour communiquer avec le sérializer
- 106   1        init_serializer_UART1();
- 107   1                    
- 108   1        Init_Crossbar();
- 109   1        
- 110   1        init_telemeter();
- 111   1      
- 112   1        USART_print("Start Routine \n\n");
- 113   1        USART_print("Waiting for Serializer Init Processing... \n\n");
- 114   1                
- 115   1        serializer_init_serial();
- 116   1                    
-C51 COMPILER V9.55   MAIN                                                                  03/26/2019 23:20:41 PAGE 3   
+  55                                    0 // ptr vers la chaîne de caractère auxiliare
+  56                                };
+  57                                
+  58          PARSER_RESULT parser_result = {1 , &commands, &informations};
+  59          
+  60          void Init_External_clk()
+  61          {
+  62   1        // Config External Osci
+  63   1        OSCXCN = 0x67;
+  64   1        while(OSCXCN != 0xE7) {}
+  65   1        
+  66   1        // Use Exern CLK
+  67   1        OSCICN = 0x08;
+  68   1      }
+  69          
+  70          void Init_Crossbar()
+  71          {
+  72   1        // Init UART0 on Crossbar
+  73   1        XBR0 = 0x04;
+  74   1        
+  75   1        // Init UART1 on Crossbar
+  76   1        XBR2 |= 0x04;
+  77   1        
+  78   1        // Push Pull mode
+  79   1        P0MDOUT = 0xFF;
+  80   1        
+  81   1        // Enable Crossbar
+  82   1        XBR2 |= 0x40;
+  83   1      }
+  84          
+  85          
+  86          #ifdef ROBOT
+  87          
+  88          int main (void)
+  89          {
+  90   1        char mes[10];
+  91   1        float f = 0.0;                
+  92   1        
+  93   1        
+  94   1        Reg = 0xDE;   // Dévalidation du watchdog 
+  95   1        Reg = 0xAD;
+  96   1        
+  97   1        // µP candencé sur clk extern à 22 MHz           
+  98   1        Init_External_clk();
+  99   1        
+ 100   1        // Initialise l'UART0 et le Timer 2 pour le parser de commandes       
+ 101   1        init_parser();
+ 102   1          
+ 103   1        // Initialise l'UART1 utilisé pour communiquer avec le sérializer
+ 104   1        init_serializer_UART1();
+ 105   1                    
+ 106   1        Init_Crossbar();
+ 107   1        
+ 108   1        init_telemeter();
+ 109   1      
+ 110   1        USART_print("Start Routine \n\n");
+ 111   1        USART_print("Waiting for Serializer Init Processing... \n\n");
+ 112   1                
+ 113   1        serializer_init_serial();
+ 114   1                    
+ 115   1        USART_print("\n\n#############################\n\n>");
+ 116   1      
+C51 COMPILER V9.52.0.0   MAIN                                                              03/28/2019 19:13:44 PAGE 3   
 
- 117   1        USART_print("\n\n#############################\n\n>");
- 118   1      
- 119   1        //serializer_print("mogo 1:50 2:50");
- 120   1                  
- 121   1        while(1)
- 122   1        {
- 123   2          
- 124   2          //parser_process(state, &parser_result);
- 125   2          cmd_parser_process(&parser_result);
- 126   2          
- 127   2          if( parser_result.commands.Etat_Epreuve == Stop_Urgence)
- 128   2          {
- 129   3            USART_print("Quit");
- 130   3            break;
- 131   3          }
- 132   2          
- 133   2          if( parser_result.commands.Etat_Epreuve == epreuve1)
- 134   2          {
- 135   3            //USART_print(parser_result.informations.MSG_Invit);
+ 117   1        //serializer_print("mogo 1:50 2:50");
+ 118   1                  
+ 119   1        while(1)
+ 120   1        {
+ 121   2          
+ 122   2          //parser_process(state, &parser_result);
+ 123   2          cmd_parser_process(&parser_result);
+ 124   2          
+ 125   2          if( parser_result.commands->Etat_Epreuve == Stop_Urgence)
+ 126   2          {
+ 127   3            USART_print("Quit");
+ 128   3            break;
+ 129   3          }
+ 130   2          
+ 131   2          if( parser_result.commands->Etat_Epreuve == epreuve1)
+ 132   2          {
+ 133   3            //USART_print(parser_result.informations.MSG_Invit);
+ 134   3            
+ 135   3            serializer_process(&parser_result);
  136   3            
- 137   3            serializer_process(&parser_result);
- 138   3            
- 139   3            // Commande Télémètre
- 140   3            if(parser_result.commands.Etat_DCT_Obst == oui_180)
- 141   3            {
- 142   4              f = start_conversion();
- 143   4              sprintf(mes, "%f", f);
- 144   4              USART_print(mes);
- 145   4              memset(mes, 0, 10);
- 146   4              parser_result.commands.Etat_DCT_Obst = DCT_non;
- 147   4            }
- 148   3            
- 149   3            if(parser_result.informations.Etat_BUT_Mouvement == BUT_Atteint_oui)
- 150   3            {
- 151   4              USART_print("Target Reached !! Success !\n");
- 152   4              parser_result.informations.Etat_BUT_Mouvement = BUT_Atteint_non;
- 153   4            }
- 154   3            
- 155   3          }
- 156   2          else{
- 157   3            parser_result.commands.Etat_Mouvement = Mouvement_non;
- 158   3          }
- 159   2          
- 160   2          //serializer_send('H');
- 161   2          //USART_send('A');
- 162   2          //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
- 163   2        
- 164   2          
- 165   2          //serializer_print("mogo 1:50 2:50\r");
- 166   2          
- 167   2        }
- 168   1        
- 169   1        USART_print("Fin Soft");
- 170   1        
- 171   1        while(1);
- 172   1      }
- 173          
- 174          #endif
+ 137   3            // Commande Télémètre
+ 138   3            /*
+ 139   3            if(parser_result.commands.Etat_DCT_Obst == oui_180)
+ 140   3            {
+ 141   3              f = start_conversion();
+ 142   3              sprintf(mes, "%f", f);
+ 143   3              USART_print(mes);
+ 144   3              memset(mes, 0, 10);
+ 145   3              parser_result.commands.Etat_DCT_Obst = DCT_non;
+ 146   3            }
+ 147   3            */
+ 148   3            if(parser_result.informations->Etat_BUT_Mouvement == BUT_Atteint_oui)
+ 149   3            {
+ 150   4              USART_print("Target Reached !! Success !\n");
+ 151   4              parser_result.informations->Etat_BUT_Mouvement = BUT_Atteint_non;
+ 152   4            }
+ 153   3            
+ 154   3          }
+ 155   2          else{
+ 156   3            parser_result.commands->Etat_Mouvement = Mouvement_non;
+ 157   3          }
+ 158   2          
+ 159   2          //serializer_send('H');
+ 160   2          //USART_send('A');
+ 161   2          //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
+ 162   2        
+ 163   2          
+ 164   2          //serializer_print("mogo 1:50 2:50\r");
+ 165   2          
+ 166   2        }
+ 167   1        
+ 168   1        USART_print("Fin Soft");
+ 169   1        
+ 170   1        while(1);
+ 171   1      }
+*** WARNING C280 IN LINE 90 OF src\main.c: 'mes': unreferenced local variable
+ 172          
+ 173          #endif
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    405    ----
-C51 COMPILER V9.55   MAIN                                                                  03/26/2019 23:20:41 PAGE 4   
+   CODE SIZE        =    247    ----
+C51 COMPILER V9.52.0.0   MAIN                                                              03/28/2019 19:13:44 PAGE 4   
 
-   CONSTANT SIZE    =    267    ----
-   XDATA SIZE       =   ----     121
+   CONSTANT SIZE    =    157    ----
+   XDATA SIZE       =     60      14
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
@@ -201,4 +201,4 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

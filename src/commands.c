@@ -234,7 +234,7 @@ byte complete_rotation_cmd(CMD_PACKET* cmd_packet)
 
 byte angle_rotation_cmd(CMD_PACKET* cmd_packet)
 {
-	unsigned int angle = 90;
+	unsigned int angle = 0;
 	
 	if(cmd_packet->cmd_size != 2)
 	{
@@ -285,6 +285,7 @@ byte move_to_cmd(CMD_PACKET* cmd_packet)
 		return 0;
 	}
 	
+	/*
 	// Analyse each param:value couple
 	for(i = 0 ; i < 3 ; i++)
 	{
@@ -328,7 +329,8 @@ byte move_to_cmd(CMD_PACKET* cmd_packet)
 		}else{
 			param_find = 0;
 		}
-	}
+		
+	}*/
 	
 	cmd_packet->commands->Angle = angle;
 	cmd_packet->commands->Coord_X = (byte)x;

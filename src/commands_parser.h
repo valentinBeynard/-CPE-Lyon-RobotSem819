@@ -32,8 +32,8 @@
 typedef struct
 {
   byte has_command;
-  OUT_M1 commands;
-	IN_M1 informations;
+  OUT_M1 * commands;
+	IN_M1 * informations;
 }PARSER_RESULT;
 
 typedef enum
