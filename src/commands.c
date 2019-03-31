@@ -278,6 +278,8 @@ byte move_to_cmd(CMD_PACKET* cmd_packet)
 	char params[3][5] = {"X", "Y", "A"};
 	int angle = 0, x = 0, y = 0;
 	byte param_find = 0;
+	char * str = 0;
+	
 	
 	// Not enougth args
 	if(cmd_packet->cmd_size != 6)
@@ -286,32 +288,39 @@ byte move_to_cmd(CMD_PACKET* cmd_packet)
 	}
 	
 	/*
+		This Code section is working just in level 1 compiler optimization...
+		sscanf seems to involve data overlaying. Thus, we can test commands 
+		data since they are modify during the process ...
+	*/
+	
 	// Analyse each param:value couple
-	for(i = 0 ; i < 3 ; i++)
+	for(i = 0 ; i < 3 ; ++i)
 	{
+		str = (cmd_packet->commands_data + ( ((2*i) + 1) * ARGS_BUFFER_SIZE));
+		
 		// For one couple, identify the param
 		for(j = 0 ; j < 3 ; j++)
 		{
-			if( strcmp((cmd_packet->commands_data + ( ((i*2) + 1) * ARGS_BUFFER_SIZE)), params[j]) == 0 )
+			if( strcmp(str, params[j]) == 0 )
 			{
 				switch(j)
 				{
 					case 0:
-						if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &x) == 0)
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &x) == 0)
 						{
 							return 0;
 						}					
 						break;
 					
 					case 1:
-						if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &y) == 0)
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &y) == 0)
 						{
 							return 0;
 						}		
 						break;
 					
 					case 2:
-						if(sscanf((cmd_packet->commands_data + ((i+1) * 2 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
 						{
 							return 0;
 						}	
@@ -330,7 +339,7 @@ byte move_to_cmd(CMD_PACKET* cmd_packet)
 			param_find = 0;
 		}
 		
-	}*/
+	}
 	
 	cmd_packet->commands->Angle = angle;
 	cmd_packet->commands->Coord_X = (byte)x;

@@ -250,14 +250,14 @@ byte parse(PARSER_RESULT* parser_result)
       switch (c)
       {
         case COMMAND_SEPARATOR:
-          *( *(commands_data + data_index) + ptr ) = '\0';
+          //*( *(commands_data + data_index) + ptr ) = '\0';
           //USART_print(commands_data[data_index]);
           data_index++;
           ptr = 0;
           break;
 
         case ARG_VALUE_SEPARATOR:
-          *( *(commands_data + data_index) + ptr ) = '\0';
+          //*( *(commands_data + data_index) + ptr ) = '\0';
           //USART_print(commands_data[data_index]);
           data_index++;
           ptr = 0;
@@ -265,7 +265,7 @@ byte parse(PARSER_RESULT* parser_result)
 
           // Fin de l'analyse
         case STOP_BYTE:
-          *( *(commands_data + data_index) + ptr ) = '\0';
+          //*( *(commands_data + data_index) + ptr ) = '\0';
           //USART_print(commands_data[data_index]);
           run = 0;
           break;
