@@ -9,7 +9,7 @@
 #define M_PI 3.14159265358979323846
 
 
-int angle_target(int * angle_robot, byte x_target, byte y_target);
+int angle_target(byte x_target, byte y_target);
 int delta_angle(int * angle_1, int * angle_2);
 float distance(byte x, byte y);
 

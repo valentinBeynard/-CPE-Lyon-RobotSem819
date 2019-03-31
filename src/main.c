@@ -135,16 +135,15 @@ int main (void)
 			serializer_process(&parser_result);
 			
 			// Commande Télémètre
-			/*
-			if(parser_result.commands.Etat_DCT_Obst == oui_180)
+			if(parser_result.commands->Etat_DCT_Obst == oui_180)
 			{
 				f = start_conversion();
 				sprintf(mes, "%f", f);
 				USART_print(mes);
 				memset(mes, 0, 10);
-				parser_result.commands.Etat_DCT_Obst = DCT_non;
+				parser_result.commands->Etat_DCT_Obst = DCT_non;
 			}
-			*/
+			
 			if(parser_result.informations->Etat_BUT_Mouvement == BUT_Atteint_oui)
 			{
 				USART_print("Target Reached !! Success !\n");

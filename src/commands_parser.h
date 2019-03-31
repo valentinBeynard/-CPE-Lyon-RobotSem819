@@ -107,7 +107,7 @@ void get_command(PARSER_RESULT* parser_result);
 /*
   TODO
 */
-void read_command(PARSER_RESULT* parser_result);
+//void send_command(PARSER_RESULT* parser_result);
 
 /*
   Découpe le buffer brute afin d'en extraire le nom de la commande, les paramètres,
@@ -125,6 +125,5 @@ Renvoie la séquence définie par le CdC lorsque la commande est éronnée : "\n
 */
 void error_cmd_flag();
 
-void clear_buffer(char** data_buffer, byte buffer_size);
 
 #endif

@@ -182,6 +182,9 @@ void wait(PARSER_RESULT* parser_result)
 
   // Scrutation sur l'UART0
   USART_receive(&read_byte);
+	
+	// For WARNING C280 supression
+	parser_result = parser_result;
 
   // Si on lit un caractère
   if(read_byte != '*'){
@@ -277,7 +280,7 @@ byte parse(PARSER_RESULT* parser_result)
 	
 	// Préparation du packet
 	
-	cmd_packet.commands_data = commands_data;
+	cmd_packet.commands_data = (char*)commands_data;
 	cmd_packet.cmd_size = data_index;
 	cmd_packet.commands = (parser_result->commands);
 
@@ -326,23 +329,15 @@ void error_cmd_flag()
 	USART_send(COMMAND_ERROR_BYTE);	
 }
 
-void clear_buffer(char** data_buffer, byte buffer_size)
+/*
+void send_command(PARSER_RESULT* parser_result)
 {
-	byte i = 0;
-	/*
-	for(i = 0 ; i <= buffer_size; ++i)
-	{
-		memset(*(data_buffer + i), 0 , ARGS_BUFFER_SIZE);
-		memset(data_buffer + i, 0 , 1);
-	}
-	*/
+  // For WARNING C280 supression
+	parser_result = parser_result;
 	
+	// Nothing TODO
 }
-
-void read_command(PARSER_RESULT* parser_result)
-{
-    // Nothing TODO
-}
+*/
 
 /*
 char encode_data()

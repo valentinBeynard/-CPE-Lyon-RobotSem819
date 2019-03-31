@@ -159,9 +159,11 @@ void setMotors(int mtr_speed_1, int mtr_speed_2);
 void moveTo(PTS_2DA* pts);
 void moveAngle(int angle);
 
+/*
 int getRawEncoders(ENCODER_ID encoder_id);
 int getEncoderDistance(ENCODER_ID encoder_id);
 void clear_encoder();
+*/
 
 char is_PID_processing();
 

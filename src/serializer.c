@@ -288,6 +288,9 @@ void idle_next_state(OUT_M1* cmd, PTS_2DA* pts)
 
 void idle(PTS_2DA* pts)
 {
+	// For WARNING C280 supression
+	pts = pts;
+	
 	// Nothing to do
 }
 
@@ -336,7 +339,7 @@ void rotate(PTS_2DA* pts)
 void navigate(PTS_2DA* pts)
 {
 	static byte navigation_step = 0;
-	static char target_angle = 0;
+	static int target_angle = 0;
 	PTS_2DA temp_pts = {0, 0, 0, 0};
 	
 	switch(navigation_step)
@@ -346,7 +349,7 @@ void navigate(PTS_2DA* pts)
 			is_navigating = 1;
 			pts->x = 10;
 			pts->y = 10;
-			target_angle = angle_target(&(robot_position.angle), pts->x, pts->y);
+			target_angle = angle_target(pts->x, pts->y);
 			temp_pts.angle = delta_angle(&(robot_position.angle), &target_angle);
 			//temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
 			serializer_state = ROTATE;
@@ -447,11 +450,15 @@ void moveAngle(int angle)
 
 void stop(PTS_2DA* pts)
 {
+	// For WARNING C280 supression
+	pts = pts;
+	
 	serializer_print("stop");	
 	serializer_clear_serial();
 	//clear_encoder();
 }
 
+/*
 int getRawEncoders(ENCODER_ID encoder_id)
 {
 	int enc_value = 0;
@@ -488,6 +495,7 @@ int getEncoderDistance(ENCODER_ID encoder_id)
 	return ENC_2_MM(enc_value);
 }
 
+
 void clear_encoder()
 {
 	char result[PID_RSLT_SIZE];
@@ -504,6 +512,7 @@ void clear_encoder()
 	
 	
 }
+*/
 
 char is_PID_processing()
 {

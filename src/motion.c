@@ -2,7 +2,7 @@
 #include <math.h>
 
 
-int angle_target(int * angle_robot, byte x_target, byte y_target)
+int angle_target(byte x_target, byte y_target)
 {
 	float f_angle = 0;
 	int angle = 0;
