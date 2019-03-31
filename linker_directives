@@ -1,0 +1,4 @@
+
+PRINT(".\Listings\robot_V1.m51") RAMSIZE(256) 
+
+OVERLAY( * ! move_to_cmd )

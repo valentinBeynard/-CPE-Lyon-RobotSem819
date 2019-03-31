@@ -1,9 +1,9 @@
-C51 COMPILER V9.55   MAIN                                                                  03/31/2019 19:32:23 PAGE 1   
+C51 COMPILER V9.55   MAIN                                                                  03/31/2019 22:32:48 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN .\Objects\main.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\main.c LARGE OPTIMIZE(1,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Lis
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\main.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Lis
                     -tings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
 
 line level    source
@@ -62,7 +62,7 @@ line level    source
   52                                    0,  // Coord Y
   53                                    0,  // Angle
   54                                    Aux_non,  // Identificateur pour la commande auxiliare
-C51 COMPILER V9.55   MAIN                                                                  03/31/2019 19:32:23 PAGE 2   
+C51 COMPILER V9.55   MAIN                                                                  03/31/2019 22:32:48 PAGE 2   
 
   55                                    0 // ptr vers la chaîne de caractère auxiliare
   56                                };
@@ -126,7 +126,7 @@ line level    source
  114   1                    
  115   1        USART_print("\n\n#############################\n\n>");
  116   1      
-C51 COMPILER V9.55   MAIN                                                                  03/31/2019 19:32:23 PAGE 3   
+C51 COMPILER V9.55   MAIN                                                                  03/31/2019 22:32:48 PAGE 3   
 
  117   1        //serializer_print("mogo 1:50 2:50");
  118   1                  
@@ -189,8 +189,8 @@ line level    source
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    394    ----
    CONSTANT SIZE    =    160    ----
-   XDATA SIZE       =     74    ----
-C51 COMPILER V9.55   MAIN                                                                  03/31/2019 19:32:23 PAGE 4   
+   XDATA SIZE       =     60      14
+C51 COMPILER V9.55   MAIN                                                                  03/31/2019 22:32:48 PAGE 4   
 
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----

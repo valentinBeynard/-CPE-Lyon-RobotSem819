@@ -7,3 +7,4 @@
 ".\Objects\motion.obj" 
 TO ".\Objects\robot_V1" 
 PRINT(".\Listings\robot_V1.m51") RAMSIZE(256) 
+OVERLAY( * ! move_to_cmd )

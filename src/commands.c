@@ -271,6 +271,8 @@ byte angle_rotation_cmd(CMD_PACKET* cmd_packet)
 
 	Ex : "G X:10 Y:15 A:45"
 
+	Function exclude from Data Overlaying in "linker_directives" : OVERLAY( * ! move_to_cmd )
+
 */
 byte move_to_cmd(CMD_PACKET* cmd_packet)
 {
@@ -286,12 +288,6 @@ byte move_to_cmd(CMD_PACKET* cmd_packet)
 	{
 		return 0;
 	}
-	
-	/*
-		This Code section is working just in level 1 compiler optimization...
-		sscanf seems to involve data overlaying. Thus, we can test commands 
-		data since they are modify during the process ...
-	*/
 	
 	// Analyse each param:value couple
 	for(i = 0 ; i < 3 ; ++i)
