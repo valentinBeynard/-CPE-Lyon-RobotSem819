@@ -148,7 +148,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>10</TargetSelection>
+          <TargetSelection>9</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -327,16 +327,16 @@
             </VariousControls>
           </Ax51>
           <Lx51>
-            <useFile>0</useFile>
+            <useFile>1</useFile>
             <linkonly>0</linkonly>
             <UseMemoryFromTarget>1</UseMemoryFromTarget>
             <CaseSensitiveSymbols>0</CaseSensitiveSymbols>
             <WarningLevel>2</WarningLevel>
             <DataOverlaying>1</DataOverlaying>
-            <OverlayString>* ! move_to_cmd</OverlayString>
+            <OverlayString></OverlayString>
             <MiscControls></MiscControls>
             <DisableWarningNumbers></DisableWarningNumbers>
-            <LinkerCmdFile></LinkerCmdFile>
+            <LinkerCmdFile>.\linker_directives.lin</LinkerCmdFile>
             <Assign></Assign>
             <ReserveString></ReserveString>
             <CClasses></CClasses>
@@ -414,16 +414,6 @@
               <FilePath>.\src\serializer.h</FilePath>
             </File>
             <File>
-              <FileName>telemetres.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\telemetres.h</FilePath>
-            </File>
-            <File>
-              <FileName>telemetres.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\telemetres.c</FilePath>
-            </File>
-            <File>
               <FileName>motion.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\motion.c</FilePath>
@@ -432,6 +422,16 @@
               <FileName>motion.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\motion.h</FilePath>
+            </File>
+            <File>
+              <FileName>distance_detector.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\distance_detector.c</FilePath>
+            </File>
+            <File>
+              <FileName>distance_detector.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\distance_detector.h</FilePath>
             </File>
           </Files>
         </Group>

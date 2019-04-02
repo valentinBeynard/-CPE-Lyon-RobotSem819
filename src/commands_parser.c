@@ -45,7 +45,7 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     {"SD", default_process},
     {"L", default_process},
     {"LS", default_process},
-    {"CS", default_process},
+    {"CS", &servo_move_cmd},
     {"PPH", default_process},
     {"SPH", default_process},
     {"AUX", default_process}

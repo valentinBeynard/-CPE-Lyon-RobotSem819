@@ -22,7 +22,7 @@ Dialog DLL:      TCYG.DLL V2.70
  
 <h2>Project:</h2>
 F:\Mes Documents\GitHub\-CPE-Lyon-RobotSem819\robot_V1.uvproj
-Project File Date:  03/31/2019
+Project File Date:  04/02/2019
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
@@ -30,10 +30,15 @@ assembling STARTUP.A51...
 compiling commands.c...
 compiling commands_parser.c...
 compiling main.c...
+src\main.c(93): warning C280: 'mes': unreferenced local variable
 compiling serializer.c...
-compiling telemetres.c...
 compiling motion.c...
+compiling distance_detector.c...
+src\distance_detector.c(167): warning C280: 'dd_packet': unreferenced local variable
+src\distance_detector.c(169): warning C280: 'step': unreferenced local variable
 linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DD_START_CONVERSION?DISTANCE_DETECTOR
 *** WARNING L15: MULTIPLE CALL TO SEGMENT
     SEGMENT: ?PR?SCANF?SCANF
     CALLER1: ?C_C51STARTUP
@@ -42,8 +47,22 @@ linking...
     SEGMENT: ?PR??C?ATOF??C?ATOF
     CALLER1: ?C_C51STARTUP
     CALLER2: ?PR?_MOVE_TO_CMD?COMMANDS
-Program Size: data=33.7 xdata=693 code=15790
-".\Objects\robot_V1" - 0 Error(s), 2 Warning(s).
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _DD_SINGLE_MEASURE
+    MODULE:  .\Objects\distance_detector.obj (DISTANCE_DETECTOR)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _DD_OBS_DETECTION
+    MODULE:  .\Objects\distance_detector.obj (DISTANCE_DETECTOR)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _DD_SINGLE_MEASURE
+    MODULE:  .\Objects\distance_detector.obj (DISTANCE_DETECTOR)
+    ADDRESS: 275BH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _DD_OBS_DETECTION
+    MODULE:  .\Objects\distance_detector.obj (DISTANCE_DETECTOR)
+    ADDRESS: 2763H
+Program Size: data=33.7 xdata=746 code=16664
+".\Objects\robot_V1" - 0 Error(s), 10 Warning(s).
 </pre>
 </body>
 </html>

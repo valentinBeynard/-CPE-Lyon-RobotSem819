@@ -1,0 +1,247 @@
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/02/2019 22:31:06 PAGE 1   
+
+
+C51 COMPILER V9.55, COMPILATION OF MODULE DISTANCE_DETECTOR
+OBJECT MODULE PLACED IN .\Objects\distance_detector.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\distance_detector.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\distance_detector.lst) TABS(2) OBJECT(.\Objects\distance_detector.obj)
+
+line level    source
+
+   1          //
+   2          // Target: C8051F02x
+   3          // Tool chain: KEIL Microvision 4
+   4          //
+   5          //  NOM: METEYER
+   6          
+   7          //
+   8          //------------------------------------------------------------------------------------
+   9          #include "distance_detector.h"
+  10          
+  11          //port de sortie
+  12          sbit P1_2 = P1^2;
+  13          
+  14          sfr16 ADC0 = 0xbe;
+  15          
+  16          int servo_angle_H = 0;
+  17          
+  18          DD_STATE dd_current_state = DD_IDLE;
+  19          
+  20          /*
+  21              FULL STATE MACHINE
+  22          
+  23              Liste des Etats de la machines d'état associés à leur fonction
+  24          */
+  25          const DD_FSM_PROCESS dd_full_state_machine[5] = {
+  26              {DD_IDLE, &dd_idle},
+  27              {MOVE_SERVO_H, &dd_move_servo_h},
+  28              {SINGLE_MEASURE, &dd_single_measure},
+  29              {SLEW_DETECTION, &dd_slew_detection},
+  30              {OBS_DETECTION, &dd_obs_detection}
+  31          };
+  32          
+  33          /*
+  34          #############################################################################
+  35                  Interrupt Routine For Timer 0
+  36          #############################################################################
+  37          */
+  38            
+  39          void timer_0_int() interrupt 1
+  40          {
+  41   1        int duree_imp = 0;
+  42   1        static char high = 0;
+  43   1        static int reload_value = 0;
+  44   1        
+  45   1        duree_imp = (10*(servo_angle_H+90)) + 600 ;// 600us pour 90°  (cf doc technique)
+  46   1        
+  47   1        P1_2 = !P1_2;
+  48   1        
+  49   1        if (high == 0)
+  50   1        {
+  51   2          reload_value = 0xFFFF - (2*6000 - duree_imp);
+  52   2          high=1;
+  53   2        } else {
+  54   2          
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/02/2019 22:31:06 PAGE 2   
+
+  55   2          reload_value = 0xFFFF - (2*duree_imp-300);
+  56   2          high=0;
+  57   2        }
+  58   1        TL0= reload_value;
+  59   1        TH0= reload_value >> 8; //on décale pour obtenir les bits de poids fort
+  60   1      }
+  61          
+  62          /*
+  63          #############################################################################
+  64                  End of Interrupt Routine For Timer 0
+  65          #############################################################################
+  66          */
+  67          
+  68          /*
+  69          #############################################################################
+  70                  Peripheric initialize
+  71          #############################################################################
+  72          */
+  73          
+  74          
+  75          void Init_distance_detector()
+  76          {
+  77   1        dd_config_DAC_ADC();
+  78   1        
+  79   1        
+  80   1        // XBAR for servomoteur H
+  81   1        XBR1 |=0x02; 
+  82   1        
+  83   1        /* XBAR for telemeter */
+  84   1        XBR1 |= 0x80;
+  85   1        
+  86   1        // Push-Pull mode
+  87   1        P1MDOUT = 0xFF;
+  88   1        
+  89   1        dd_init_timer0();
+  90   1        
+  91   1        ET0 = 1;  // Enable timer0 interuption
+  92   1        EA = 1; // Enable general interruption
+  93   1      }
+  94          
+  95          void dd_init_timer0()
+  96          { 
+  97   1        //Reglages Timer 0
+  98   1        TMOD=0x01; //mode 1
+  99   1        TCON= 0x11; // Enable Timer0 (bit4) and enable interupt on edge (bit0)
+ 100   1        TL0=0xA8;
+ 101   1        TH0=0xFB;
+ 102   1      }
+ 103          
+ 104          void dd_config_DAC_ADC() {
+ 105   1      
+ 106   1        ADC0CN |=0x81;
+ 107   1        ADC0CN &= ~0x4C;
+ 108   1        ADC0CF &= 0x00;
+ 109   1        //AMX0SL&=0xF0;
+ 110   1        //AMX0CF&=0xF0;
+ 111   1      
+ 112   1        REF0CN&=0xEB;
+ 113   1        REF0CN|=0x03;
+ 114   1        
+ 115   1        DAC0CN |=0x80;
+ 116   1        DAC0CN &=0xE0;
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/02/2019 22:31:06 PAGE 3   
+
+ 117   1      }
+ 118          
+ 119          /*
+ 120          #############################################################################
+ 121                  Distance Detector Core
+ 122          #############################################################################
+ 123          */
+ 124          
+ 125          //const FSM_PROCESS* cmd_parser_next_state()
+ 126          void distance_detector_process(DD_PACKET * dd_packet)
+ 127          {
+ 128   1        dd_full_state_machine[dd_current_state].state_process(dd_packet);
+ 129   1      }
+ 130          
+ 131          
+ 132          void dd_idle(DD_PACKET * dd_packet)
+ 133          {
+ 134   1        if(dd_packet->commands->Etat_DCT_Obst != DCT_non)
+ 135   1        {
+ 136   2          switch(dd_packet->commands->Etat_DCT_Obst)
+ 137   2          {
+ 138   3            case oui_180:
+ 139   3              dd_current_state = SLEW_DETECTION;
+ 140   3              break;
+ 141   3            
+ 142   3            case oui_360:
+ 143   3              
+ 144   3              break;
+ 145   3            
+ 146   3            default:
+ 147   3              dd_current_state = DD_IDLE;
+ 148   3          }
+ 149   2        }
+ 150   1        else
+ 151   1        {
+ 152   2          if(dd_packet->commands->Etat_Servo == Servo_H)
+ 153   2          {
+ 154   3            dd_current_state = MOVE_SERVO_H;
+ 155   3          }
+ 156   2        }
+ 157   1      
+ 158   1      }
+ 159          
+ 160          void dd_move_servo_h(DD_PACKET * dd_packet)
+ 161          {
+ 162   1        dd_set_angle(&(dd_packet->commands->Servo_Angle));
+ 163   1        dd_packet->commands->Etat_Servo = Servo_non;
+ 164   1        dd_current_state = DD_IDLE;
+ 165   1      }
+ 166          
+ 167          void dd_slew_detection(DD_PACKET * dd_packet)
+ 168          {
+ 169   1        static byte step = 0;
+ 170   1        
+ 171   1      }
+*** WARNING C280 IN LINE 167 OF src\distance_detector.c: 'dd_packet': unreferenced local variable
+*** WARNING C280 IN LINE 169 OF src\distance_detector.c: 'step': unreferenced local variable
+ 172          
+ 173          void dd_set_angle(char * angle)
+ 174          {
+ 175   1        servo_angle_H = *angle;
+ 176   1      }
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/02/2019 22:31:06 PAGE 4   
+
+ 177          
+ 178          
+ 179          float dd_mesure(){
+ 180   1        
+ 181   1        float d;
+ 182   1        float V_mes;
+ 183   1        
+ 184   1        //lecture de la tension mesurée sur AIN2
+ 185   1        AMX0SL&=0x00;
+ 186   1        AMX0SL|=0x01;
+ 187   1        
+ 188   1        V_mes=ADC0/(POW*5.6);
+ 189   1        
+ 190   1        //Calcul des distances
+ 191   1        d=-16.669*V_mes+67.367; 
+ 192   1        //putchar((char)d);
+ 193   1        
+ 194   1        return d;
+ 195   1        
+ 196   1      } 
+ 197          
+ 198          
+ 199          float dd_start_conversion(){
+ 200   1        float conv;
+ 201   1        unsigned int j;
+ 202   1        AD0INT=0;
+ 203   1        AD0BUSY=1;
+ 204   1        dd_mesure();
+ 205   1        AD0BUSY=0;
+ 206   1        
+ 207   1        for(j=0;j<1000;j++); //On temporise pour atteindre la stabilité
+ 208   1        
+ 209   1        AD0INT=0;
+ 210   1        AD0BUSY=1;
+ 211   1        conv =dd_mesure();
+ 212   1        AD0BUSY=0;
+ 213   1        
+ 214   1        return conv;
+ 215   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    730    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     27      31
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

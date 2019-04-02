@@ -1,7 +1,7 @@
 #include "debug.h"
 #include "commands_parser.h"
 #include "serializer.h"
-#include "telemetres.h"
+#include "distance_detector.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -54,8 +54,11 @@ sfr Reg =	0xFF;
 													Aux_non,	// Identificateur pour la commande auxiliare
 													0	// ptr vers la chaîne de caractère auxiliare
 											};
+	
+			
 											
 PARSER_RESULT parser_result = {1 , &commands, &informations};
+DD_PACKET dd_packet = {&commands, &informations, 0.0, 0};
 
 void Init_External_clk()
 {
@@ -105,7 +108,8 @@ int main (void)
 							
 	Init_Crossbar();
 	
-	init_telemeter();
+	//dd_init_telemeter();
+	Init_distance_detector();
 
 	USART_print("Start Routine \n\n");
 	USART_print("Waiting for Serializer Init Processing... \n\n");
@@ -134,15 +138,18 @@ int main (void)
 			
 			serializer_process(&parser_result);
 			
+			distance_detector_process(&dd_packet);
+			
 			// Commande Télémètre
+			/*
 			if(parser_result.commands->Etat_DCT_Obst == oui_180)
 			{
-				f = start_conversion();
+				f = dd_start_conversion();
 				sprintf(mes, "%f", f);
 				USART_print(mes);
 				memset(mes, 0, 10);
 				parser_result.commands->Etat_DCT_Obst = DCT_non;
-			}
+			}*/
 			
 			if(parser_result.informations->Etat_BUT_Mouvement == BUT_Atteint_oui)
 			{
@@ -154,13 +161,6 @@ int main (void)
 		else{
 			parser_result.commands->Etat_Mouvement = Mouvement_non;
 		}
-		
-		//serializer_send('H');
-    //USART_send('A');
-    //printf("Commande lu : %u", (int)(parser_result.commands->Etat_Epreuve));
-  
-		
-		//serializer_print("mogo 1:50 2:50\r");
 		
 	}
 	

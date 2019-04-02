@@ -354,3 +354,40 @@ byte detecte_obstacle(CMD_PACKET* cmd_packet)
 	cmd_packet->commands->Etat_DCT_Obst = oui_180;
 	return 1;
 }
+
+byte servo_move_cmd(CMD_PACKET* cmd_packet)
+{
+	int angle = 45;
+	
+	if(cmd_packet->cmd_size > 3)
+	{
+		return 0;
+	}
+	
+	if(strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "H") == 0 
+		|| strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "V") == 0)
+	{
+		switch( (*(cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE))) )
+		{
+			case 'V':
+				cmd_packet->commands->Etat_Servo = Servo_V;
+				break;
+			default :
+				cmd_packet->commands->Etat_Servo = Servo_H;
+				break;
+		}
+		
+	}
+	
+	if(strcmp((cmd_packet->commands_data + (2 * ARGS_BUFFER_SIZE)), "A") == 0 )
+	{
+		if(sscanf((cmd_packet->commands_data + (3 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
+		{
+			return 0;
+		}
+	
+		cmd_packet->commands->Servo_Angle = (char)(angle);
+	}
+	
+	return 1;
+}

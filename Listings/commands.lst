@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   COMMANDS                                                              03/31/2019 22:32:48 PAGE 1   
+C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS
@@ -62,7 +62,7 @@ line level    source
   52          byte epreuve_stop(CMD_PACKET* cmd_packet)
   53          {
   54   1        //printf("Non-implemented command !!");
-C51 COMPILER V9.55   COMMANDS                                                              03/31/2019 22:32:48 PAGE 2   
+C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 2   
 
   55   1        cmd_packet->commands->Etat_Epreuve = Epreuve_non;
   56   1        
@@ -126,7 +126,7 @@ line level    source
  114   2          // Si valeur non numérique
  115   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
  116   2          {
-C51 COMPILER V9.55   COMMANDS                                                              03/31/2019 22:32:48 PAGE 3   
+C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 3   
 
  117   3            return 0;
  118   3          }
@@ -190,7 +190,7 @@ line level    source
  176   2        }
  177   1        cmd_packet->commands->Etat_Mouvement = Stopper;
  178   1        return 1;
-C51 COMPILER V9.55   COMMANDS                                                              03/31/2019 22:32:48 PAGE 4   
+C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 4   
 
  179   1      }
  180          
@@ -254,7 +254,7 @@ line level    source
  238   1        
  239   1        if(cmd_packet->cmd_size != 2)
  240   1        {
-C51 COMPILER V9.55   COMMANDS                                                              03/31/2019 22:32:48 PAGE 5   
+C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 5   
 
  241   2          return 0;
  242   2        }
@@ -289,103 +289,136 @@ line level    source
  271          
  272            Ex : "G X:10 Y:15 A:45"
  273          
- 274          */
- 275          byte move_to_cmd(CMD_PACKET* cmd_packet)
- 276          {
- 277   1        byte i = 0, j = 0;
- 278   1        char params[3][5] = {"X", "Y", "A"};
- 279   1        int angle = 0, x = 0, y = 0;
- 280   1        byte param_find = 0;
- 281   1        char * str = 0;
- 282   1        
- 283   1        
- 284   1        // Not enougth args
- 285   1        if(cmd_packet->cmd_size != 6)
- 286   1        {
- 287   2          return 0;
- 288   2        }
- 289   1        
- 290   1        /*
- 291   1          This Code section is working just in level 1 compiler optimization...
- 292   1          sscanf seems to involve data overlaying. Thus, we can test commands 
- 293   1          data since they are modify during the process ...
- 294   1        */
- 295   1        
- 296   1        // Analyse each param:value couple
- 297   1        for(i = 0 ; i < 3 ; ++i)
- 298   1        {
- 299   2          str = (cmd_packet->commands_data + ( ((2*i) + 1) * ARGS_BUFFER_SIZE));
- 300   2          
- 301   2          // For one couple, identify the param
- 302   2          for(j = 0 ; j < 3 ; j++)
-C51 COMPILER V9.55   COMMANDS                                                              03/31/2019 22:32:48 PAGE 6   
+ 274            Function exclude from Data Overlaying in "linker_directives" : OVERLAY( * ! move_to_cmd )
+ 275          
+ 276          */
+ 277          byte move_to_cmd(CMD_PACKET* cmd_packet)
+ 278          {
+ 279   1        byte i = 0, j = 0;
+ 280   1        char params[3][5] = {"X", "Y", "A"};
+ 281   1        int angle = 0, x = 0, y = 0;
+ 282   1        byte param_find = 0;
+ 283   1        char * str = 0;
+ 284   1        
+ 285   1        
+ 286   1        // Not enougth args
+ 287   1        if(cmd_packet->cmd_size != 6)
+ 288   1        {
+ 289   2          return 0;
+ 290   2        }
+ 291   1        
+ 292   1        // Analyse each param:value couple
+ 293   1        for(i = 0 ; i < 3 ; ++i)
+ 294   1        {
+ 295   2          str = (cmd_packet->commands_data + ( ((2*i) + 1) * ARGS_BUFFER_SIZE));
+ 296   2          
+ 297   2          // For one couple, identify the param
+ 298   2          for(j = 0 ; j < 3 ; j++)
+ 299   2          {
+ 300   3            if( strcmp(str, params[j]) == 0 )
+ 301   3            {
+ 302   4              switch(j)
+C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 6   
 
- 303   2          {
- 304   3            if( strcmp(str, params[j]) == 0 )
- 305   3            {
- 306   4              switch(j)
- 307   4              {
- 308   5                case 0:
- 309   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &x) == 0)
- 310   5                  {
- 311   6                    return 0;
- 312   6                  }         
- 313   5                  break;
- 314   5                
- 315   5                case 1:
- 316   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &y) == 0)
- 317   5                  {
- 318   6                    return 0;
- 319   6                  }   
- 320   5                  break;
- 321   5                
- 322   5                case 2:
- 323   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
- 324   5                  {
- 325   6                    return 0;
- 326   6                  } 
- 327   5                  break;
- 328   5                
- 329   5              }
- 330   4              param_find = 1;
- 331   4              break;
- 332   4            }
- 333   3          }
- 334   2          
- 335   2          if(param_find == 0)
- 336   2          {
- 337   3            return 0;
- 338   3          }else{
- 339   3            param_find = 0;
- 340   3          }
- 341   2          
- 342   2        }
- 343   1        
- 344   1        cmd_packet->commands->Angle = angle;
- 345   1        cmd_packet->commands->Coord_X = (byte)x;
- 346   1        cmd_packet->commands->Coord_Y = (byte)y;
- 347   1        cmd_packet->commands->Etat_Mouvement = Depl_Coord;
- 348   1        return 1;
- 349   1      }
- 350          
- 351          byte detecte_obstacle(CMD_PACKET* cmd_packet)
- 352          {
- 353   1        if(cmd_packet->cmd_size != 0)
- 354   1        {
- 355   2          return 0;
- 356   2        }
- 357   1        
- 358   1        cmd_packet->commands->Etat_DCT_Obst = oui_180;
- 359   1        return 1;
- 360   1      }
+ 303   4              {
+ 304   5                case 0:
+ 305   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &x) == 0)
+ 306   5                  {
+ 307   6                    return 0;
+ 308   6                  }         
+ 309   5                  break;
+ 310   5                
+ 311   5                case 1:
+ 312   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &y) == 0)
+ 313   5                  {
+ 314   6                    return 0;
+ 315   6                  }   
+ 316   5                  break;
+ 317   5                
+ 318   5                case 2:
+ 319   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
+ 320   5                  {
+ 321   6                    return 0;
+ 322   6                  } 
+ 323   5                  break;
+ 324   5                
+ 325   5              }
+ 326   4              param_find = 1;
+ 327   4              break;
+ 328   4            }
+ 329   3          }
+ 330   2          
+ 331   2          if(param_find == 0)
+ 332   2          {
+ 333   3            return 0;
+ 334   3          }else{
+ 335   3            param_find = 0;
+ 336   3          }
+ 337   2          
+ 338   2        }
+ 339   1        
+ 340   1        cmd_packet->commands->Angle = angle;
+ 341   1        cmd_packet->commands->Coord_X = (byte)x;
+ 342   1        cmd_packet->commands->Coord_Y = (byte)y;
+ 343   1        cmd_packet->commands->Etat_Mouvement = Depl_Coord;
+ 344   1        return 1;
+ 345   1      }
+ 346          
+ 347          byte detecte_obstacle(CMD_PACKET* cmd_packet)
+ 348          {
+ 349   1        if(cmd_packet->cmd_size != 0)
+ 350   1        {
+ 351   2          return 0;
+ 352   2        }
+ 353   1        
+ 354   1        cmd_packet->commands->Etat_DCT_Obst = oui_180;
+ 355   1        return 1;
+ 356   1      }
+ 357          
+ 358          byte servo_move_cmd(CMD_PACKET* cmd_packet)
+ 359          {
+ 360   1        int angle = 45;
+ 361   1        
+ 362   1        if(cmd_packet->cmd_size > 3)
+ 363   1        {
+ 364   2          return 0;
+C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 7   
+
+ 365   2        }
+ 366   1        
+ 367   1        if(strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "H") == 0 
+ 368   1          || strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "V") == 0)
+ 369   1        {
+ 370   2          switch( (*(cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE))) )
+ 371   2          {
+ 372   3            case 'V':
+ 373   3              cmd_packet->commands->Etat_Servo = Servo_V;
+ 374   3              break;
+ 375   3            default :
+ 376   3              cmd_packet->commands->Etat_Servo = Servo_H;
+ 377   3              break;
+ 378   3          }
+ 379   2          
+ 380   2        }
+ 381   1        
+ 382   1        if(strcmp((cmd_packet->commands_data + (2 * ARGS_BUFFER_SIZE)), "A") == 0 )
+ 383   1        {
+ 384   2          if(sscanf((cmd_packet->commands_data + (3 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
+ 385   2          {
+ 386   3            return 0;
+ 387   3          }
+ 388   2        
+ 389   2          cmd_packet->commands->Servo_Angle = (char)(angle);
+ 390   2        }
+ 391   1        
+ 392   1        return 1;
+ 393   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   3103    ----
-C51 COMPILER V9.55   COMMANDS                                                              03/31/2019 22:32:48 PAGE 7   
-
-   CONSTANT SIZE    =     25    ----
-   XDATA SIZE       =   ----      79
+   CODE SIZE        =   3527    ----
+   CONSTANT SIZE    =     31    ----
+   XDATA SIZE       =   ----      84
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
