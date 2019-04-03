@@ -1,9 +1,9 @@
-C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 1   
+C51 COMPILER V9.55   COMMANDS                                                              04/03/2019 11:39:57 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS
 OBJECT MODULE PLACED IN .\Objects\commands.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\commands.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\commands.c LARGE OPTIMIZE(0,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.
                     -\Listings\commands.lst) TABS(2) OBJECT(.\Objects\commands.obj)
 
 line level    source
@@ -62,7 +62,7 @@ line level    source
   52          byte epreuve_stop(CMD_PACKET* cmd_packet)
   53          {
   54   1        //printf("Non-implemented command !!");
-C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 2   
+C51 COMPILER V9.55   COMMANDS                                                              04/03/2019 11:39:57 PAGE 2   
 
   55   1        cmd_packet->commands->Etat_Epreuve = Epreuve_non;
   56   1        
@@ -126,7 +126,7 @@ line level    source
  114   2          // Si valeur non numérique
  115   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
  116   2          {
-C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 3   
+C51 COMPILER V9.55   COMMANDS                                                              04/03/2019 11:39:57 PAGE 3   
 
  117   3            return 0;
  118   3          }
@@ -190,7 +190,7 @@ line level    source
  176   2        }
  177   1        cmd_packet->commands->Etat_Mouvement = Stopper;
  178   1        return 1;
-C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 4   
+C51 COMPILER V9.55   COMMANDS                                                              04/03/2019 11:39:57 PAGE 4   
 
  179   1      }
  180          
@@ -254,7 +254,7 @@ line level    source
  238   1        
  239   1        if(cmd_packet->cmd_size != 2)
  240   1        {
-C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 5   
+C51 COMPILER V9.55   COMMANDS                                                              04/03/2019 11:39:57 PAGE 5   
 
  241   2          return 0;
  242   2        }
@@ -301,7 +301,7 @@ line level    source
  283   1        char * str = 0;
  284   1        
  285   1        
- 286   1        // Not enougth args
+ 286   1        // Not enougthl args
  287   1        if(cmd_packet->cmd_size != 6)
  288   1        {
  289   2          return 0;
@@ -318,7 +318,7 @@ line level    source
  300   3            if( strcmp(str, params[j]) == 0 )
  301   3            {
  302   4              switch(j)
-C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 6   
+C51 COMPILER V9.55   COMMANDS                                                              04/03/2019 11:39:57 PAGE 6   
 
  303   4              {
  304   5                case 0:
@@ -382,7 +382,7 @@ line level    source
  362   1        if(cmd_packet->cmd_size > 3)
  363   1        {
  364   2          return 0;
-C51 COMPILER V9.55   COMMANDS                                                              04/02/2019 22:31:06 PAGE 7   
+C51 COMPILER V9.55   COMMANDS                                                              04/03/2019 11:39:57 PAGE 7   
 
  365   2        }
  366   1        
@@ -416,9 +416,9 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   3527    ----
+   CODE SIZE        =   3536    ----
    CONSTANT SIZE    =     31    ----
-   XDATA SIZE       =   ----      84
+   XDATA SIZE       =     84    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

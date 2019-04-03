@@ -68,6 +68,8 @@ void Init_External_clk()
 	
 	// Use Exern CLK
 	OSCICN = 0x08;
+		
+	CKCON = 0x00;
 }
 
 void Init_Crossbar()
@@ -91,7 +93,8 @@ void Init_Crossbar()
 int main (void)
 {
   char mes[10];
-	float f = 0.0;								
+	float f = 0.0;
+	int angle = 80;
   
 	
 	Reg = 0xDE;   // Dévalidation du watchdog 
@@ -108,7 +111,6 @@ int main (void)
 							
 	Init_Crossbar();
 	
-	//dd_init_telemeter();
 	Init_distance_detector();
 
 	USART_print("Start Routine \n\n");
@@ -123,7 +125,6 @@ int main (void)
   while(1)
   {
     
-		//parser_process(state, &parser_result);
     cmd_parser_process(&parser_result);
     
 		if( parser_result.commands->Etat_Epreuve == Stop_Urgence)
@@ -134,22 +135,22 @@ int main (void)
 		
 		if( parser_result.commands->Etat_Epreuve == epreuve1)
     {
-      //USART_print(parser_result.informations.MSG_Invit);
+      //USART_print(parser_result.informations.MSG_Invit);			
 			
 			serializer_process(&parser_result);
 			
+			
 			distance_detector_process(&dd_packet);
 			
-			// Commande Télémètre
-			/*
+			
 			if(parser_result.commands->Etat_DCT_Obst == oui_180)
 			{
-				f = dd_start_conversion();
-				sprintf(mes, "%f", f);
+				dd_packet.measure = dd_start_conversion();
+				sprintf(mes, "%f", dd_packet.measure);
 				USART_print(mes);
 				memset(mes, 0, 10);
 				parser_result.commands->Etat_DCT_Obst = DCT_non;
-			}*/
+			}
 			
 			if(parser_result.informations->Etat_BUT_Mouvement == BUT_Atteint_oui)
 			{

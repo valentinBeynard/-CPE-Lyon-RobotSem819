@@ -283,7 +283,7 @@ byte move_to_cmd(CMD_PACKET* cmd_packet)
 	char * str = 0;
 	
 	
-	// Not enougth args
+	// Not enougthl args
 	if(cmd_packet->cmd_size != 6)
 	{
 		return 0;

@@ -13,7 +13,9 @@ sbit P1_2 = P1^2;
 
 sfr16 ADC0 = 0xbe;
 
-int servo_angle_H = 0;
+volatile int servo_angle_H = 0;
+
+byte pwn_over = 0;
 
 DD_STATE dd_current_state = DD_IDLE;
 
@@ -37,26 +39,39 @@ const DD_FSM_PROCESS dd_full_state_machine[5] = {
 */
 	
 void timer_0_int() interrupt 1
-{
-	int duree_imp = 0;
+{	
+	static byte nbr_interrupt = 0;
 	static char high = 0;
-	static int reload_value = 0;
 	
-	duree_imp = (10*(servo_angle_H+90)) + 600 ;// 600us pour 90°  (cf doc technique)
+	int duree_imp = 0;
+	int reload_value = 0;
+
+	duree_imp = 10*(servo_angle_H+90) + 600 ;// 600us pour 90°  (cf doc technique)
 	
 	P1_2 = !P1_2;
 	
 	if (high == 0)
 	{
-		reload_value = 0xFFFF - (2*6000 - duree_imp);
+		reload_value = 0xFFFF - (2*6000 - duree_imp );
 		high=1;
 	} else {
 		
-		reload_value = 0xFFFF - (2*duree_imp-300);
+		reload_value = 0xFFFF - (2 * duree_imp );
 		high=0;
 	}
 	TL0= reload_value;
 	TH0= reload_value >> 8; //on décale pour obtenir les bits de poids fort
+	
+	if(nbr_interrupt >= 150)
+	{
+		ET0 = 0;	// Enable timer0 interuption
+		nbr_interrupt = 0;
+		pwn_over = 1;
+	}
+	else
+	{
+		nbr_interrupt++;
+	}
 }
 
 /*
@@ -99,6 +114,8 @@ void dd_init_timer0()
 	TCON= 0x11;	// Enable Timer0 (bit4) and enable interupt on edge (bit0)
 	TL0=0xA8;
 	TH0=0xFB;
+	
+	TR0 = 1;
 }
 
 void dd_config_DAC_ADC() {
@@ -152,6 +169,7 @@ void dd_idle(DD_PACKET * dd_packet)
 		if(dd_packet->commands->Etat_Servo == Servo_H)
 		{
 			dd_current_state = MOVE_SERVO_H;
+			dd_packet->commands->Etat_Servo = Servo_non;
 		}
 	}
 
@@ -159,20 +177,46 @@ void dd_idle(DD_PACKET * dd_packet)
 
 void dd_move_servo_h(DD_PACKET * dd_packet)
 {
-	dd_set_angle(&(dd_packet->commands->Servo_Angle));
-	dd_packet->commands->Etat_Servo = Servo_non;
+	dd_set_angle(dd_packet->commands->Servo_Angle);
+	pwn_over = 0;
+	ET0 = 1;	// Enable timer0 interuption
 	dd_current_state = DD_IDLE;
 }
 
 void dd_slew_detection(DD_PACKET * dd_packet)
 {
 	static byte step = 0;
+	static char delta_angle = -90;
+	static float smallest_measure = 70.0;
+	static char angle_obs = 0
 	
+	switch(step)
+	{
+		case 0:
+			dd_set_angle(-90);
+			dd_packet->commands->DCT_Obst_Resolution = 5;
+			step++;
+			break;
+		case 1:
+			delta_angle += dd_packet->commands->DCT_Obst_Resolution;
+			dd_set_angle(delta_angle);
+			if(delta_angle == 90)
+			{
+				step++;
+			}
+			dd_current_state = SINGLE_MEASURE;
+			break;
+		default:
+			delta_angle = -90;
+			step = 0;
+			dd_current_state = DD_IDLE;
+			break;
+	}
 }
 
-void dd_set_angle(char * angle)
+void dd_set_angle(int angle)
 {
-	servo_angle_H = *angle;
+	servo_angle_H = angle;
 }
 
 

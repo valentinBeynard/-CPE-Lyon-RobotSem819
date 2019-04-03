@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  STARTUP                                                              04/02/2019 22:31:05 PAGE     1
+A51 MACRO ASSEMBLER  STARTUP                                                              04/03/2019 11:39:57 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02c
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
                       55     ;
                       56     ; <h> Stack Space for reentrant functions in the SMALL model.
                       57     ;  <q> IBPSTACK: Enable SMALL model reentrant stack
-A51 MACRO ASSEMBLER  STARTUP                                                              04/02/2019 22:31:05 PAGE     2
+A51 MACRO ASSEMBLER  STARTUP                                                              04/03/2019 11:39:57 PAGE     2
 
                       58     ;     <i> Stack space for reentrant functions in the SMALL model.
   0000                59     IBPSTACK        EQU     0       ; set to 1 if small reentrant is used.
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
                      121     
                      122                     EXTRN CODE (?C_START)
                      123                     PUBLIC  ?C_STARTUP
-A51 MACRO ASSEMBLER  STARTUP                                                              04/02/2019 22:31:05 PAGE     3
+A51 MACRO ASSEMBLER  STARTUP                                                              04/03/2019 11:39:57 PAGE     3
 
                      124     
 ----                 125                     CSEG    AT      0
@@ -151,7 +151,8 @@ LOC  OBJ            LINE     SOURCE
                      137     ENDIF
                      138     
                      139     IF XDATALEN <> 0
-                                             MOV     DPTR,#XDATASTART
+                                             MOV     DPTR,#XD
+                                                             DATASTART
                                              MOV     R7,#LOW (XDATALEN)
                                IF (LOW (XDATALEN)) <> 0
                                              MOV     R6,#(HIGH (XDATALEN)) +1
@@ -164,12 +165,12 @@ LOC  OBJ            LINE     SOURCE
                                              DJNZ    R7,XDATALOOP
                                              DJNZ    R6,XDATALOOP
                              ENDIF
-                     153     
-                     154     IF PPAGEENABLE <> 0
+                     154     
+                     155     IF PPAGEENABLE <> 0
                                              MOV     PPAGE_SFR,#PPAGE
                              ENDIF
-                     157     
-                     158     IF PDATALEN <> 0
+                     158     
+                     159     IF PDATALEN <> 0
                                              MOV     R0,#LOW (PDATASTART)
                                              MOV     R7,#LOW (PDATALEN)
                                              CLR     A
@@ -177,42 +178,42 @@ LOC  OBJ            LINE     SOURCE
                                              INC     R0
                                              DJNZ    R7,PDATALOOP
                              ENDIF
-                     166     
-                     167     IF IBPSTACK <> 0
+                     167     
+                     168     IF IBPSTACK <> 0
                              EXTRN DATA (?C_IBP)
                              
                                              MOV     ?C_IBP,#LOW IBPSTACKTOP
                              ENDIF
-                     172     
-                     173     IF XBPSTACK <> 0
+                     173     
+                     174     IF XBPSTACK <> 0
                              EXTRN DATA (?C_XBP)
                              
                                              MOV     ?C_XBP,#HIGH XBPSTACKTOP
                                              MOV     ?C_XBP+1,#LOW XBPSTACKTOP
                              ENDIF
-                     179     
-                     180     IF PBPSTACK <> 0
+                     180     
+                     181     IF PBPSTACK <> 0
                              EXTRN DATA (?C_PBP)
                                              MOV     ?C_PBP,#LOW PBPSTACKTOP
                              ENDIF
-                     184     
-0006 758100   F      185                     MOV     SP,#?STACK-1
-                     186     
-                     187     ; This code is required if you use L51_BANK.A51 with Banking Mode 4
-                     188     ;<h> Code Banking
-                     189     ; <q> Select Bank 0 for L51_BANK.A51 Mode 4
-A51 MACRO ASSEMBLER  STARTUP                                                              04/02/2019 22:31:05 PAGE     4
+                     185     
+0006 758100   F      186                     MOV     SP,#?STACK-1
+                     187     
+                     188     ; This code is required if you use L51_BANK.A51 with Banking Mode 4
+                     189     ;<h> Code Banking
+A51 MACRO ASSEMBLER  STARTUP                                                              04/03/2019 11:39:57 PAGE     4
 
-                     190     
+                     190     ; <q> Select Bank 0 for L51_BANK.A51 Mode 4
+                     191     
                              
                              
                                              
                              
-                     195     ;</h>
-0009 020000   F      196                     LJMP    ?C_START
-                     197     
-                     198                     END
-A51 MACRO ASSEMBLER  STARTUP                                                              04/02/2019 22:31:05 PAGE     5
+                     196     ;</h>
+0009 020000   F      197                     LJMP    ?C_START
+                     198     
+                     199                     END
+A51 MACRO ASSEMBLER  STARTUP                                                              04/03/2019 11:39:57 PAGE     5
 
 SYMBOL TABLE LISTING
 ------ ----- -------

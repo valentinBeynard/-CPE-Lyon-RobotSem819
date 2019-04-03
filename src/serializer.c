@@ -412,7 +412,7 @@ void moveTo(PTS_2DA* pts)
 		
 		// TODO : Pour le moment, la vitesse du digo est de 28%, donc pas la valeur set par TV
 		// On est obligé car ce 28 est fixé par le DPID et le VPID du sérializer ...
-		sprintf(cmd, "digo 1:%d:28 2:%d:28", distance_in_tick, distance_in_tick);
+		sprintf(cmd, "digo 1:%d:10 2:%d:10", distance_in_tick, distance_in_tick);
 	
 		serializer_print(cmd);
 		serializer_clear_serial();

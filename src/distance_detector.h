@@ -84,7 +84,7 @@ void Init_distance_detector();
 float dd_mesure();
 float dd_start_conversion();
 
-void dd_set_angle(char * angle);
+void dd_set_angle(int angle);
 
 void distance_detector_process(DD_PACKET * dd_packet);
 
