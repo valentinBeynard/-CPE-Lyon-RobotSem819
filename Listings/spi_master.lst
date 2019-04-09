@@ -1,0 +1,203 @@
+C51 COMPILER V9.55   SPI_MASTER                                                            04/09/2019 12:12:00 PAGE 1   
+
+
+C51 COMPILER V9.55, COMPILATION OF MODULE SPI_MASTER
+OBJECT MODULE PLACED IN .\Objects\spi_master.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\spi_master.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
+                    -(.\Listings\spi_master.lst) TABS(2) OBJECT(.\Objects\spi_master.obj)
+
+line level    source
+
+   1          //------------------------------------------------------------------------------------
+   2          // master.c
+   3          //------------------------------------------------------------------------------------
+   4          // DATE: 20/03/2019
+   5          //
+   6          // Target: C8051F02x
+   7          // Tool chain: KEIL Microvision 4
+   8          //
+   9          //------------------------------------------------------------------------------------
+  10          #include "c8051F020.h"
+  11          #include "spi_master.h"
+  12          #include <stdlib.h>
+  13          #include <string.h>
+  14          
+  15          /*
+  16              FULL STATE MACHINE
+  17          
+  18              Liste des Etats de la machines d'état de la SPI associés à leur fonction
+  19          */
+  20          const SPI_FSM_PROCESS spi_state_machine[3] = {
+  21              {SPI_IDLE, &spi_idle},
+  22              {SPI_GET_DATA, &spi_get_data},
+  23              {SPI_SET_DATA, &spi_set_data}
+  24          };
+  25          
+  26          SPI_PARSER_STATE spi_state = SPI_IDLE;
+  27          
+  28          sbit slave_selector = P1^0;
+  29          
+  30          byte spi_data_in[BUFFER_SIZE];
+  31          byte spi_data_in_ptr = 0;
+  32          
+  33          byte spi_data_out[BUFFER_SIZE];
+  34          byte spi_data_out_ptr = 0;
+  35          
+  36          byte spi_tx_is_finish = 0;
+  37          
+  38          /*
+  39          #############################################################################
+  40                  Interrupt Routine
+  41          #############################################################################
+  42          */
+  43          
+  44          //On remet à zero le bit d'interruption qui est mis a 1 a chaque fin de transfert de donnees
+  45          void spi_finished() interrupt 6
+  46          {
+  47   1        
+  48   1        // Reset Transmission Flag
+  49   1        SPIF = 0;
+  50   1        
+  51   1        // Read data 
+  52   1        spi_data_in[spi_data_in_ptr] = SPI0DAT;
+  53   1        
+  54   1        if(spi_data_in[spi_data_in_ptr] == SPI_STOP_BYTE)
+C51 COMPILER V9.55   SPI_MASTER                                                            04/09/2019 12:12:00 PAGE 2   
+
+  55   1        {
+  56   2          // DISEABLE INTERRUPT
+  57   2          EIE1 &= 0xFE;
+  58   2          spi_state = SPI_GET_DATA;
+  59   2        }
+  60   1        spi_data_in_ptr++;
+  61   1        
+  62   1      }
+  63          
+  64          /*
+  65          #############################################################################
+  66                  Peripheric initialize
+  67          #############################################################################
+  68          */
+  69          
+  70          void Init_SPI() 
+  71          {
+  72   1        
+  73   1        //Interruptions
+  74   1        //EIE1 |= 0x01;
+  75   1        
+  76   1        // Active Crossbar
+  77   1        XBR0 |= 0x02;  //Route les 4 ports de la SPI et les 2 de l'UART0;
+  78   1        
+  79   1        
+  80   1        // Activation des ports 
+  81   1        P0MDOUT |= 0xFF;
+  82   1        P0MDOUT &= 0xFD;
+  83   1        P1MDOUT |= 0xFF;
+  84   1        
+  85   1        SPI0CFG = 0x87;//Configure CLK SPI (actif front montant) + transmission des 8 bits
+  86   1        SPI0CN |= 0x02; //active mode master
+  87   1        SPI0CKR = 0x48; //On definit la fréquence SCK a 150kHz (elle doit etre comprise entre 100 et 200kHz pour 
+             -une bonne optimisation)
+  88   1        
+  89   1        slave_selector = 0;
+  90   1        
+  91   1        SPI0CN |= 0x01; //active la SPI
+  92   1      }
+  93          
+  94          /*
+  95          #############################################################################
+  96                  Pour µP 8051F020
+  97          #############################################################################
+  98          */
+  99          
+ 100          void spi_send_char(char a){
+ 101   1          slave_selector = 0;
+ 102   1          
+ 103   1          SPI0DAT = a;
+ 104   1          // Wait until the end of transmission
+ 105   1          while(TXBSY == 1) {}
+ 106   1          
+ 107   1          
+ 108   1          slave_selector = SLAVE_ENABLE;
+ 109   1      }
+ 110          
+ 111          void spi_receive_char(byte* read_byte)
+ 112          {
+ 113   1        if(WCOL == 1)
+ 114   1        {
+ 115   2          *read_byte = SPI0DAT;
+C51 COMPILER V9.55   SPI_MASTER                                                            04/09/2019 12:12:00 PAGE 3   
+
+ 116   2          WCOL = 0;
+ 117   2        }else{
+ 118   2          *read_byte = 0;
+ 119   2        }
+ 120   1      }
+ 121          
+ 122          
+ 123          void spi_process(SPI_PACKET* spi_packet)
+ 124          {
+ 125   1        spi_state_machine[spi_state].state_process(spi_packet);
+ 126   1      }
+ 127          
+ 128          void spi_idle(SPI_PACKET* spi_packet)
+ 129          {
+ 130   1        // Si interrupt deseable
+ 131   1        if((EIE1 & 0x01) != 1 )
+ 132   1        {   
+ 133   2          if(spi_packet->commands->Etat_ACQ_Son == ACQ_oui
+ 134   2            || spi_packet->commands->Etat_Lumiere != Lumiere_non
+ 135   2            || spi_packet->commands->Etat_Servo == Servo_V
+ 136   2            || spi_packet->commands->Etat_Photo != Photo_non)
+ 137   2          {
+ 138   3            // Enable Interrupt
+ 139   3            EIE1 |= 0x01;
+ 140   3          }
+ 141   2        }
+ 142   1        
+ 143   1      }
+ 144          
+ 145          void spi_get_data(SPI_PACKET* spi_packet)
+ 146          {
+ 147   1        *(spi_packet->spi_data) = spi_data_in;
+ 148   1      
+ 149   1        memset(spi_data_in, 0, spi_data_in_ptr);
+ 150   1        spi_data_in_ptr = 0;
+ 151   1        
+ 152   1        spi_state = SPI_IDLE;
+ 153   1      }
+ 154          
+ 155          void spi_set_data(SPI_PACKET* spi_packet)
+ 156          {
+ 157   1        // TODO 
+ 158   1        spi_data_out[0] = SPI_START_BYTE;
+ 159   1        spi_data_out[1] = 0xA1;
+ 160   1        spi_data_out[2] = 0xA2;
+ 161   1        spi_data_out[3] = 0xA3;
+ 162   1        spi_data_out[4] = 0xA4;
+ 163   1        spi_data_out[5] = 0xA5;
+ 164   1        spi_data_out[6] = 0xA6;
+ 165   1        spi_data_out[7] = 0xA7;
+ 166   1        spi_data_out[8] = 0xA8;
+ 167   1        spi_data_out[9] = SPI_STOP_BYTE;
+ 168   1      
+ 169   1      }
+*** WARNING C280 IN LINE 155 OF src\spi_master.c: 'spi_packet': unreferenced local variable
+ 170          
+ 171          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    518    ----
+   CONSTANT SIZE    =   ----    ----
+C51 COMPILER V9.55   SPI_MASTER                                                            04/09/2019 12:12:00 PAGE 4   
+
+   XDATA SIZE       =     48      16
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

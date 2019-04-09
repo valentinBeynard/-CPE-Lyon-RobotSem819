@@ -93,10 +93,10 @@ void Init_distance_detector()
 	
 	
 	// XBAR for servomoteur H
-	XBR1 |=0x02; 
+	//XBR1 |=0x02; 
 	
 	/* XBAR for telemeter */
-	XBR1 |= 0x80;
+	//XBR1 |= 0x80;
 	
 	// Push-Pull mode
 	P1MDOUT = 0xFF;
@@ -188,7 +188,7 @@ void dd_slew_detection(DD_PACKET * dd_packet)
 	static byte step = 0;
 	static char delta_angle = -90;
 	static float smallest_measure = 70.0;
-	static char angle_obs = 0
+	static char angle_obs = 0;
 	
 	switch(step)
 	{

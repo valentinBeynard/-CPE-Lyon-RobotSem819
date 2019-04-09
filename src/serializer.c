@@ -40,6 +40,10 @@ byte init_serializer_UART1()
 	/****** INIT UART1 *****/
 	SCON1 = 0x50;
 	
+	
+	/****** Init UART1 on Crossbar *****/
+	XBR2 |= 0x04;
+	
 	// Réglage timer 4
 	T4CON = 0x3D; // Baud Generator for UART1 + Enable TR4
 	

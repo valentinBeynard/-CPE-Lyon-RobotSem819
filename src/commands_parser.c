@@ -80,6 +80,7 @@ byte buffer_index = 0;
 /**
   8051 µP :
   Initialize devices for commands_parser : UART0 and Timer 2
+	UART0 = TX0 -> P0.0 | RX0 -> P0.1
 **/
 byte init_parser()
 {
@@ -90,7 +91,10 @@ byte init_parser()
 	REN0 = 1;		
 		
 	/****** INIT PIN *****/
-
+	P0MDOUT |= 0x03;
+	
+	/****** Init UART0 on Crossbar *****/
+	XBR0 |= 0x04;
 
 	
 	/****** INIT TIMER ******/

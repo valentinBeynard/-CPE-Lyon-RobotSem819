@@ -7,6 +7,38 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "spi_master.h"
+
+
+#define SPI_DEBUG
+
+/*
+#############################################################################
+        PIN List
+#############################################################################
+*
+*	UART0 = TX0 -> P0.0 | RX0 -> P0.1 
+*
+*	SPI = SCK -> P0.2 | MISO -> P0.3 | MOSI -> P0.4 | NSS -> P0.5
+*				SCK : OUT
+*				MISO : IN
+*				MOSI : OUT
+*				NSS : Vcc
+*
+*	UART1 : TX1 -> P0.6 | RX1 -> P0.7
+*
+*	Pin NSS_slave : P1.0
+*
+*	Pin Servo_H : P1.2
+*
+*	Pin ADC1 : AIN0
+*
+*
+*
+*
+*/
+
+
 sfr Reg =	0xFF;
 
 	OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
@@ -72,21 +104,16 @@ void Init_External_clk()
 	CKCON = 0x00;
 }
 
-void Init_Crossbar()
+void Enable_Crossbar()
 {
-	// Init UART0 on Crossbar
-	XBR0 = 0x04;
-	
-	// Init UART1 on Crossbar
-	XBR2 |= 0x04;
-	
-	// Push Pull mode
-	P0MDOUT = 0xFF;
-	
 	// Enable Crossbar
 	XBR2 |= 0x40;
 }
 
+void enable_general_Int()
+{
+	EA = 1; // Enable general interruption
+}
 
 #ifdef ROBOT
 
@@ -109,12 +136,18 @@ int main (void)
 	// Initialise l'UART1 utilisé pour communiquer avec le sérializer
 	init_serializer_UART1();
 							
-	Init_Crossbar();
-	
 	Init_distance_detector();
+	
+	Init_SPI();
+	
+	Enable_Crossbar();
+
+	enable_general_Int();
 
 	USART_print("Start Routine \n\n");
 	USART_print("Waiting for Serializer Init Processing... \n\n");
+	
+#ifndef SPI_DEBUG
 					
 	serializer_init_serial();
 							
@@ -168,6 +201,17 @@ int main (void)
 	USART_print("Fin Soft");
 	
 	while(1);
+	
+#else
+	USART_print("SPI Debug \n\n");
+	while(1)
+	{
+		spi_send_char('P');
+	
+	}
+	
+#endif
+	
 }
 
 #endif

@@ -1,9 +1,9 @@
-C51 COMPILER V9.55   SERIALIZER                                                            04/03/2019 11:39:57 PAGE 1   
+C51 COMPILER V9.55   SERIALIZER                                                            04/09/2019 12:12:00 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE SERIALIZER
 OBJECT MODULE PLACED IN .\Objects\serializer.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\serializer.c LARGE OPTIMIZE(0,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\serializer.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
                     -(.\Listings\serializer.lst) TABS(2) OBJECT(.\Objects\serializer.obj)
 
 line level    source
@@ -50,532 +50,536 @@ line level    source
   40   1        /****** INIT UART1 *****/
   41   1        SCON1 = 0x50;
   42   1        
-  43   1        // Réglage timer 4
-  44   1        T4CON = 0x3D; // Baud Generator for UART1 + Enable TR4
-  45   1        
-  46   1        RCAP4L = 0xDC;  // Reload value for BaudRate 19200
-  47   1        RCAP4H = 0xFF;
-  48   1        
-  49   1        return 0;
-  50   1      }
-  51          
-  52          void serializer_receive(byte* read_byte)
-  53          {
-  54   1        if( (SCON1 & 0x01) == 1)
-C51 COMPILER V9.55   SERIALIZER                                                            04/03/2019 11:39:57 PAGE 2   
+  43   1        
+  44   1        /****** Init UART1 on Crossbar *****/
+  45   1        XBR2 |= 0x04;
+  46   1        
+  47   1        // Réglage timer 4
+  48   1        T4CON = 0x3D; // Baud Generator for UART1 + Enable TR4
+  49   1        
+  50   1        RCAP4L = 0xDC;  // Reload value for BaudRate 19200
+  51   1        RCAP4H = 0xFF;
+  52   1        
+  53   1        return 0;
+  54   1      }
+C51 COMPILER V9.55   SERIALIZER                                                            04/09/2019 12:12:00 PAGE 2   
 
-  55   1        {
-  56   2          *read_byte = SBUF1;
-  57   2          SCON1 &= 0xFE;  // Remise à 0 de RI1
-  58   2        }else{
-  59   2          *read_byte = '*';
-  60   2        }
-  61   1      }
-  62          
-  63          void serializer_send(byte ch)
-  64          {
-  65   1        SBUF1 = ch;
-  66   1        while( (SCON1 & 0x02) == 0){} // Tant que TI1 == 0
-  67   1        SCON1 &= 0xFD;  // Remise à 0 de TI1
-  68   1      }
-  69          
-  70          void UART_send(byte ch)
-  71          {
-  72   1        SBUF0 = ch;
-  73   1        while(TI0 == 0){}
-  74   1        TI0 = 0;
-  75   1      }
-  76          
-  77          void serializer_print(char* str)
-  78          {
-  79   1        byte i = 0;
-  80   1        for(i = 0 ; i < strlen(str); i++)
-  81   1        {
-  82   2          //UART_send(*(str+i));
-  83   2          serializer_send(*(str+i));
-  84   2        }
-  85   1        
-  86   1        serializer_send(0x0D);
-  87   1        //UART_send('\n');
-  88   1      }
-  89          
-  90          void serializer_init_serial()
-  91          {
-  92   1        char c = 0;
-  93   1        do
-  94   1        {
-  95   2          serializer_receive(&c);
-  96   2          //UART_send(c);
-  97   2        }while(c != END_RSLT_BYTE);
-  98   1        
-  99   1      }
- 100          
- 101          void serializer_clear_serial()
- 102          {
- 103   1        char c = 0;
- 104   1        //UART_send('!');
- 105   1        do
- 106   1        {
- 107   2          serializer_receive(&c);
- 108   2          //UART_send(c);
- 109   2        }while(c != END_RSLT_BYTE);
- 110   1        //UART_send('\n');
- 111   1      }
- 112          
- 113          /*
- 114          #############################################################################
- 115                  Serializer related functions
- 116          #############################################################################
-C51 COMPILER V9.55   SERIALIZER                                                            04/03/2019 11:39:57 PAGE 3   
+  55          
+  56          void serializer_receive(byte* read_byte)
+  57          {
+  58   1        if( (SCON1 & 0x01) == 1)
+  59   1        {
+  60   2          *read_byte = SBUF1;
+  61   2          SCON1 &= 0xFE;  // Remise à 0 de RI1
+  62   2        }else{
+  63   2          *read_byte = '*';
+  64   2        }
+  65   1      }
+  66          
+  67          void serializer_send(byte ch)
+  68          {
+  69   1        SBUF1 = ch;
+  70   1        while( (SCON1 & 0x02) == 0){} // Tant que TI1 == 0
+  71   1        SCON1 &= 0xFD;  // Remise à 0 de TI1
+  72   1      }
+  73          
+  74          void UART_send(byte ch)
+  75          {
+  76   1        SBUF0 = ch;
+  77   1        while(TI0 == 0){}
+  78   1        TI0 = 0;
+  79   1      }
+  80          
+  81          void serializer_print(char* str)
+  82          {
+  83   1        byte i = 0;
+  84   1        for(i = 0 ; i < strlen(str); i++)
+  85   1        {
+  86   2          //UART_send(*(str+i));
+  87   2          serializer_send(*(str+i));
+  88   2        }
+  89   1        
+  90   1        serializer_send(0x0D);
+  91   1        //UART_send('\n');
+  92   1      }
+  93          
+  94          void serializer_init_serial()
+  95          {
+  96   1        char c = 0;
+  97   1        do
+  98   1        {
+  99   2          serializer_receive(&c);
+ 100   2          //UART_send(c);
+ 101   2        }while(c != END_RSLT_BYTE);
+ 102   1        
+ 103   1      }
+ 104          
+ 105          void serializer_clear_serial()
+ 106          {
+ 107   1        char c = 0;
+ 108   1        //UART_send('!');
+ 109   1        do
+ 110   1        {
+ 111   2          serializer_receive(&c);
+ 112   2          //UART_send(c);
+ 113   2        }while(c != END_RSLT_BYTE);
+ 114   1        //UART_send('\n');
+ 115   1      }
+ 116          
+C51 COMPILER V9.55   SERIALIZER                                                            04/09/2019 12:12:00 PAGE 3   
 
- 117          */
- 118          
- 119          //void serializer_process(OUT_M1* cmd)
- 120          void serializer_process(PARSER_RESULT* parser)
- 121          {
- 122   1        PTS_2DA pts = {1, 0, 0, 0};
- 123   1        
- 124   1        // Si une commande de mvt est demandé
- 125   1        if(parser->commands->Etat_Mouvement == Stopper)
- 126   1        {
- 127   2          serializer_state = STOP;
- 128   2          is_processing = 0;
- 129   2          parser->commands->Etat_Mouvement = Mouvement_non;
- 130   2        }
- 131   1        else if(parser->commands->Etat_Mouvement != Mouvement_non)
- 132   1        {
- 133   2          // Transition d'état de la FSM
- 134   2          switch(serializer_state)
- 135   2          {
- 136   3            case IDLE:
- 137   3              idle_next_state(parser->commands, &pts);
- 138   3              break;
- 139   3            
- 140   3            case TRANSLATE:
- 141   3              if(is_processing == 1)
- 142   3              {
- 143   4                serializer_state = TRANSLATE;
- 144   4              }
- 145   3              else
+ 117          /*
+ 118          #############################################################################
+ 119                  Serializer related functions
+ 120          #############################################################################
+ 121          */
+ 122          
+ 123          //void serializer_process(OUT_M1* cmd)
+ 124          void serializer_process(PARSER_RESULT* parser)
+ 125          {
+ 126   1        PTS_2DA pts = {1, 0, 0, 0};
+ 127   1        
+ 128   1        // Si une commande de mvt est demandé
+ 129   1        if(parser->commands->Etat_Mouvement == Stopper)
+ 130   1        {
+ 131   2          serializer_state = STOP;
+ 132   2          is_processing = 0;
+ 133   2          parser->commands->Etat_Mouvement = Mouvement_non;
+ 134   2        }
+ 135   1        else if(parser->commands->Etat_Mouvement != Mouvement_non)
+ 136   1        {
+ 137   2          // Transition d'état de la FSM
+ 138   2          switch(serializer_state)
+ 139   2          {
+ 140   3            case IDLE:
+ 141   3              idle_next_state(parser->commands, &pts);
+ 142   3              break;
+ 143   3            
+ 144   3            case TRANSLATE:
+ 145   3              if(is_processing == 1)
  146   3              {
- 147   4                serializer_state = STOP;
+ 147   4                serializer_state = TRANSLATE;
  148   4              }
- 149   3              break;
- 150   3              
- 151   3            case ROTATE:
- 152   3              // If already rotating
- 153   3              if(is_processing == 1)
- 154   3              {
- 155   4                serializer_state = ROTATE;
- 156   4              }
- 157   3              else
+ 149   3              else
+ 150   3              {
+ 151   4                serializer_state = STOP;
+ 152   4              }
+ 153   3              break;
+ 154   3              
+ 155   3            case ROTATE:
+ 156   3              // If already rotating
+ 157   3              if(is_processing == 1)
  158   3              {
- 159   4                serializer_state = STOP;
+ 159   4                serializer_state = ROTATE;
  160   4              }
- 161   3              break;
- 162   3              
- 163   3            case NAVIGATE:
- 164   3              if(is_navigating == 1)
- 165   3              {
- 166   4                serializer_state = NAVIGATE;
- 167   4              }
- 168   3              else
+ 161   3              else
+ 162   3              {
+ 163   4                serializer_state = STOP;
+ 164   4              }
+ 165   3              break;
+ 166   3              
+ 167   3            case NAVIGATE:
+ 168   3              if(is_navigating == 1)
  169   3              {
- 170   4                parser->informations->Etat_BUT_Mouvement = BUT_Atteint_oui;
- 171   4                parser->commands->Etat_Mouvement = Mouvement_non;
- 172   4                robot_position.angle = 1 * parser->commands->Angle;
- 173   4                robot_position.x = parser->commands->Coord_X;
- 174   4                robot_position.y = parser->commands->Coord_Y;
- 175   4                robot_position.speed = parser->commands->Vitesse;
- 176   4                serializer_state = IDLE;
- 177   4              }
- 178   3              break;
-C51 COMPILER V9.55   SERIALIZER                                                            04/03/2019 11:39:57 PAGE 4   
+ 170   4                serializer_state = NAVIGATE;
+ 171   4              }
+ 172   3              else
+ 173   3              {
+ 174   4                parser->informations->Etat_BUT_Mouvement = BUT_Atteint_oui;
+ 175   4                parser->commands->Etat_Mouvement = Mouvement_non;
+ 176   4                robot_position.angle = 1 * parser->commands->Angle;
+ 177   4                robot_position.x = parser->commands->Coord_X;
+ 178   4                robot_position.y = parser->commands->Coord_Y;
+C51 COMPILER V9.55   SERIALIZER                                                            04/09/2019 12:12:00 PAGE 4   
 
- 179   3              
- 180   3            case MOVETO:
- 181   3              if(is_processing == 1)
- 182   3              {
- 183   4                serializer_state = MOVETO;
- 184   4              }
- 185   3              else
+ 179   4                robot_position.speed = parser->commands->Vitesse;
+ 180   4                serializer_state = IDLE;
+ 181   4              }
+ 182   3              break;
+ 183   3              
+ 184   3            case MOVETO:
+ 185   3              if(is_processing == 1)
  186   3              {
- 187   4                serializer_state = STOP;
+ 187   4                serializer_state = MOVETO;
  188   4              }
- 189   3              break;
- 190   3              
- 191   3            case STOP:
- 192   3              if(is_navigating == 0)
- 193   3              {
- 194   4                serializer_state = IDLE;
- 195   4                parser->commands->Etat_Mouvement = Mouvement_non;
- 196   4              }
- 197   3              else{
- 198   4                serializer_state = NAVIGATE;
- 199   4              }
- 200   3              break;
- 201   3            
- 202   3            default:
- 203   3              serializer_state = STOP;
+ 189   3              else
+ 190   3              {
+ 191   4                serializer_state = STOP;
+ 192   4              }
+ 193   3              break;
+ 194   3              
+ 195   3            case STOP:
+ 196   3              if(is_navigating == 0)
+ 197   3              {
+ 198   4                serializer_state = IDLE;
+ 199   4                parser->commands->Etat_Mouvement = Mouvement_non;
+ 200   4              }
+ 201   3              else{
+ 202   4                serializer_state = NAVIGATE;
+ 203   4              }
  204   3              break;
  205   3            
- 206   3          }
- 207   2          
- 208   2        }else{
- 209   2          serializer_state = IDLE;
- 210   2        }
- 211   1        
- 212   1        serializer_state_machine[serializer_state].state_process(&pts);
- 213   1      }
- 214          
- 215          void idle_next_state(OUT_M1* cmd, PTS_2DA* pts)
- 216          {
- 217   1        switch(cmd->Etat_Mouvement)
- 218   1        {
- 219   2            case Avancer:
- 220   2              serializer_state = TRANSLATE;
- 221   2              pts->x = 1;
- 222   2              pts->speed = cmd->Vitesse;
- 223   2              break;
- 224   2            
- 225   2            case Reculer:
- 226   2              serializer_state = TRANSLATE;
- 227   2              pts->x = -1;
- 228   2              pts->speed = cmd->Vitesse;
- 229   2              break;
- 230   2            
- 231   2            case Stopper:
- 232   2              serializer_state = STOP;
- 233   2              pts->x = 0;
- 234   2              pts->speed = 0;
- 235   2              //serializer_print("mogo 1:0 2:0");
- 236   2              break;
- 237   2      
- 238   2            case Rot_90D:
- 239   2              serializer_state = ROTATE;
- 240   2              pts->angle = (-1) * 90;
-C51 COMPILER V9.55   SERIALIZER                                                            04/03/2019 11:39:57 PAGE 5   
+ 206   3            default:
+ 207   3              serializer_state = STOP;
+ 208   3              break;
+ 209   3            
+ 210   3          }
+ 211   2          
+ 212   2        }else{
+ 213   2          serializer_state = IDLE;
+ 214   2        }
+ 215   1        
+ 216   1        serializer_state_machine[serializer_state].state_process(&pts);
+ 217   1      }
+ 218          
+ 219          void idle_next_state(OUT_M1* cmd, PTS_2DA* pts)
+ 220          {
+ 221   1        switch(cmd->Etat_Mouvement)
+ 222   1        {
+ 223   2            case Avancer:
+ 224   2              serializer_state = TRANSLATE;
+ 225   2              pts->x = 1;
+ 226   2              pts->speed = cmd->Vitesse;
+ 227   2              break;
+ 228   2            
+ 229   2            case Reculer:
+ 230   2              serializer_state = TRANSLATE;
+ 231   2              pts->x = -1;
+ 232   2              pts->speed = cmd->Vitesse;
+ 233   2              break;
+ 234   2            
+ 235   2            case Stopper:
+ 236   2              serializer_state = STOP;
+ 237   2              pts->x = 0;
+ 238   2              pts->speed = 0;
+ 239   2              //serializer_print("mogo 1:0 2:0");
+ 240   2              break;
+C51 COMPILER V9.55   SERIALIZER                                                            04/09/2019 12:12:00 PAGE 5   
 
- 241   2              pts->speed = 20;
- 242   2              break;
- 243   2            
- 244   2            case Rot_90G:
- 245   2              serializer_state = ROTATE;
- 246   2              pts->angle = 90;
- 247   2              pts->speed = 20;
- 248   2              break;
- 249   2            
- 250   2            case Rot_180D:
- 251   2              serializer_state = ROTATE;
- 252   2              pts->angle = -180;
- 253   2              pts->speed = 20;
- 254   2              break;
- 255   2            
- 256   2            case Rot_180G:
- 257   2              serializer_state = ROTATE;
- 258   2              pts->angle = 180;
- 259   2              pts->speed = 20;
- 260   2              break;
- 261   2      
- 262   2            case Rot_AngD:
- 263   2              serializer_state = ROTATE;
- 264   2              pts->angle = -1 * cmd->Angle;
- 265   2              pts->speed = 20;
- 266   2              break;
- 267   2      
- 268   2            case Rot_AngG:
- 269   2              serializer_state = ROTATE;
- 270   2              pts->angle = 1 * cmd->Angle;
- 271   2              pts->speed = 20;
- 272   2              break;
- 273   2            
- 274   2            case Depl_Coord:
- 275   2              serializer_state = NAVIGATE;
- 276   2              pts->angle = 1 * cmd->Angle;
- 277   2              pts->x = cmd->Coord_X;
- 278   2              pts->y = cmd->Coord_Y;
- 279   2              pts->speed = cmd->Vitesse;
- 280   2              break;
- 281   2            
- 282   2            default:
- 283   2              serializer_state = IDLE;
+ 241   2      
+ 242   2            case Rot_90D:
+ 243   2              serializer_state = ROTATE;
+ 244   2              pts->angle = (-1) * 90;
+ 245   2              pts->speed = 20;
+ 246   2              break;
+ 247   2            
+ 248   2            case Rot_90G:
+ 249   2              serializer_state = ROTATE;
+ 250   2              pts->angle = 90;
+ 251   2              pts->speed = 20;
+ 252   2              break;
+ 253   2            
+ 254   2            case Rot_180D:
+ 255   2              serializer_state = ROTATE;
+ 256   2              pts->angle = -180;
+ 257   2              pts->speed = 20;
+ 258   2              break;
+ 259   2            
+ 260   2            case Rot_180G:
+ 261   2              serializer_state = ROTATE;
+ 262   2              pts->angle = 180;
+ 263   2              pts->speed = 20;
+ 264   2              break;
+ 265   2      
+ 266   2            case Rot_AngD:
+ 267   2              serializer_state = ROTATE;
+ 268   2              pts->angle = -1 * cmd->Angle;
+ 269   2              pts->speed = 20;
+ 270   2              break;
+ 271   2      
+ 272   2            case Rot_AngG:
+ 273   2              serializer_state = ROTATE;
+ 274   2              pts->angle = 1 * cmd->Angle;
+ 275   2              pts->speed = 20;
+ 276   2              break;
+ 277   2            
+ 278   2            case Depl_Coord:
+ 279   2              serializer_state = NAVIGATE;
+ 280   2              pts->angle = 1 * cmd->Angle;
+ 281   2              pts->x = cmd->Coord_X;
+ 282   2              pts->y = cmd->Coord_Y;
+ 283   2              pts->speed = cmd->Vitesse;
  284   2              break;
- 285   2          }
- 286   1        
- 287   1      }
- 288          
- 289          void idle(PTS_2DA* pts)
- 290          {
- 291   1        // For WARNING C280 supression
- 292   1        pts = pts;
- 293   1        
- 294   1        // Nothing to do
- 295   1      }
- 296          
- 297          
- 298          void translate(PTS_2DA* pts)
- 299          {
- 300   1        char speed = 10;
- 301   1        
- 302   1        if(is_processing == 0)
-C51 COMPILER V9.55   SERIALIZER                                                            04/03/2019 11:39:57 PAGE 6   
+ 285   2            
+ 286   2            default:
+ 287   2              serializer_state = IDLE;
+ 288   2              break;
+ 289   2          }
+ 290   1        
+ 291   1      }
+ 292          
+ 293          void idle(PTS_2DA* pts)
+ 294          {
+ 295   1        // For WARNING C280 supression
+ 296   1        pts = pts;
+ 297   1        
+ 298   1        // Nothing to do
+ 299   1      }
+ 300          
+ 301          
+ 302          void translate(PTS_2DA* pts)
+C51 COMPILER V9.55   SERIALIZER                                                            04/09/2019 12:12:00 PAGE 6   
 
- 303   1        {
- 304   2          if(pts->speed != 0)
- 305   2          {
- 306   3            speed = pts->speed;
- 307   3          }
- 308   2        
- 309   2          setMotors(pts->x * speed, pts->x * speed);
- 310   2          is_processing = 1;
- 311   2        }
- 312   1        
- 313   1      }
- 314          
- 315          void rotate(PTS_2DA* pts)
- 316          {
- 317   1        char sens = 0;
- 318   1        
- 319   1        if(is_processing == 0)
- 320   1        {
- 321   2          //clear_encoder();
- 322   2          //getEncoderDistance(LEFT);
- 323   2          moveAngle(pts->angle);
- 324   2          is_processing = 1;
- 325   2        }
- 326   1        else{
- 327   2          
- 328   2          if(pids_timer >= 5000)
- 329   2          {
- 330   3            is_processing = is_PID_processing();
- 331   3            pids_timer = 0;
- 332   3          }
- 333   2          else{
- 334   3            pids_timer++;
- 335   3          }
- 336   2        }
- 337   1      }
- 338          
- 339          void navigate(PTS_2DA* pts)
- 340          {
- 341   1        static byte navigation_step = 0;
- 342   1        static int target_angle = 0;
- 343   1        PTS_2DA temp_pts = {0, 0, 0, 0};
- 344   1        
- 345   1        switch(navigation_step)
- 346   1        {
- 347   2          case 0:
- 348   2            // Start Navigation Flag
- 349   2            is_navigating = 1;
- 350   2            pts->x = 10;
- 351   2            pts->y = 10;
- 352   2            target_angle = angle_target(pts->x, pts->y);
- 353   2            temp_pts.angle = delta_angle(&(robot_position.angle), &target_angle);
- 354   2            //temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
- 355   2            serializer_state = ROTATE;
- 356   2            navigation_step++;
- 357   2            rotate(&temp_pts);
- 358   2            break;
- 359   2          
- 360   2          case 1:
- 361   2            /*
- 362   2            temp_pts.x = (robot_position.x - pts->x);
- 363   2            temp_pts.y = (robot_position.y - pts->y);
- 364   2            temp_pts.speed = pts->speed;
-C51 COMPILER V9.55   SERIALIZER                                                            04/03/2019 11:39:57 PAGE 7   
+ 303          {
+ 304   1        char speed = 10;
+ 305   1        
+ 306   1        if(is_processing == 0)
+ 307   1        {
+ 308   2          if(pts->speed != 0)
+ 309   2          {
+ 310   3            speed = pts->speed;
+ 311   3          }
+ 312   2        
+ 313   2          setMotors(pts->x * speed, pts->x * speed);
+ 314   2          is_processing = 1;
+ 315   2        }
+ 316   1        
+ 317   1      }
+ 318          
+ 319          void rotate(PTS_2DA* pts)
+ 320          {
+ 321   1        char sens = 0;
+ 322   1        
+ 323   1        if(is_processing == 0)
+ 324   1        {
+ 325   2          //clear_encoder();
+ 326   2          //getEncoderDistance(LEFT);
+ 327   2          moveAngle(pts->angle);
+ 328   2          is_processing = 1;
+ 329   2        }
+ 330   1        else{
+ 331   2          
+ 332   2          if(pids_timer >= 5000)
+ 333   2          {
+ 334   3            is_processing = is_PID_processing();
+ 335   3            pids_timer = 0;
+ 336   3          }
+ 337   2          else{
+ 338   3            pids_timer++;
+ 339   3          }
+ 340   2        }
+ 341   1      }
+ 342          
+ 343          void navigate(PTS_2DA* pts)
+ 344          {
+ 345   1        static byte navigation_step = 0;
+ 346   1        static int target_angle = 0;
+ 347   1        PTS_2DA temp_pts = {0, 0, 0, 0};
+ 348   1        
+ 349   1        switch(navigation_step)
+ 350   1        {
+ 351   2          case 0:
+ 352   2            // Start Navigation Flag
+ 353   2            is_navigating = 1;
+ 354   2            pts->x = 10;
+ 355   2            pts->y = 10;
+ 356   2            target_angle = angle_target(pts->x, pts->y);
+ 357   2            temp_pts.angle = delta_angle(&(robot_position.angle), &target_angle);
+ 358   2            //temp_pts.angle = delta_angle(&(pts->angle), &(robot_position.angle) );
+ 359   2            serializer_state = ROTATE;
+ 360   2            navigation_step++;
+ 361   2            rotate(&temp_pts);
+ 362   2            break;
+ 363   2          
+ 364   2          case 1:
+C51 COMPILER V9.55   SERIALIZER                                                            04/09/2019 12:12:00 PAGE 7   
 
- 365   2          */
- 366   2            temp_pts.x = 10;
- 367   2            temp_pts.y = 10;
- 368   2            temp_pts.speed = 20;
- 369   2            serializer_state = MOVETO;
- 370   2            navigation_step++;
- 371   2            moveTo(&temp_pts);
- 372   2            break;
- 373   2          
- 374   2          case 2:
- 375   2            temp_pts.angle = delta_angle(&target_angle, &(robot_position.angle) );
- 376   2            serializer_state = ROTATE;
- 377   2            navigation_step++;
- 378   2            rotate(&temp_pts);
- 379   2            break;
- 380   2          
- 381   2          case 3:
- 382   2            is_navigating = 0;
- 383   2            navigation_step = 0;
- 384   2            target_angle = 0;
- 385   2            break;
- 386   2          
- 387   2        }
- 388   1        
- 389   1        
- 390   1      }
- 391          
- 392          void setMotors(int mtr_speed_1, int mtr_speed_2)
- 393          {
- 394   1        char cmd[MOGO_CMD_SIZE];
- 395   1        
- 396   1        sprintf(cmd, "mogo 1:%d 2:%d", mtr_speed_1, mtr_speed_2);
- 397   1      
- 398   1        serializer_print(cmd);
+ 365   2            /*
+ 366   2            temp_pts.x = (robot_position.x - pts->x);
+ 367   2            temp_pts.y = (robot_position.y - pts->y);
+ 368   2            temp_pts.speed = pts->speed;
+ 369   2          */
+ 370   2            temp_pts.x = 10;
+ 371   2            temp_pts.y = 10;
+ 372   2            temp_pts.speed = 20;
+ 373   2            serializer_state = MOVETO;
+ 374   2            navigation_step++;
+ 375   2            moveTo(&temp_pts);
+ 376   2            break;
+ 377   2          
+ 378   2          case 2:
+ 379   2            temp_pts.angle = delta_angle(&target_angle, &(robot_position.angle) );
+ 380   2            serializer_state = ROTATE;
+ 381   2            navigation_step++;
+ 382   2            rotate(&temp_pts);
+ 383   2            break;
+ 384   2          
+ 385   2          case 3:
+ 386   2            is_navigating = 0;
+ 387   2            navigation_step = 0;
+ 388   2            target_angle = 0;
+ 389   2            break;
+ 390   2          
+ 391   2        }
+ 392   1        
+ 393   1        
+ 394   1      }
+ 395          
+ 396          void setMotors(int mtr_speed_1, int mtr_speed_2)
+ 397          {
+ 398   1        char cmd[MOGO_CMD_SIZE];
  399   1        
- 400   1        serializer_clear_serial();
- 401   1      }
- 402          
- 403          void moveTo(PTS_2DA* pts)
- 404          {
- 405   1        char cmd[DIGO_CMD_SIZE];
- 406   1        int distance_in_tick = 0;
- 407   1        
- 408   1        if(is_processing == 0)
- 409   1        {
- 410   2          distance_in_tick = distance(pts->x, pts->y);
- 411   2          distance_in_tick = (int)(3.3 * 100 * distance_in_tick);
- 412   2          
- 413   2          // TODO : Pour le moment, la vitesse du digo est de 28%, donc pas la valeur set par TV
- 414   2          // On est obligé car ce 28 est fixé par le DPID et le VPID du sérializer ...
- 415   2          sprintf(cmd, "digo 1:%d:10 2:%d:10", distance_in_tick, distance_in_tick);
- 416   2        
- 417   2          serializer_print(cmd);
- 418   2          serializer_clear_serial();
- 419   2          
- 420   2          is_processing = 1;
- 421   2        } 
- 422   1        else{
+ 400   1        sprintf(cmd, "mogo 1:%d 2:%d", mtr_speed_1, mtr_speed_2);
+ 401   1      
+ 402   1        serializer_print(cmd);
+ 403   1        
+ 404   1        serializer_clear_serial();
+ 405   1      }
+ 406          
+ 407          void moveTo(PTS_2DA* pts)
+ 408          {
+ 409   1        char cmd[DIGO_CMD_SIZE];
+ 410   1        int distance_in_tick = 0;
+ 411   1        
+ 412   1        if(is_processing == 0)
+ 413   1        {
+ 414   2          distance_in_tick = distance(pts->x, pts->y);
+ 415   2          distance_in_tick = (int)(3.3 * 100 * distance_in_tick);
+ 416   2          
+ 417   2          // TODO : Pour le moment, la vitesse du digo est de 28%, donc pas la valeur set par TV
+ 418   2          // On est obligé car ce 28 est fixé par le DPID et le VPID du sérializer ...
+ 419   2          sprintf(cmd, "digo 1:%d:10 2:%d:10", distance_in_tick, distance_in_tick);
+ 420   2        
+ 421   2          serializer_print(cmd);
+ 422   2          serializer_clear_serial();
  423   2          
- 424   2          if(pids_timer >= 5000)
- 425   2          {
- 426   3            is_processing = is_PID_processing();
-C51 COMPILER V9.55   SERIALIZER                                                            04/03/2019 11:39:57 PAGE 8   
+ 424   2          is_processing = 1;
+ 425   2        } 
+ 426   1        else{
+C51 COMPILER V9.55   SERIALIZER                                                            04/09/2019 12:12:00 PAGE 8   
 
- 427   3            pids_timer = 0;
- 428   3          }
- 429   2          else{
- 430   3            pids_timer++;
- 431   3          }
- 432   2        }
- 433   1      }
- 434          
- 435          void moveAngle(int angle)
- 436          {
- 437   1        char cmd[DIGO_CMD_SIZE];
- 438   1        int distance_in_tick = 0, r_dist = 0;
- 439   1        
- 440   1        distance_in_tick = ANGLE_2_DIST(angle);
- 441   1        
- 442   1        r_dist = (-1) * distance_in_tick;
+ 427   2          
+ 428   2          if(pids_timer >= 5000)
+ 429   2          {
+ 430   3            is_processing = is_PID_processing();
+ 431   3            pids_timer = 0;
+ 432   3          }
+ 433   2          else{
+ 434   3            pids_timer++;
+ 435   3          }
+ 436   2        }
+ 437   1      }
+ 438          
+ 439          void moveAngle(int angle)
+ 440          {
+ 441   1        char cmd[DIGO_CMD_SIZE];
+ 442   1        int distance_in_tick = 0, r_dist = 0;
  443   1        
- 444   1        sprintf(cmd, "digo 1:%d:20 2:%d:20", distance_in_tick, r_dist);
- 445   1        serializer_print(cmd);
- 446   1        serializer_clear_serial();
+ 444   1        distance_in_tick = ANGLE_2_DIST(angle);
+ 445   1        
+ 446   1        r_dist = (-1) * distance_in_tick;
  447   1        
- 448   1        //memset(cmd, 0, DIGO_CMD_SIZE);
- 449   1      }
- 450          
- 451          void stop(PTS_2DA* pts)
- 452          {
- 453   1        // For WARNING C280 supression
- 454   1        pts = pts;
- 455   1        
- 456   1        serializer_print("stop"); 
- 457   1        serializer_clear_serial();
- 458   1        //clear_encoder();
- 459   1      }
- 460          
- 461          /*
- 462          int getRawEncoders(ENCODER_ID encoder_id)
- 463          {
- 464            int enc_value = 0;
- 465            char result[ENC_RSLT_SIZE];
- 466            char c = 0;
- 467            byte ptr = 0;
- 468            
- 469            if(encoder_id == LEFT)
- 470            {
- 471              serializer_print("getenc 1");
- 472            }
- 473            else{
- 474              serializer_print("getenc 2");
- 475            }
- 476            
- 477            do
- 478            {
- 479              serializer_receive(&c);
- 480              result[ptr] = c;
- 481              ptr++;
- 482            }while(c != END_RSLT_BYTE);
- 483            
- 484            sscanf(result, "%d", &enc_value);
- 485            
- 486            return enc_value;
- 487          }
- 488          
-C51 COMPILER V9.55   SERIALIZER                                                            04/03/2019 11:39:57 PAGE 9   
+ 448   1        sprintf(cmd, "digo 1:%d:20 2:%d:20", distance_in_tick, r_dist);
+ 449   1        serializer_print(cmd);
+ 450   1        serializer_clear_serial();
+ 451   1        
+ 452   1        //memset(cmd, 0, DIGO_CMD_SIZE);
+ 453   1      }
+ 454          
+ 455          void stop(PTS_2DA* pts)
+ 456          {
+ 457   1        // For WARNING C280 supression
+ 458   1        pts = pts;
+ 459   1        
+ 460   1        serializer_print("stop"); 
+ 461   1        serializer_clear_serial();
+ 462   1        //clear_encoder();
+ 463   1      }
+ 464          
+ 465          /*
+ 466          int getRawEncoders(ENCODER_ID encoder_id)
+ 467          {
+ 468            int enc_value = 0;
+ 469            char result[ENC_RSLT_SIZE];
+ 470            char c = 0;
+ 471            byte ptr = 0;
+ 472            
+ 473            if(encoder_id == LEFT)
+ 474            {
+ 475              serializer_print("getenc 1");
+ 476            }
+ 477            else{
+ 478              serializer_print("getenc 2");
+ 479            }
+ 480            
+ 481            do
+ 482            {
+ 483              serializer_receive(&c);
+ 484              result[ptr] = c;
+ 485              ptr++;
+ 486            }while(c != END_RSLT_BYTE);
+ 487            
+ 488            sscanf(result, "%d", &enc_value);
+C51 COMPILER V9.55   SERIALIZER                                                            04/09/2019 12:12:00 PAGE 9   
 
- 489          int getEncoderDistance(ENCODER_ID encoder_id)
- 490          {
- 491            int enc_value = 0;
- 492            
- 493            enc_value = getRawEncoders(encoder_id);
- 494            
- 495            return ENC_2_MM(enc_value);
- 496          }
- 497          
- 498          
- 499          void clear_encoder()
- 500          {
- 501            char result[PID_RSLT_SIZE];
- 502            char ptr = 0, c = 0;
- 503            
- 504            serializer_print("clrenc 1 2");
- 505          
- 506            do
- 507            {
- 508              serializer_receive(&c);
- 509              result[ptr] = c;
- 510              ptr++;
- 511            }while(c != END_RSLT_BYTE);
- 512            
- 513            
- 514          }
- 515          */
- 516          
- 517          char is_PID_processing()
- 518          {
- 519   1        char result[PID_RSLT_SIZE];
- 520   1        int pid_state = 1;
- 521   1        char ptr = 0;
- 522   1        byte c = 0;
- 523   1        
- 524   1        serializer_print("pids");
- 525   1          
- 526   1        do
- 527   1        {
- 528   2          serializer_receive(&c);
- 529   2          if(c != '*')
- 530   2          {
- 531   3            result[ptr] = c;
- 532   3            ptr++;
- 533   3            UART_send(c);
- 534   3          }
- 535   2        }while(c != END_RSLT_BYTE);
- 536   1        
- 537   1        sscanf(result, "%d", &pid_state);
- 538   1        
- 539   1        memset(result, 0, PID_RSLT_SIZE);
+ 489            
+ 490            return enc_value;
+ 491          }
+ 492          
+ 493          int getEncoderDistance(ENCODER_ID encoder_id)
+ 494          {
+ 495            int enc_value = 0;
+ 496            
+ 497            enc_value = getRawEncoders(encoder_id);
+ 498            
+ 499            return ENC_2_MM(enc_value);
+ 500          }
+ 501          
+ 502          
+ 503          void clear_encoder()
+ 504          {
+ 505            char result[PID_RSLT_SIZE];
+ 506            char ptr = 0, c = 0;
+ 507            
+ 508            serializer_print("clrenc 1 2");
+ 509          
+ 510            do
+ 511            {
+ 512              serializer_receive(&c);
+ 513              result[ptr] = c;
+ 514              ptr++;
+ 515            }while(c != END_RSLT_BYTE);
+ 516            
+ 517            
+ 518          }
+ 519          */
+ 520          
+ 521          char is_PID_processing()
+ 522          {
+ 523   1        char result[PID_RSLT_SIZE];
+ 524   1        int pid_state = 1;
+ 525   1        char ptr = 0;
+ 526   1        byte c = 0;
+ 527   1        
+ 528   1        serializer_print("pids");
+ 529   1          
+ 530   1        do
+ 531   1        {
+ 532   2          serializer_receive(&c);
+ 533   2          if(c != '*')
+ 534   2          {
+ 535   3            result[ptr] = c;
+ 536   3            ptr++;
+ 537   3            UART_send(c);
+ 538   3          }
+ 539   2        }while(c != END_RSLT_BYTE);
  540   1        
- 541   1        return (char)pid_state;
- 542   1      }
- 543          
+ 541   1        sscanf(result, "%d", &pid_state);
+ 542   1        
+ 543   1        memset(result, 0, PID_RSLT_SIZE);
+ 544   1        
+ 545   1        return (char)pid_state;
+ 546   1      }
+ 547          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   3125    ----
-   CONSTANT SIZE    =     80    ----
-   XDATA SIZE       =    223    ----
-   PDATA SIZE       =   ----    ----
-C51 COMPILER V9.55   SERIALIZER                                                            04/03/2019 11:39:57 PAGE 10  
+C51 COMPILER V9.55   SERIALIZER                                                            04/09/2019 12:12:00 PAGE 10  
 
+   CODE SIZE        =   3128    ----
+   CONSTANT SIZE    =     80    ----
+   XDATA SIZE       =     37     186
+   PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
