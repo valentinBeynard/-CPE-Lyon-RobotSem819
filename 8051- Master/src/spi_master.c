@@ -17,20 +17,21 @@
 
     Liste des Etats de la machines d'état de la SPI associés à leur fonction
 */
-const SPI_FSM_PROCESS spi_state_machine[3] = {
+const SPI_FSM_PROCESS spi_state_machine[4] = {
     {SPI_IDLE, &spi_idle},
+		{SPI_TXRX, &spi_txrx},
     {SPI_GET_DATA, &spi_get_data},
     {SPI_SET_DATA, &spi_set_data}
 };
 
-SPI_PARSER_STATE spi_state = SPI_IDLE;
+SPI_STATE spi_state = SPI_IDLE;
 
 sbit slave_selector = P1^0;
 
-byte spi_data_in[BUFFER_SIZE];
+byte spi_data_in[TRAM_SIZE];
 byte spi_data_in_ptr = 0;
 
-byte spi_data_out[BUFFER_SIZE];
+byte spi_data_out[TRAM_SIZE];
 byte spi_data_out_ptr = 0;
 
 
@@ -41,31 +42,14 @@ byte spi_data_out_ptr = 0;
 */
 
 //On remet à zero le bit d'interruption qui est mis a 1 a chaque fin de transfert de donnees
-void spi_txrx() interrupt 6
+void spi_int() interrupt 6
 {
-	
 	// Reset Transmission Flag
 	SPIF = 0;
 	
 	// Read data 
 	spi_data_in[spi_data_in_ptr] = SPI0DAT;
 	
-	
-	slave_selector = SLAVE_ENABLE;
-		
-	SPI0DAT = a;
-		// Wait until the end of transmission
-	while(TXBSY == 1) {}
-		
-		
-	slave_selector = SLAVE_DISEABLE;
-	
-	if(spi_data_in[spi_data_in_ptr] == SPI_STOP_BYTE)
-	{
-		// DISEABLE INTERRUPT
-		EIE1 &= 0xFE;
-		spi_state = SPI_GET_DATA;
-	}
 	spi_data_in_ptr++;
 	
 }
@@ -107,14 +91,14 @@ void Init_SPI()
 */
 
 void spi_send_char(char a){
-		slave_selector = 0;
+		slave_selector = SLAVE_ENABLE;
 		
 		SPI0DAT = a;
 		// Wait until the end of transmission
 		while(TXBSY == 1) {}
 		
 		
-		slave_selector = SLAVE_ENABLE;
+		slave_selector = SLAVE_DISEABLE;
 }
 
 void spi_receive_char(byte* read_byte)
@@ -137,26 +121,48 @@ void spi_process(SPI_PACKET* spi_packet)
 void spi_idle(SPI_PACKET* spi_packet)
 {
 	// Si interrupt deseable
-	if((EIE1 & 0x01) != 1 )
+	if( (EIE1 & 0x01) != 1 )
 	{		
 		if(spi_packet->commands->Etat_ACQ_Son == ACQ_oui
 			|| spi_packet->commands->Etat_Lumiere != Lumiere_non
 			|| spi_packet->commands->Etat_Servo == Servo_V
 			|| spi_packet->commands->Etat_Photo != Photo_non)
 		{
-			// Enable Interrupt
-			EIE1 |= 0x01;
+			spi_state = SPI_SET_DATA;
 		}
 	}
+}
+
+void spi_txrx(SPI_PACKET* spi_packet)
+{
+	spi_send_char('B');
+	
+	// BUG ICI
+	/*
+	if(spi_data_out_ptr < TRAM_SIZE)
+	{
+		spi_send_char(spi_data_out[spi_data_out_ptr]);
+		spi_data_out_ptr++;
+	}
+	else
+	{
+		// DISEABLE INTERRUPT
+		EIE1 &= 0xFE;
+		spi_state = SPI_GET_DATA;
+	}*/
 	
 }
 
+
 void spi_get_data(SPI_PACKET* spi_packet)
 {
-	*(spi_packet->spi_data) = spi_data_in;
+	//*(spi_packet->spi_data) = spi_data_in;
+	spi_packet->ready = 1;
 
 	memset(spi_data_in, 0, spi_data_in_ptr);
+	memset(spi_data_out, 0, spi_data_out_ptr);
 	spi_data_in_ptr = 0;
+	spi_data_out_ptr = 0;
 	
 	spi_state = SPI_IDLE;
 }
@@ -174,6 +180,10 @@ void spi_set_data(SPI_PACKET* spi_packet)
 	spi_data_out[7] = 0xA7;
 	spi_data_out[8] = 0xA8;
 	spi_data_out[9] = SPI_STOP_BYTE;
+	
+	// Enable Interrupt
+	EIE1 |= 0x01;
+	spi_state = SPI_TXRX;
 
 }
 

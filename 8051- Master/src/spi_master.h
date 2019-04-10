@@ -4,7 +4,7 @@
 
 #include "pc_cmd.h"
 
-#define BUFFER_SIZE	16
+#define TRAM_SIZE	10
 
 #define SLAVE_ENABLE	0
 
@@ -23,20 +23,22 @@ typedef struct
 {
   OUT_M1 * commands;
 	IN_M1 * informations;
-	byte spi_data[BUFFER_SIZE];
+	byte spi_data[TRAM_SIZE];
+	byte ready;
 	// Info sur l'obstacle ?
 }SPI_PACKET;
 
 typedef enum
 {
   SPI_IDLE,
+	SPI_TXRX,
   SPI_GET_DATA,
   SPI_SET_DATA
-}SPI_PARSER_STATE;
+}SPI_STATE;
 
 typedef struct
 {
-  SPI_PARSER_STATE state_name;
+  SPI_STATE state_name;
   void(*state_process)(SPI_PACKET*);
 }SPI_FSM_PROCESS;
 
@@ -48,6 +50,7 @@ void spi_send_char(char a);
 void spi_process(SPI_PACKET* spi_packet);
 
 void spi_idle(SPI_PACKET* spi_packet);
+void spi_txrx(SPI_PACKET* spi_packet);
 void spi_get_data(SPI_PACKET* spi_packet);
 void spi_set_data(SPI_PACKET* spi_packet);
 

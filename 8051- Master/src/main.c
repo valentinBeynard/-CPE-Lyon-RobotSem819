@@ -47,7 +47,7 @@ sfr Reg =	0xFF;
                       0,  // Coord_X
                       0,  // Coord_Y
                       0,  // Angle
-                      ACQ_non,  // Commande d'acquisition du son
+                      ACQ_oui,//ACQ_non,  // Commande d'acquisition du son
                       0,  // Durée d'acquisition
                       DCT_non,  // Commande de détection d'obstacle
                       0,  // Résolution angulaire de la détection d'obstacle
@@ -87,10 +87,12 @@ sfr Reg =	0xFF;
 													0	// ptr vers la chaîne de caractère auxiliare
 											};
 	
+	
 			
 											
 PARSER_RESULT parser_result = {1 , &commands, &informations};
 DD_PACKET dd_packet = {&commands, &informations, 0.0, 0};
+SPI_PACKET spi_packet = { &commands, &informations, {'K','K','K','K','K','K','K','K','K','K'}};
 
 void Init_External_clk()
 {
@@ -122,6 +124,7 @@ int main (void)
   char mes[10];
 	float f = 0.0;
 	int angle = 80;
+	int ij = 0;
   
 	
 	Reg = 0xDE;   // Dévalidation du watchdog 
@@ -143,11 +146,12 @@ int main (void)
 	Enable_Crossbar();
 
 	enable_general_Int();
-
+	
+#ifndef SPI_DEBUG
 	USART_print("Start Routine \n\n");
 	USART_print("Waiting for Serializer Init Processing... \n\n");
 	
-#ifndef SPI_DEBUG
+
 					
 	serializer_init_serial();
 							
@@ -175,6 +179,9 @@ int main (void)
 			
 			distance_detector_process(&dd_packet);
 			
+			spi_process(&spi_packet);
+			
+			USART_print(spi_packet.spi_data);
 			
 			if(parser_result.commands->Etat_DCT_Obst == oui_180)
 			{
@@ -206,10 +213,17 @@ int main (void)
 	USART_print("SPI Debug \n\n");
 	while(1)
 	{
-		spi_send_char('P');
-	
+		spi_process(&spi_packet);
+		/*if(spi_packet.ready == 1)
+		{
+			spi_packet.ready = 0;
+			USART_print("RESULT : ");
+			USART_print(spi_packet.spi_data);
+			USART_print("\n");
+		}*/
+
 	}
-	
+	USART_print("SPI Fin \n\n");
 #endif
 	
 }

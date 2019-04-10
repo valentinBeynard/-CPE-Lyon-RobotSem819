@@ -21,8 +21,8 @@ Target DLL:      SiC8051F.dll V4.3.0.0
 Dialog DLL:      TCYG.DLL V2.70
  
 <h2>Project:</h2>
-C:\Users\BEYNARD\Documents\GitHub\-CPE-Lyon-RobotSem819\robot_V1.uvproj
-Project File Date:  04/09/2019
+C:\Users\BEYNARD\Documents\GitHub\-CPE-Lyon-RobotSem819\8051- Master\robot_V1.uvproj
+Project File Date:  04/10/2019
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
@@ -30,14 +30,16 @@ assembling STARTUP.A51...
 compiling commands.c...
 compiling commands_parser.c...
 compiling main.c...
-src\main.c(122): warning C280: 'mes': unreferenced local variable
+src\main.c(124): warning C280: 'mes': unreferenced local variable
+src\main.c(226): warning C294: unreachable code
 compiling serializer.c...
 compiling motion.c...
 compiling distance_detector.c...
 src\distance_detector.c(190): warning C280: 'smallest_measure': unreferenced local variable
 src\distance_detector.c(191): warning C280: 'angle_obs': unreferenced local variable
 compiling spi_master.c...
-src\spi_master.c(155): warning C280: 'spi_packet': unreferenced local variable
+src\spi_master.c(136): warning C280: 'spi_packet': unreferenced local variable
+src\spi_master.c(168): warning C280: 'spi_packet': unreferenced local variable
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_CMD_PARSER_PROCESS?COMMANDS_PARSER
@@ -51,8 +53,6 @@ linking...
     SEGMENT: ?PR?DD_START_CONVERSION?DISTANCE_DETECTOR
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_SPI_RECEIVE_CHAR?SPI_MASTER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SPI_PROCESS?SPI_MASTER
 *** WARNING L15: MULTIPLE CALL TO SEGMENT
     SEGMENT: ?PR?SCANF?SCANF
     CALLER1: ?C_C51STARTUP
@@ -70,13 +70,13 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  _DD_SINGLE_MEASURE
     MODULE:  .\Objects\distance_detector.obj (DISTANCE_DETECTOR)
-    ADDRESS: 2463H
+    ADDRESS: 2477H
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  _DD_OBS_DETECTION
     MODULE:  .\Objects\distance_detector.obj (DISTANCE_DETECTOR)
-    ADDRESS: 246BH
-Program Size: data=33.7 xdata=812 code=17198
-".\Objects\robot_V1" - 0 Error(s), 17 Warning(s).
+    ADDRESS: 247FH
+Program Size: data=33.7 xdata=1160 code=17176
+".\Objects\robot_V1" - 0 Error(s), 18 Warning(s).
 </pre>
 </body>
 </html>
