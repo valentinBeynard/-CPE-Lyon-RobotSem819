@@ -7,18 +7,23 @@
 // Tool chain: KEIL Microvision 4
 //
 //------------------------------------------------------------------------------------
+#include "spi_slave.h"
 #include "c8051F020.h"
-#include "spi_master.h"
+
 #include <stdlib.h>
 #include <string.h>
 
 
 sbit slave_selector = P1^0;
 
-byte spi_data_in[TRAM_SIZE + 1];
+
+byte spi_data_in[TRAM_SIZE];
 byte spi_data_in_ptr = 0;
 
-byte spi_data_out[TRAM_SIZE];
+byte spi_data_out[TRAM_SIZE] = {0xAA,'a','b','c','d','e','f','d','e',0xBB};
+byte spi_data_out_ptr = 0;
+
+byte data_ready = 0;
 
 /*
 #############################################################################
@@ -29,14 +34,30 @@ byte spi_data_out[TRAM_SIZE];
 //On remet à zero le bit d'interruption qui est mis a 1 a chaque fin de transfert de donnees
 void spi_int() interrupt 6
 {
+	byte _delay = 0;
+	
 	// Reset Transmission Flag
 	SPIF = 0;
 	
-	// Read data 
+	// Read data from MASTER
 	spi_data_in[spi_data_in_ptr] = SPI0DAT;
 	
-	spi_data_in_ptr++;
+	// Wait at least 2 CLK before update SPIODAT
+	for(_delay = 0 ; _delay < 5 ; _delay++);
 	
+	// Prepare Register with new Data
+	SPI0DAT = spi_data_out[spi_data_out_ptr];
+	
+	spi_data_in_ptr++;
+	spi_data_out_ptr++;
+	
+	// When all Tram is read
+	if(spi_data_in_ptr == TRAM_SIZE)
+	{
+		spi_data_in_ptr = 0;
+		spi_data_out_ptr = 0;
+		data_ready = 1;
+	}
 }
 
 /*
@@ -49,7 +70,7 @@ void Init_SPI()
 {
 	
 	//Interruptions
-	//EIE1 |= 0x01;
+	EIE1 |= 0x01;
 	
 	// Active Crossbar
 	XBR0 |= 0x02;	 //Route les 4 ports de la SPI et les 2 de l'UART0;
@@ -61,12 +82,14 @@ void Init_SPI()
 	P1MDOUT |= 0xFF;
 	
 	SPI0CFG = 0x87;//Configure CLK SPI (actif front montant) + transmission des 8 bits
-	SPI0CN |= 0x02;	//active mode master
+	//SPI0CN |= 0x02;	//active mode master
 	SPI0CKR = 0x48; //On definit la fréquence SCK a 150kHz (elle doit etre comprise entre 100 et 200kHz pour une bonne optimisation)
 	
 	slave_selector = SLAVE_ENABLE;
 	
 	SPI0CN |= 0x01;	//active la SPI
+	
+	SPI0DAT = SPI_START_BYTE;
 }
 
 /*
@@ -74,7 +97,7 @@ void Init_SPI()
         Pour µP 8051F020
 #############################################################################
 */
-
+/*
 void spi_send_char(char a){
 		slave_selector = SLAVE_ENABLE;
 		
@@ -82,16 +105,13 @@ void spi_send_char(char a){
 		// Wait until the end of transmission
 		while(TXBSY == 1) {}
 		
+		
 		slave_selector = SLAVE_DISEABLE;
 }
 
 void spi_transmit(SPI_PACKET* spi_packet)
 {
 	byte ptr = 0;
-	
-	// Reset Buffer before transmission
-	memset(spi_data_in, 0 , spi_data_in_ptr);
-	spi_data_in_ptr = 0;
 	
 	// Enable Interrupt
 	EIE1 |= 0x01;
@@ -101,23 +121,16 @@ void spi_transmit(SPI_PACKET* spi_packet)
 		spi_send_char(spi_packet->send_data[ptr]);
 		ptr++;
 	}
-
+	
 	// DISEABLE INTERRUPT
 	EIE1 &= 0xFE;
-
-	spi_data_in[spi_data_in_ptr + 1] = '\0';
-	
-	// Get DATA
-	spi_packet->received_data = spi_data_in;
 	
 	spi_packet->ready = 1;
-	
-	memset(spi_data_out, 0, ptr);
 	
 	// Check Data Validation TODO
 }
 
-
+*/
 void spi_cmd(SPI_PACKET* spi_packet)
 {
 	spi_packet->send_data[0] = 0xAA;

@@ -1,9 +1,9 @@
-C51 COMPILER V9.55   MAIN                                                                  04/10/2019 12:14:28 PAGE 1   
+C51 COMPILER V9.55   MAIN                                                                  04/11/2019 18:13:35 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN .\Objects\main.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\main.c LARGE OPTIMIZE(1,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Lis
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\main.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Lis
                     -tings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
 
 line level    source
@@ -62,7 +62,7 @@ line level    source
   52                                DCT_non,  // Commande de détection d'obstacle
   53                                0,  // Résolution angulaire de la détection d'obstacle
   54                                Lumiere_non,  // Commande d'allumage du pointeur lumineux
-C51 COMPILER V9.55   MAIN                                                                  04/10/2019 12:14:28 PAGE 2   
+C51 COMPILER V9.55   MAIN                                                                  04/11/2019 18:13:35 PAGE 2   
 
   55                                0,  //Intensitée lumineuse
   56                                0,  // Durée d'allumage
@@ -104,7 +104,7 @@ line level    source
   92                                
   93          PARSER_RESULT parser_result = {1 , &commands, &informations};
   94          DD_PACKET dd_packet = {&commands, &informations, 0.0, 0};
-  95          SPI_PACKET spi_packet = { &commands, &informations, {'K','K','K','K','K','K','K','K','K','K'}};
+  95          SPI_PACKET spi_packet = { 0, {'K','K','K','K','K','K','K','K','K','K'}, 0};
   96          
   97          void Init_External_clk()
   98          {
@@ -126,7 +126,7 @@ line level    source
  114          
  115          void enable_general_Int()
  116          {
-C51 COMPILER V9.55   MAIN                                                                  04/10/2019 12:14:28 PAGE 3   
+C51 COMPILER V9.55   MAIN                                                                  04/11/2019 18:13:35 PAGE 3   
 
  117   1        EA = 1; // Enable general interruption
  118   1      }
@@ -190,7 +190,7 @@ line level    source
                     
                     serializer_process(&parser_result);
                     
-C51 COMPILER V9.55   MAIN                                                                  04/10/2019 12:14:28 PAGE 4   
+C51 COMPILER V9.55   MAIN                                                                  04/11/2019 18:13:35 PAGE 4   
 
                     
                     distance_detector_process(&dd_packet);
@@ -227,35 +227,42 @@ line level    source
                 
               #else
  213   1        USART_print("SPI Debug \n\n");
- 214   1        while(1)
- 215   1        {
- 216   2          spi_process(&spi_packet);
- 217   2          /*if(spi_packet.ready == 1)
- 218   2          {
- 219   2            spi_packet.ready = 0;
- 220   2            USART_print("RESULT : ");
- 221   2            USART_print(spi_packet.spi_data);
- 222   2            USART_print("\n");
- 223   2          }*/
- 224   2      
- 225   2        }
- 226   1        USART_print("SPI Fin \n\n");
- 227   1      #endif
- 228   1        
- 229   1      }
+ 214   1        spi_cmd(&spi_packet);
+ 215   1        while(1)
+ 216   1        {
+ 217   2          
+ 218   2          
+ 219   2          spi_transmit(&spi_packet);
+ 220   2          if(spi_packet.ready == 1)
+ 221   2          {
+ 222   3            spi_packet.ready = 0;
+ 223   3            USART_print("RESULT : ");
+ 224   3            USART_print(spi_packet.received_data);
+ 225   3            USART_print("\n");
+ 226   3            //break;
+ 227   3          }
+ 228   2      
+ 229   2      
+ 230   2        }
+ 231   1        
+ 232   1        while(1){};
+ 233   1        USART_print("SPI Fin \n\n");
+ 234   1      #endif
+ 235   1        
+ 236   1      }
 *** WARNING C280 IN LINE 124 OF src\main.c: 'mes': unreferenced local variable
- 230          
- 231          #endif
-*** WARNING C294 IN LINE 226 OF src\main.c: unreachable code
+ 237          
+ 238          #endif
+*** WARNING C294 IN LINE 233 OF src\main.c: unreachable code
+C51 COMPILER V9.55   MAIN                                                                  04/11/2019 18:13:35 PAGE 5   
+
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     97    ----
-   CONSTANT SIZE    =     41    ----
-   XDATA SIZE       =    106    ----
+   CODE SIZE        =    154    ----
+   CONSTANT SIZE    =     53    ----
+   XDATA SIZE       =     85      18
    PDATA SIZE       =   ----    ----
-C51 COMPILER V9.55   MAIN                                                                  04/10/2019 12:14:28 PAGE 5   
-
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

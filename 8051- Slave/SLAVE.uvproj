@@ -13,7 +13,7 @@
       <TargetOption>
         <TargetCommonOption>
           <Device>C8051F020</Device>
-          <Vendor>Silicon Labs</Vendor>
+          <Vendor>Silicon Laboratories, Inc.</Vendor>
           <Cpu>IRAM(0-0xFF) XRAM(0-0xFFF) IROM(0-0xFFFF) CLOCK(25000000)</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>"LIB\STARTUP.A51" ("Standard 8051 Startup Code")</StartupFile>
@@ -44,14 +44,14 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>robot_V1</OutputName>
+          <OutputDirectory>.\</OutputDirectory>
+          <OutputName>SLAVE</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
-          <ListingPath>.\Listings\</ListingPath>
+          <ListingPath>.\</ListingPath>
           <HexFormatSelection>0</HexFormatSelection>
           <Merge32K>0</Merge32K>
           <CreateBatchFile>0</CreateBatchFile>
@@ -185,7 +185,7 @@
         </Utilities>
         <Target51>
           <Target51Misc>
-            <MemoryModel>2</MemoryModel>
+            <MemoryModel>0</MemoryModel>
             <RTOS>0</RTOS>
             <RomSize>2</RomSize>
             <DataHold>0</DataHold>
@@ -301,7 +301,7 @@
             <uAregs>0</uAregs>
             <UseInterruptVector>1</UseInterruptVector>
             <Fuzzy>3</Fuzzy>
-            <Optimize>2</Optimize>
+            <Optimize>8</Optimize>
             <WarningLevel>2</WarningLevel>
             <SizeSpeed>1</SizeSpeed>
             <ObjectExtend>1</ObjectExtend>
@@ -327,7 +327,7 @@
             </VariousControls>
           </Ax51>
           <Lx51>
-            <useFile>1</useFile>
+            <useFile>0</useFile>
             <linkonly>0</linkonly>
             <UseMemoryFromTarget>1</UseMemoryFromTarget>
             <CaseSensitiveSymbols>0</CaseSensitiveSymbols>
@@ -336,7 +336,7 @@
             <OverlayString></OverlayString>
             <MiscControls></MiscControls>
             <DisableWarningNumbers></DisableWarningNumbers>
-            <LinkerCmdFile>.\linker_directives.lin</LinkerCmdFile>
+            <LinkerCmdFile></LinkerCmdFile>
             <Assign></Assign>
             <ReserveString></ReserveString>
             <CClasses></CClasses>
@@ -364,34 +364,14 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>STARTUP.A51</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\STARTUP.A51</FilePath>
-            </File>
-            <File>
-              <FileName>commands.c</FileName>
+              <FileName>spi_slave.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\src\commands.c</FilePath>
+              <FilePath>.\src\spi_slave.c</FilePath>
             </File>
             <File>
-              <FileName>commands.h</FileName>
+              <FileName>spi_slave.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\src\commands.h</FilePath>
-            </File>
-            <File>
-              <FileName>commands_parser.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\commands_parser.c</FilePath>
-            </File>
-            <File>
-              <FileName>commands_parser.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\commands_parser.h</FilePath>
-            </File>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\main.c</FilePath>
+              <FilePath>.\src\spi_slave.h</FilePath>
             </File>
             <File>
               <FileName>c8051F020.h</FileName>
@@ -399,44 +379,14 @@
               <FilePath>.\src\c8051F020.h</FilePath>
             </File>
             <File>
-              <FileName>debug.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\debug.h</FilePath>
-            </File>
-            <File>
-              <FileName>serializer.c</FileName>
+              <FileName>robot_slave.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\src\serializer.c</FilePath>
+              <FilePath>.\src\robot_slave.c</FilePath>
             </File>
             <File>
-              <FileName>serializer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\serializer.h</FilePath>
-            </File>
-            <File>
-              <FileName>motion.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\motion.c</FilePath>
-            </File>
-            <File>
-              <FileName>motion.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\motion.h</FilePath>
-            </File>
-            <File>
-              <FileName>distance_detector.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\distance_detector.c</FilePath>
-            </File>
-            <File>
-              <FileName>distance_detector.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\distance_detector.h</FilePath>
-            </File>
-            <File>
-              <FileName>spi_master.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\spi_master.c</FilePath>
+              <FileName>STARTUP.A51</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\STARTUP.A51</FilePath>
             </File>
           </Files>
         </Group>

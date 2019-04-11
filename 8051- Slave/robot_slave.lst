@@ -1,0 +1,76 @@
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/11/2019 18:11:42 PAGE 1   
+
+
+C51 COMPILER V9.55, COMPILATION OF MODULE ROBOT_SLAVE
+OBJECT MODULE PLACED IN robot_slave.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\robot_slave.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\ro
+                    -bot_slave.lst) TABS(2) OBJECT(robot_slave.obj)
+
+line level    source
+
+   1          #include "spi_slave.h"
+   2          #include "c8051F020.h"
+   3          
+   4          sfr Reg = 0xFF;
+   5          
+   6          
+   7          void Init_External_clk()
+   8          {
+   9   1        // Config External Osci
+  10   1        OSCXCN = 0x67;
+  11   1        while(OSCXCN != 0xE7) {}
+  12   1        
+  13   1        // Use Exern CLK
+  14   1        OSCICN = 0x08;
+  15   1          
+  16   1        CKCON = 0x00;
+  17   1      }
+  18          
+  19          void Enable_Crossbar()
+  20          {
+  21   1        // Enable Crossbar
+  22   1        XBR2 |= 0x40;
+  23   1      }
+  24          
+  25          void Enable_general_Int()
+  26          {
+  27   1        EA = 1; // Enable general interruption
+  28   1      }
+  29          
+  30          int main (void)
+  31          {
+  32   1        Reg = 0xDE;   // Dévalidation du watchdog 
+  33   1        Reg = 0xAD;
+  34   1        
+  35   1        Init_External_clk();
+  36   1        
+  37   1        Init_SPI();
+  38   1        
+  39   1        Enable_Crossbar();
+  40   1      
+  41   1        Enable_general_Int();
+  42   1        
+  43   1        
+  44   1        while(1)
+  45   1        {
+  46   2          
+  47   2          
+  48   2        }
+  49   1        
+  50   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     42    ----
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/11/2019 18:11:42 PAGE 2   
+
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

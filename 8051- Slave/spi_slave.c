@@ -8,17 +8,21 @@
 //
 //------------------------------------------------------------------------------------
 #include "c8051F020.h"
-#include "spi_master.h"
+#include "spi_slave.h"
 #include <stdlib.h>
 #include <string.h>
 
 
 sbit slave_selector = P1^0;
 
-byte spi_data_in[TRAM_SIZE + 1];
+
+byte spi_data_in[TRAM_SIZE];
 byte spi_data_in_ptr = 0;
 
 byte spi_data_out[TRAM_SIZE];
+byte spi_data_out_ptr = 0;
+
+byte data_ready = 0;
 
 /*
 #############################################################################
@@ -32,11 +36,22 @@ void spi_int() interrupt 6
 	// Reset Transmission Flag
 	SPIF = 0;
 	
-	// Read data 
+	// Read data from MASTER
 	spi_data_in[spi_data_in_ptr] = SPI0DAT;
 	
-	spi_data_in_ptr++;
+	// Prepare Register with new Data
+	SPI0DAT = spi_data_out[spi_data_out_ptr];
 	
+	spi_data_in_ptr++;
+	spi_data_out_ptr++;
+	
+	// When all Tram is read
+	if(spi_data_in_ptr == TRAM_SIZE)
+	{
+		spi_data_in_ptr = 0;
+		spi_data_out_ptr = 0;
+		data_ready = 1;
+	}
 }
 
 /*
@@ -82,16 +97,13 @@ void spi_send_char(char a){
 		// Wait until the end of transmission
 		while(TXBSY == 1) {}
 		
+		
 		slave_selector = SLAVE_DISEABLE;
 }
 
 void spi_transmit(SPI_PACKET* spi_packet)
 {
 	byte ptr = 0;
-	
-	// Reset Buffer before transmission
-	memset(spi_data_in, 0 , spi_data_in_ptr);
-	spi_data_in_ptr = 0;
 	
 	// Enable Interrupt
 	EIE1 |= 0x01;
@@ -101,18 +113,11 @@ void spi_transmit(SPI_PACKET* spi_packet)
 		spi_send_char(spi_packet->send_data[ptr]);
 		ptr++;
 	}
-
+	
 	// DISEABLE INTERRUPT
 	EIE1 &= 0xFE;
-
-	spi_data_in[spi_data_in_ptr + 1] = '\0';
-	
-	// Get DATA
-	spi_packet->received_data = spi_data_in;
 	
 	spi_packet->ready = 1;
-	
-	memset(spi_data_out, 0, ptr);
 	
 	// Check Data Validation TODO
 }

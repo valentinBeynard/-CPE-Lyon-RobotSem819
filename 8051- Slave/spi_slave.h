@@ -2,8 +2,6 @@
 
 #define SPI_MASTER_H
 
-#include "pc_cmd.h"
-
 #define TRAM_SIZE	10
 
 #define SLAVE_ENABLE	0
@@ -21,7 +19,7 @@
 
 typedef struct
 {
-  byte * received_data;
+  byte received_data[TRAM_SIZE];
 	byte send_data[TRAM_SIZE];
 	byte ready;
 	// Info sur l'obstacle ?

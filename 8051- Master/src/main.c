@@ -92,7 +92,7 @@ sfr Reg =	0xFF;
 											
 PARSER_RESULT parser_result = {1 , &commands, &informations};
 DD_PACKET dd_packet = {&commands, &informations, 0.0, 0};
-SPI_PACKET spi_packet = { &commands, &informations, {'K','K','K','K','K','K','K','K','K','K'}};
+SPI_PACKET spi_packet = { 0, {'K','K','K','K','K','K','K','K','K','K'}, 0};
 
 void Init_External_clk()
 {
@@ -211,18 +211,25 @@ int main (void)
 	
 #else
 	USART_print("SPI Debug \n\n");
+	spi_cmd(&spi_packet);
 	while(1)
 	{
-		spi_process(&spi_packet);
-		/*if(spi_packet.ready == 1)
+		
+		
+		spi_transmit(&spi_packet);
+		if(spi_packet.ready == 1)
 		{
 			spi_packet.ready = 0;
 			USART_print("RESULT : ");
-			USART_print(spi_packet.spi_data);
+			USART_print(spi_packet.received_data);
 			USART_print("\n");
-		}*/
+			//break;
+		}
+
 
 	}
+	
+	while(1){};
 	USART_print("SPI Fin \n\n");
 #endif
 	

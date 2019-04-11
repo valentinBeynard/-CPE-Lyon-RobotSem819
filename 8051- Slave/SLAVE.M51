@@ -1,0 +1,264 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        04/11/2019  18:11:42  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE spi_slave.obj, robot_slave.obj, STARTUP.obj TO SLAVE RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  spi_slave.obj (SPI_SLAVE)
+  robot_slave.obj (ROBOT_SLAVE)
+  STARTUP.obj (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?CSTOPTR)
+
+
+LINK MAP OF MODULE:  SLAVE (SPI_SLAVE)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0017H     UNIT         ?DT?SPI_SLAVE
+            IDATA   001FH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0022H     UNIT         ?C?LIB_CODE
+            CODE    0025H     0004H     UNIT         ?PR?ENABLE_CROSSBAR?ROBOT_SLAVE
+            CODE    0029H     0003H     UNIT         ?PR?ENABLE_GENERAL_INT?ROBOT_SLAVE
+                    002CH     0007H                  *** GAP ***
+            CODE    0033H     0003H     ABSOLUTE     
+            CODE    0036H     008CH     UNIT         ?C_C51STARTUP
+            CODE    00C2H     0050H     UNIT         ?PR?_SPI_CMD?SPI_SLAVE
+            CODE    0112H     003DH     UNIT         ?PR?SPI_INT?SPI_SLAVE
+            CODE    014FH     001BH     UNIT         ?PR?INIT_SPI?SPI_SLAVE
+            CODE    016AH     0016H     UNIT         ?C_INITSEG
+            CODE    0180H     0014H     UNIT         ?PR?MAIN?ROBOT_SLAVE
+            CODE    0194H     000FH     UNIT         ?PR?INIT_EXTERNAL_CLK?ROBOT_SLAVE
+
+
+
+OVERLAY MAP OF MODULE:   SLAVE (SPI_SLAVE)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?ROBOT_SLAVE
+  +--> ?C_INITSEG
+
+?PR?MAIN?ROBOT_SLAVE
+  +--> ?PR?INIT_EXTERNAL_CLK?ROBOT_SLAVE
+  +--> ?PR?INIT_SPI?SPI_SLAVE
+  +--> ?PR?ENABLE_CROSSBAR?ROBOT_SLAVE
+  +--> ?PR?ENABLE_GENERAL_INT?ROBOT_SLAVE
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2019  18:11:42  PAGE 2
+
+
+
+
+
+SYMBOL TABLE OF MODULE:  SLAVE (SPI_SLAVE)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        SPI_SLAVE
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:009DH         PUBLIC        SPI0CKR
+  D:0090H         PUBLIC        P1
+  D:0008H         PUBLIC        spi_data_in
+  D:0012H         PUBLIC        spi_data_out
+  D:00E6H         PUBLIC        EIE1
+  D:00E8H         PUBLIC        ADC0CN
+  D:00A4H         PUBLIC        P0MDOUT
+  D:00A5H         PUBLIC        P1MDOUT
+  D:00A8H         PUBLIC        IE
+  D:001CH         PUBLIC        data_ready
+  D:00D8H         PUBLIC        PCA0CN
+  D:00B8H         PUBLIC        IP
+  D:00E1H         PUBLIC        XBR0
+  D:00C0H         PUBLIC        SMB0CN
+  D:00F8H         PUBLIC        SPI0CN
+  B:00F8H.7       PUBLIC        SPIF
+  D:0088H         PUBLIC        TCON
+  D:001DH         PUBLIC        spi_data_in_ptr
+  D:001EH         PUBLIC        spi_data_out_ptr
+  C:00C2H         PUBLIC        _spi_cmd
+  C:014FH         PUBLIC        Init_SPI
+  D:0098H         PUBLIC        SCON0
+  B:0090H.0       PUBLIC        slave_selector
+  D:00C8H         PUBLIC        T2CON
+  D:009AH         PUBLIC        SPI0CFG
+  D:009BH         PUBLIC        SPI0DAT
+  C:0112H         PUBLIC        spi_int
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          SPI_INT
+  -------         DO            
+  D:0007H         SYMBOL        _delay
+  -------         ENDDO         
+  C:0112H         LINE#         35
+  C:011DH         LINE#         37
+  C:011FH         LINE#         40
+  C:0121H         LINE#         43
+  C:0128H         LINE#         45
+  C:012CH         LINE#         48
+  C:0134H         LINE#         50
+  C:0136H         LINE#         51
+  C:0138H         LINE#         54
+  C:013DH         LINE#         55
+  C:013DH         LINE#         56
+  C:0140H         LINE#         57
+  C:0143H         LINE#         58
+  C:0146H         LINE#         59
+  C:0146H         LINE#         60
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2019  18:11:42  PAGE 3
+
+
+  -------         ENDPROC       SPI_INT
+  -------         PROC          INIT_SPI
+  C:014FH         LINE#         68
+  C:014FH         LINE#         69
+  C:014FH         LINE#         72
+  C:0152H         LINE#         75
+  C:0155H         LINE#         79
+  C:0158H         LINE#         80
+  C:015BH         LINE#         81
+  C:015EH         LINE#         83
+  C:0161H         LINE#         85
+  C:0164H         LINE#         87
+  C:0166H         LINE#         89
+  C:0169H         LINE#         90
+  -------         ENDPROC       INIT_SPI
+  -------         PROC          _SPI_CMD
+  D:0001H         SYMBOL        spi_packet
+  C:00C2H         LINE#         131
+  C:00C2H         LINE#         132
+  C:00C2H         LINE#         133
+  C:00CAH         LINE#         134
+  C:00D2H         LINE#         135
+  C:00DAH         LINE#         136
+  C:00E2H         LINE#         137
+  C:00EAH         LINE#         138
+  C:00F2H         LINE#         139
+  C:00FAH         LINE#         140
+  C:0102H         LINE#         141
+  C:010AH         LINE#         142
+  -------         ENDPROC       _SPI_CMD
+  -------         ENDMOD        SPI_SLAVE
+
+  -------         MODULE        ROBOT_SLAVE
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  B:00A8H.7       PUBLIC        EA
+  D:00E8H         PUBLIC        ADC0CN
+  D:00A8H         PUBLIC        IE
+  D:00D8H         PUBLIC        PCA0CN
+  D:00B8H         PUBLIC        IP
+  C:0029H         PUBLIC        Enable_general_Int
+  D:00FFH         PUBLIC        Reg
+  D:00E3H         PUBLIC        XBR2
+  D:00C0H         PUBLIC        SMB0CN
+  C:0180H         PUBLIC        main
+  D:00F8H         PUBLIC        SPI0CN
+  D:0088H         PUBLIC        TCON
+  D:00B2H         PUBLIC        OSCICN
+  D:00B1H         PUBLIC        OSCXCN
+  C:0194H         PUBLIC        Init_External_clk
+  D:0098H         PUBLIC        SCON0
+  D:00C8H         PUBLIC        T2CON
+  C:0025H         PUBLIC        Enable_Crossbar
+  D:008EH         PUBLIC        CKCON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          INIT_EXTERNAL_CLK
+  C:0194H         LINE#         7
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2019  18:11:42  PAGE 4
+
+
+  C:0194H         LINE#         8
+  C:0194H         LINE#         10
+  C:0197H         LINE#         11
+  C:019CH         LINE#         14
+  C:019FH         LINE#         16
+  C:01A2H         LINE#         17
+  -------         ENDPROC       INIT_EXTERNAL_CLK
+  -------         PROC          ENABLE_CROSSBAR
+  C:0025H         LINE#         19
+  C:0025H         LINE#         20
+  C:0025H         LINE#         22
+  C:0028H         LINE#         23
+  -------         ENDPROC       ENABLE_CROSSBAR
+  -------         PROC          ENABLE_GENERAL_INT
+  C:0029H         LINE#         25
+  C:0029H         LINE#         26
+  C:0029H         LINE#         27
+  C:002BH         LINE#         28
+  -------         ENDPROC       ENABLE_GENERAL_INT
+  -------         PROC          MAIN
+  C:0180H         LINE#         30
+  C:0180H         LINE#         31
+  C:0180H         LINE#         32
+  C:0183H         LINE#         33
+  C:0186H         LINE#         35
+  C:0189H         LINE#         37
+  C:018CH         LINE#         39
+  C:018FH         LINE#         41
+  C:0192H         LINE#         44
+  C:0192H         LINE#         45
+  C:0192H         LINE#         48
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        ROBOT_SLAVE
+
+  -------         MODULE        ?C_STARTUP
+  C:0036H         SEGMENT       ?C_C51STARTUP
+  I:001FH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0039H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0036H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2019  18:11:42  PAGE 5
+
+
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:0036H         LINE#         133
+  C:0038H         LINE#         134
+  C:0039H         LINE#         135
+  C:003AH         LINE#         136
+  C:003CH         LINE#         186
+  C:003FH         LINE#         197
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        ?C?CSTOPTR
+  C:0003H         PUBLIC        ?C?CSTOPTR
+  -------         ENDMOD        ?C?CSTOPTR
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SPI_CMD?SPI_SLAVE
+
+Program Size: data=32.0 xdata=0 code=412
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)

@@ -1,8 +1,7 @@
-#ifndef SPI_MASTER_H
+#ifndef SPI_SLAVE_H
 
-#define SPI_MASTER_H
+#define SPI_SLAVE_H
 
-#include "pc_cmd.h"
 
 #define TRAM_SIZE	10
 
@@ -21,7 +20,7 @@
 
 typedef struct
 {
-  byte * received_data;
+  byte received_data[TRAM_SIZE];
 	byte send_data[TRAM_SIZE];
 	byte ready;
 	// Info sur l'obstacle ?
@@ -29,9 +28,11 @@ typedef struct
 
 
 void Init_SPI();
-void spi_send_char(char a);
 
+/*
+void spi_send_char(char a);
 void spi_transmit(SPI_PACKET* spi_packet);
+*/
 
 void spi_cmd(SPI_PACKET* spi_packet);
 
