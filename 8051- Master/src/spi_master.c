@@ -15,7 +15,7 @@
 
 sbit slave_selector = P1^0;
 
-byte spi_data_in[TRAM_SIZE + 1];
+byte spi_data_in[TRAM_SIZE];
 byte spi_data_in_ptr = 0;
 
 byte spi_data_out[TRAM_SIZE];
@@ -108,16 +108,20 @@ void spi_transmit(SPI_PACKET* spi_packet)
 	// DISEABLE INTERRUPT
 	EIE1 &= 0xFE;
 
-	spi_data_in[spi_data_in_ptr + 1] = '\0';
+	// Check if received _data are correct througth SPI Slave Flag 'VALID'
+	if(spi_validate() == 0)
+	{
+		spi_error();
+	}
+	else{
+		spi_packet->ready = 1;
+	}
 	
 	// Get DATA
 	spi_packet->received_data = spi_data_in;
 	
-	spi_packet->ready = 1;
-	
 	memset(spi_data_out, 0, ptr);
 	
-	// Check Data Validation TODO
 }
 
 void spi_process(OUT_M1 * cmd, SPI_PACKET* spi_packet)
@@ -152,16 +156,38 @@ void spi_process(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 
 void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 {
-	/*spi_packet->send_data[0] = SPI_SERVO_CMD;
+	spi_packet->send_data[0] = SPI_SERVO_CMD;
 	spi_packet->send_data[1] = (cmd->Servo_Angle);
 	spi_packet->send_data[2] = (cmd->Servo_Angle) >> 8;
 	spi_packet->send_data[3] = 0;
-	spi_packet->send_data[4] = 0;*/
+	spi_packet->send_data[4] = 0;
+}
+
+byte spi_validate()
+{
+	int hash = 0, i =0;
 	
-		spi_packet->send_data[0] = 'A';
-	spi_packet->send_data[1] = 'B';
-	spi_packet->send_data[2] = 'C';
-	spi_packet->send_data[3] = 'D';
-	spi_packet->send_data[4] = 'E';
+	for(i = 0; i < 5 ; i++)
+	{
+		hash += spi_data_in[i];
+	}
+	
+	if(hash != 368)
+	{
+		return 0;
+	}
+	else 
+	{
+		return 1;
+	}
+}
+
+void spi_error()
+{
+	spi_data_in[0] = 'E';
+	spi_data_in[1] = 'R';
+	spi_data_in[2] = 'R';
+	spi_data_in[3] = 'O';
+	spi_data_in[4] = 'R';
 }
 

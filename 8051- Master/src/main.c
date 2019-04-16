@@ -58,7 +58,7 @@ sfr Reg =	0xFF;
                       0,  // Durée d'allumage
                       0,  // Durée d'extinction
                       0,  // Nombre de cycles d'allumage
-                      Servo_V,  // Commande de position du servo
+                      Servo_non,  // Commande de position du servo
                       0,  // Paramètre angle
                       Energie_non,  // Commande relevée courant
                       Position_non, // Commande de gestion de position
@@ -94,7 +94,7 @@ sfr Reg =	0xFF;
 											
 PARSER_RESULT parser_result = {1 , &commands, &informations};
 DD_PACKET dd_packet = {&commands, &informations, 0.0, 0};
-SPI_PACKET spi_packet = { 0, {'Q','S','D','F','G'}, 0};
+SPI_PACKET spi_packet = { 0, {0xA5,0x00,0x64,'F','G'}, 0};
 
 void Init_External_clk()
 {
@@ -158,7 +158,7 @@ int main (void)
 	USART_print("\n\n#############################\n\n>");
 
 	//serializer_print("mogo 1:50 2:50");
-	/*					
+						
   while(1)
   {
     
@@ -219,8 +219,8 @@ int main (void)
 	USART_print("Fin Soft");
 	
 	while(1){}
-	*/	
-	spi_packet.ready = 1;
+		
+	/*spi_packet.ready = 1;
 	while(1)
 	{
 		//spi_transmit(&spi_packet);
@@ -233,7 +233,7 @@ int main (void)
 				USART_print("RESULT : ");
 				USART_print(spi_packet.received_data);
 				USART_print("\n");
-	}
+	}*/
 	
 }
 

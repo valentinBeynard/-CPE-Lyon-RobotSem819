@@ -83,7 +83,7 @@ void Init_SPI()
 	SPI0CKR = 0x48; //On definit la fréquence SCK a 150kHz (elle doit etre comprise entre 100 et 200kHz pour une bonne optimisation)
 	
 	// First Value that MASTER will receive
-	//SPI0DAT = 'V';
+	SPI0DAT = 'V';
 	
 	SPI0CN |= 0x01;	//active la SPI
 	

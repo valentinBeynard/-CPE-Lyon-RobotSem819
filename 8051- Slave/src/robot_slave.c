@@ -86,14 +86,14 @@ int main (void)
 	
 	while(1)
 	{
-	/*	if(spi_data_is_ready() == 1)
+		if(spi_data_is_ready() == 1)
 		{
 			spi_parse_cmd(&commands);
 			if(commands.Etat_Servo == Servo_oui)
 			{
 				LED = 1;
 			}
-		}*/
+		}
 		
 	}
 	

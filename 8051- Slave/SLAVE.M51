@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        04/16/2019  17:07:42  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        04/16/2019  20:38:58  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -44,11 +44,11 @@ LINK MAP OF MODULE:  SLAVE (SPI_SLAVE)
             CODE    02A6H     008CH     UNIT         ?C_C51STARTUP
             CODE    0332H     0081H     UNIT         ?PR?SPI_INT?SPI_SLAVE
             CODE    03B3H     005AH     UNIT         ?C?LIB_CODE
-            CODE    040DH     0019H     UNIT         ?PR?INIT_SPI?SPI_SLAVE
-            CODE    0426H     0017H     UNIT         ?PR?MAIN?ROBOT_SLAVE
-            CODE    043DH     000FH     UNIT         ?PR?INIT_EXTERNAL_CLK?ROBOT_SLAVE
-            CODE    044CH     0004H     UNIT         ?PR?ENABLE_CROSSBAR?ROBOT_SLAVE
-            CODE    0450H     0003H     UNIT         ?PR?ENABLE_GENERAL_INT?ROBOT_SLAVE
+            CODE    040DH     0032H     UNIT         ?PR?MAIN?ROBOT_SLAVE
+            CODE    043FH     001CH     UNIT         ?PR?INIT_SPI?SPI_SLAVE
+            CODE    045BH     000FH     UNIT         ?PR?INIT_EXTERNAL_CLK?ROBOT_SLAVE
+            CODE    046AH     0004H     UNIT         ?PR?ENABLE_CROSSBAR?ROBOT_SLAVE
+            CODE    046EH     0003H     UNIT         ?PR?ENABLE_GENERAL_INT?ROBOT_SLAVE
 
 
 
@@ -59,7 +59,7 @@ SEGMENT
   +--> CALLED SEGMENT
 ---------------------
 ?C_C51STARTUP
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/16/2019  17:07:42  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/16/2019  20:38:58  PAGE 2
 
 
   +--> ?PR?MAIN?ROBOT_SLAVE
@@ -70,6 +70,8 @@ SEGMENT
   +--> ?PR?INIT_SPI?SPI_SLAVE
   +--> ?PR?ENABLE_CROSSBAR?ROBOT_SLAVE
   +--> ?PR?ENABLE_GENERAL_INT?ROBOT_SLAVE
+  +--> ?PR?SPI_DATA_IS_READY?SPI_SLAVE
+  +--> ?PR?_SPI_PARSE_CMD?SPI_SLAVE
 
 
 
@@ -101,7 +103,7 @@ SYMBOL TABLE OF MODULE:  SLAVE (SPI_SLAVE)
   X:001CH         PUBLIC        spi_data_out_ptr
   X:001DH         PUBLIC        spi_data_ready
   C:0036H         PUBLIC        _spi_parse_cmd
-  C:040DH         PUBLIC        Init_SPI
+  C:043FH         PUBLIC        Init_SPI
   D:0098H         PUBLIC        SCON0
   D:00C8H         PUBLIC        T2CON
   D:009AH         PUBLIC        SPI0CFG
@@ -117,11 +119,11 @@ SYMBOL TABLE OF MODULE:  SLAVE (SPI_SLAVE)
   C:0344H         LINE#         37
   C:0346H         LINE#         40
   C:0358H         LINE#         43
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/16/2019  20:38:58  PAGE 3
+
+
   C:0370H         LINE#         46
   C:0383H         LINE#         48
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/16/2019  17:07:42  PAGE 3
-
-
   C:0389H         LINE#         49
   C:038FH         LINE#         52
   C:0398H         LINE#         53
@@ -132,17 +134,18 @@ SYMBOL TABLE OF MODULE:  SLAVE (SPI_SLAVE)
   C:03A8H         LINE#         58
   -------         ENDPROC       SPI_INT
   -------         PROC          INIT_SPI
-  C:040DH         LINE#         66
-  C:040DH         LINE#         67
-  C:040DH         LINE#         70
-  C:0410H         LINE#         73
-  C:0413H         LINE#         77
-  C:0416H         LINE#         78
-  C:0419H         LINE#         79
-  C:041CH         LINE#         81
-  C:041FH         LINE#         83
-  C:0422H         LINE#         88
-  C:0425H         LINE#         91
+  C:043FH         LINE#         66
+  C:043FH         LINE#         67
+  C:043FH         LINE#         70
+  C:0442H         LINE#         73
+  C:0445H         LINE#         77
+  C:0448H         LINE#         78
+  C:044BH         LINE#         79
+  C:044EH         LINE#         81
+  C:0451H         LINE#         83
+  C:0454H         LINE#         86
+  C:0457H         LINE#         88
+  C:045AH         LINE#         91
   -------         ENDPROC       INIT_SPI
   -------         PROC          _SPI_PARSE_CMD
   X:001EH         SYMBOL        cmd
@@ -176,12 +179,12 @@ SYMBOL TABLE OF MODULE:  SLAVE (SPI_SLAVE)
   C:01C1H         LINE#         126
   C:01E5H         LINE#         127
   C:01E8H         LINE#         128
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/16/2019  20:38:58  PAGE 4
+
+
   C:01E8H         LINE#         129
   C:01FEH         LINE#         130
   C:01FEH         LINE#         131
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/16/2019  17:07:42  PAGE 4
-
-
   C:01FEH         LINE#         132
   C:0214H         LINE#         133
   C:0216H         LINE#         134
@@ -220,61 +223,69 @@ SYMBOL TABLE OF MODULE:  SLAVE (SPI_SLAVE)
   D:00A8H         PUBLIC        IE
   D:00D8H         PUBLIC        PCA0CN
   D:00B8H         PUBLIC        IP
-  C:0450H         PUBLIC        Enable_general_Int
+  C:046EH         PUBLIC        Enable_general_Int
   D:00FFH         PUBLIC        Reg
   D:00E3H         PUBLIC        XBR2
   D:00C0H         PUBLIC        SMB0CN
-  C:0426H         PUBLIC        main
+  C:040DH         PUBLIC        main
   D:00F8H         PUBLIC        SPI0CN
   D:0088H         PUBLIC        TCON
   D:00B2H         PUBLIC        OSCICN
   D:00B1H         PUBLIC        OSCXCN
   B:0090H.6       PUBLIC        LED
   X:0000H         PUBLIC        commands
-  C:043DH         PUBLIC        Init_External_clk
+  C:045BH         PUBLIC        Init_External_clk
   D:0098H         PUBLIC        SCON0
   D:00C8H         PUBLIC        T2CON
-  C:044CH         PUBLIC        Enable_Crossbar
+  C:046AH         PUBLIC        Enable_Crossbar
   D:008EH         PUBLIC        CKCON
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/16/2019  20:38:58  PAGE 5
+
+
   D:00D0H         PUBLIC        PSW
   -------         PROC          INIT_EXTERNAL_CLK
-  C:043DH         LINE#         50
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/16/2019  17:07:42  PAGE 5
-
-
-  C:043DH         LINE#         51
-  C:043DH         LINE#         53
-  C:0440H         LINE#         54
-  C:0445H         LINE#         57
-  C:0448H         LINE#         59
-  C:044BH         LINE#         60
+  C:045BH         LINE#         50
+  C:045BH         LINE#         51
+  C:045BH         LINE#         53
+  C:045EH         LINE#         54
+  C:0463H         LINE#         57
+  C:0466H         LINE#         59
+  C:0469H         LINE#         60
   -------         ENDPROC       INIT_EXTERNAL_CLK
   -------         PROC          ENABLE_CROSSBAR
-  C:044CH         LINE#         62
-  C:044CH         LINE#         63
-  C:044CH         LINE#         65
-  C:044FH         LINE#         66
+  C:046AH         LINE#         62
+  C:046AH         LINE#         63
+  C:046AH         LINE#         65
+  C:046DH         LINE#         66
   -------         ENDPROC       ENABLE_CROSSBAR
   -------         PROC          ENABLE_GENERAL_INT
-  C:0450H         LINE#         68
-  C:0450H         LINE#         69
-  C:0450H         LINE#         70
-  C:0452H         LINE#         71
+  C:046EH         LINE#         68
+  C:046EH         LINE#         69
+  C:046EH         LINE#         70
+  C:0470H         LINE#         71
   -------         ENDPROC       ENABLE_GENERAL_INT
   -------         PROC          MAIN
-  C:0426H         LINE#         73
-  C:0426H         LINE#         74
-  C:0426H         LINE#         75
-  C:0429H         LINE#         76
-  C:042CH         LINE#         78
-  C:042FH         LINE#         80
-  C:0432H         LINE#         82
-  C:0435H         LINE#         84
-  C:0438H         LINE#         85
-  C:043AH         LINE#         87
-  C:043AH         LINE#         88
-  C:043AH         LINE#         98
-  C:043CH         LINE#         100
+  C:040DH         LINE#         73
+  C:040DH         LINE#         74
+  C:040DH         LINE#         75
+  C:0410H         LINE#         76
+  C:0413H         LINE#         78
+  C:0416H         LINE#         80
+  C:0419H         LINE#         82
+  C:041CH         LINE#         84
+  C:041FH         LINE#         85
+  C:0421H         LINE#         87
+  C:0421H         LINE#         88
+  C:0421H         LINE#         89
+  C:0428H         LINE#         90
+  C:0428H         LINE#         91
+  C:0431H         LINE#         92
+  C:043AH         LINE#         93
+  C:043AH         LINE#         94
+  C:043CH         LINE#         95
+  C:043CH         LINE#         96
+  C:043CH         LINE#         98
+  C:043EH         LINE#         100
   -------         ENDPROC       MAIN
   -------         ENDMOD        ROBOT_SLAVE
 
@@ -288,6 +299,9 @@ SYMBOL TABLE OF MODULE:  SLAVE (SPI_SLAVE)
   D:0082H         SYMBOL        DPL
   N:0000H         SYMBOL        IBPSTACK
   N:0100H         SYMBOL        IBPSTACKTOP
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/16/2019  20:38:58  PAGE 6
+
+
   N:0080H         SYMBOL        IDATALEN
   C:02A9H         SYMBOL        IDATALOOP
   N:0000H         SYMBOL        PBPSTACK
@@ -299,9 +313,6 @@ SYMBOL TABLE OF MODULE:  SLAVE (SPI_SLAVE)
   D:00A0H         SYMBOL        PPAGE_SFR
   D:0081H         SYMBOL        SP
   C:02A6H         SYMBOL        STARTUP1
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/16/2019  17:07:42  PAGE 6
-
-
   N:0000H         SYMBOL        XBPSTACK
   N:0000H         SYMBOL        XBPSTACKTOP
   N:0000H         SYMBOL        XDATALEN
@@ -327,11 +338,5 @@ SYMBOL TABLE OF MODULE:  SLAVE (SPI_SLAVE)
   C:03E7H         PUBLIC        ?C?CCASE
   -------         ENDMOD        ?C?CCASE
 
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SPI_PARSE_CMD?SPI_SLAVE
-
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?SPI_DATA_IS_READY?SPI_SLAVE
-
-Program Size: data=9.0 xdata=34 code=1106
-LINK/LOCATE RUN COMPLETE.  2 WARNING(S),  0 ERROR(S)
+Program Size: data=9.0 xdata=34 code=1136
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

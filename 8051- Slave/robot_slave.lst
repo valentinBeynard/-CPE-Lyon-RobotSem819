@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/16/2019 17:07:41 PAGE 1   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/16/2019 20:38:58 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE ROBOT_SLAVE
@@ -62,7 +62,7 @@ line level    source
   52   1        // Config External Osci
   53   1        OSCXCN = 0x67;
   54   1        while(OSCXCN != 0xE7) {}
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/16/2019 17:07:41 PAGE 2   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/16/2019 20:38:58 PAGE 2   
 
   55   1        
   56   1        // Use Exern CLK
@@ -98,14 +98,14 @@ line level    source
   86   1        
   87   1        while(1)
   88   1        {
-  89   2        /*  if(spi_data_is_ready() == 1)
+  89   2          if(spi_data_is_ready() == 1)
   90   2          {
-  91   2            spi_parse_cmd(&commands);
-  92   2            if(commands.Etat_Servo == Servo_oui)
-  93   2            {
-  94   2              LED = 1;
-  95   2            }
-  96   2          }*/
+  91   3            spi_parse_cmd(&commands);
+  92   3            if(commands.Etat_Servo == Servo_oui)
+  93   3            {
+  94   4              LED = 1;
+  95   4            }
+  96   3          }
   97   2          
   98   2        }
   99   1        
@@ -113,7 +113,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     45    ----
+   CODE SIZE        =     72    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     17    ----
    PDATA SIZE       =   ----    ----

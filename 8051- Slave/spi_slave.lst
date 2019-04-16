@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   SPI_SLAVE                                                             04/16/2019 17:07:41 PAGE 1   
+C51 COMPILER V9.55   SPI_SLAVE                                                             04/16/2019 20:38:58 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE SPI_SLAVE
@@ -62,7 +62,7 @@ line level    source
   52   1        if(spi_data_in_ptr == TRAM_SIZE)
   53   1        {
   54   2          spi_data_in_ptr = 0;
-C51 COMPILER V9.55   SPI_SLAVE                                                             04/16/2019 17:07:41 PAGE 2   
+C51 COMPILER V9.55   SPI_SLAVE                                                             04/16/2019 20:38:58 PAGE 2   
 
   55   2          spi_data_out_ptr = 0;
   56   2          spi_data_ready = 1;
@@ -96,7 +96,7 @@ line level    source
              -une bonne optimisation)
   84   1        
   85   1        // First Value that MASTER will receive
-  86   1        //SPI0DAT = 'V';
+  86   1        SPI0DAT = 'V';
   87   1        
   88   1        SPI0CN |= 0x01; //active la SPI
   89   1        
@@ -126,7 +126,7 @@ line level    source
  113   2            break;
  114   2          case 0xA3:
  115   2            cmd->Etat_Lumiere = Allumer;
-C51 COMPILER V9.55   SPI_SLAVE                                                             04/16/2019 17:07:41 PAGE 3   
+C51 COMPILER V9.55   SPI_SLAVE                                                             04/16/2019 20:38:58 PAGE 3   
 
  116   2            cmd->Lumiere_Intensite = spi_data_in[1];
  117   2            cmd->Lumiere_Duree = spi_data_in[2];
@@ -173,7 +173,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    784    ----
+   CODE SIZE        =    787    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     17    ----
    PDATA SIZE       =   ----    ----

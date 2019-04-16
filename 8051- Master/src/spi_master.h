@@ -15,7 +15,7 @@
 					Protocol SPI : Commands ID
 #############################################################################
 */
-#define SPI_SERVO_CMD	0xA1
+#define SPI_SERVO_CMD	0xA5
 
 
 #define byte unsigned char
@@ -39,5 +39,8 @@ void spi_transmit(SPI_PACKET* spi_packet);
 void spi_process(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 
 void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet);
+
+byte spi_validate();
+void spi_error();
 
 #endif

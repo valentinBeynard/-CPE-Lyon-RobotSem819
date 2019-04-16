@@ -30,28 +30,16 @@ assembling STARTUP.A51...
 compiling commands.c...
 compiling commands_parser.c...
 compiling main.c...
-src\main.c(125): warning C280: 'mes': unreferenced local variable
 compiling serializer.c...
 compiling motion.c...
 compiling distance_detector.c...
 src\distance_detector.c(190): warning C280: 'smallest_measure': unreferenced local variable
 src\distance_detector.c(191): warning C280: 'angle_obs': unreferenced local variable
 compiling spi_master.c...
-src\spi_master.c(114): warning C182: pointer to different objects
-src\spi_master.c(153): warning C280: 'cmd': unreferenced local variable
+src\spi_master.c(121): warning C182: pointer to different objects
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_CMD_PARSER_PROCESS?COMMANDS_PARSER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?SERIALIZER_INIT_SERIAL?SERIALIZER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERIALIZER_PROCESS?SERIALIZER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_DISTANCE_DETECTOR_PROCESS?DISTANCE_DETECTOR
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?DD_START_CONVERSION?DISTANCE_DETECTOR
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SPI_PROCESS?SPI_MASTER
 *** WARNING L15: MULTIPLE CALL TO SEGMENT
     SEGMENT: ?PR?SCANF?SCANF
     CALLER1: ?C_C51STARTUP
@@ -69,13 +57,13 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  _DD_SINGLE_MEASURE
     MODULE:  .\Objects\distance_detector.obj (DISTANCE_DETECTOR)
-    ADDRESS: 267EH
+    ADDRESS: 2873H
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  _DD_OBS_DETECTION
     MODULE:  .\Objects\distance_detector.obj (DISTANCE_DETECTOR)
-    ADDRESS: 2686H
-Program Size: data=33.7 xdata=796 code=17527
-".\Objects\robot_V1" - 0 Error(s), 17 Warning(s).
+    ADDRESS: 287BH
+Program Size: data=33.7 xdata=770 code=18118
+".\Objects\robot_V1" - 0 Error(s), 10 Warning(s).
 Build Time Elapsed:  00:00:01
 </pre>
 </body>
