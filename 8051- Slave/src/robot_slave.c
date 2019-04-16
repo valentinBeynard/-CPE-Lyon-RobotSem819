@@ -1,4 +1,5 @@
 #include "spi_slave.h"
+#include "light_beam.h"
 #include "c8051F020.h"
 
 /*
@@ -63,6 +64,8 @@ void Enable_Crossbar()
 {
 	// Enable Crossbar
 	XBR2 |= 0x40;
+	
+	
 }
 
 void Enable_general_Int()
@@ -79,20 +82,23 @@ int main (void)
 	
 	Init_SPI();
 	
+	Init_light_beam();
+	
 	Enable_Crossbar();
 
 	Enable_general_Int();
+	
 	LED = 0;
 	
 	while(1)
 	{
-		if(spi_data_is_ready() == 1)
+		spi_process(&commands);
+		
+		light_beam_process(&commands);
+		
+		if(commands.Etat_Servo == Servo_oui)
 		{
-			spi_parse_cmd(&commands);
-			if(commands.Etat_Servo == Servo_oui)
-			{
-				LED = 1;
-			}
+			LED = 1;
 		}
 		
 	}

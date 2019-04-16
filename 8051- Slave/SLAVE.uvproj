@@ -406,6 +406,16 @@
               <FileType>5</FileType>
               <FilePath>.\src\slave_cmd.h</FilePath>
             </File>
+            <File>
+              <FileName>light_beam.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\light_beam.c</FilePath>
+            </File>
+            <File>
+              <FileName>light_beam.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\light_beam.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

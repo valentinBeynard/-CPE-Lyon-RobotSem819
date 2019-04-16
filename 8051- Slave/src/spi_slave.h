@@ -23,9 +23,8 @@
 
 void Init_SPI();
 
-
+void spi_process(OUT_M2* cmd);
 void spi_parse_cmd(OUT_M2* cmd);
-byte spi_data_is_ready();
 
 
 #endif

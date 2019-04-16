@@ -96,6 +96,15 @@ void Init_SPI()
 #############################################################################
 */
 
+void spi_process(OUT_M2* cmd)
+{
+	if(spi_data_ready == 1)
+	{
+		spi_parse_cmd(cmd);
+		
+	}
+}
+
 void spi_parse_cmd(OUT_M2* cmd)
 {
 	switch(spi_data_in[0])
@@ -151,7 +160,3 @@ void spi_parse_cmd(OUT_M2* cmd)
 	spi_data_ready = 0;
 }
 
-byte spi_data_is_ready()
-{
-	return spi_data_ready;
-}

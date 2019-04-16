@@ -1,5 +1,6 @@
 "spi_slave.obj",
 "robot_slave.obj",
-"STARTUP.obj" 
+"STARTUP.obj",
+"light_beam.obj" 
 TO "SLAVE" 
 RAMSIZE(256) 
