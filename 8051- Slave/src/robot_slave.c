@@ -1,8 +1,51 @@
 #include "spi_slave.h"
 #include "c8051F020.h"
 
+/*
+#############################################################################
+        PIN List
+#############################################################################
+*
+*	
+*
+*	SPI = SCK -> P0.0 | MISO -> P0.1 | MOSI -> P0.2 | NSS -> P0.3
+*				SCK : OUT
+*				MISO : IN
+*				MOSI : OUT
+*				NSS : Vcc
+*
+*	
+*
+*	
+*
+*	
+*
+*	
+*
+*
+*
+*
+*/
+
 sfr Reg =	0xFF;
 
+OUT_M2 commands = {ACQ_non,
+										0,
+										GEN_non,
+										0,
+										0,
+										0,
+										0,
+										Lumiere_non,
+										0,
+										0,
+										0,
+										0,
+										Servo_non,
+										0,
+										Photo_non,
+										0,
+										0};
 
 void Init_External_clk()
 {
@@ -39,11 +82,18 @@ int main (void)
 	Enable_Crossbar();
 
 	Enable_general_Int();
-	
+	LED = 0;
 	
 	while(1)
 	{
-		
+	/*	if(spi_data_is_ready() == 1)
+		{
+			spi_parse_cmd(&commands);
+			if(commands.Etat_Servo == Servo_oui)
+			{
+				LED = 1;
+			}
+		}*/
 		
 	}
 	

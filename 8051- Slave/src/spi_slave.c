@@ -14,16 +14,13 @@
 #include <string.h>
 
 
-sbit slave_selector = P1^0;
-
-
 byte spi_data_in[TRAM_SIZE];
 byte spi_data_in_ptr = 0;
 
-byte spi_data_out[TRAM_SIZE] = {0xAA,'a','b','c','d','e','f','d','e',0xBB};
+byte spi_data_out[TRAM_SIZE] = {'A', 'L','I','D','V'};
 byte spi_data_out_ptr = 0;
 
-byte data_ready = 0;
+byte spi_data_ready = 0;
 
 /*
 #############################################################################
@@ -56,7 +53,7 @@ void spi_int() interrupt 6
 	{
 		spi_data_in_ptr = 0;
 		spi_data_out_ptr = 0;
-		data_ready = 1;
+		spi_data_ready = 1;
 	}
 }
 
@@ -85,11 +82,12 @@ void Init_SPI()
 	//SPI0CN |= 0x02;	//active mode master
 	SPI0CKR = 0x48; //On definit la fréquence SCK a 150kHz (elle doit etre comprise entre 100 et 200kHz pour une bonne optimisation)
 	
-	slave_selector = SLAVE_ENABLE;
+	// First Value that MASTER will receive
+	//SPI0DAT = 'V';
 	
 	SPI0CN |= 0x01;	//active la SPI
 	
-	SPI0DAT = SPI_START_BYTE;
+	//SPI0DAT = SPI_START_BYTE;
 }
 
 /*
@@ -97,51 +95,63 @@ void Init_SPI()
         Pour µP 8051F020
 #############################################################################
 */
-/*
-void spi_send_char(char a){
-		slave_selector = SLAVE_ENABLE;
-		
-		SPI0DAT = a;
-		// Wait until the end of transmission
-		while(TXBSY == 1) {}
-		
-		
-		slave_selector = SLAVE_DISEABLE;
-}
 
-void spi_transmit(SPI_PACKET* spi_packet)
+void spi_parse_cmd(OUT_M2* cmd)
 {
-	byte ptr = 0;
-	
-	// Enable Interrupt
-	EIE1 |= 0x01;
-	
-	while(ptr < TRAM_SIZE)
+	switch(spi_data_in[0])
 	{
-		spi_send_char(spi_packet->send_data[ptr]);
-		ptr++;
+		case 0xA1:
+			cmd->Etat_ACQ_Son = ACQ_oui;
+			cmd->ACQ_Duree = spi_data_in[1];
+			break;
+		case 0xA2:
+			cmd->Etat_GEN_Son = GEN_oui;
+			cmd->GEN_freq_code = spi_data_in[1];
+			cmd->GEN_son_Duree = spi_data_in[2];
+			cmd->GEN_silence_Duree = spi_data_in[3];
+			cmd->GEN_nbr_bip = spi_data_in[4];
+			break;
+		case 0xA3:
+			cmd->Etat_Lumiere = Allumer;
+			cmd->Lumiere_Intensite = spi_data_in[1];
+			cmd->Lumiere_Duree = spi_data_in[2];
+			cmd->Lumire_Extinction = spi_data_in[3];
+			cmd->Lumiere_Nbre = spi_data_in[4];
+			break;
+		case 0xA4:
+			cmd->Etat_Lumiere = Eteindre;
+			break;
+		case 0xA5:
+			cmd->Etat_Servo = Servo_oui;
+			cmd->Servo_Angle = (spi_data_in[2] << 8) + spi_data_in[1];
+			break;
+		case 0xA6:
+			switch(spi_data_in[1])
+			{
+				case 1:
+					cmd->Etat_Photo = Photo_1;
+					break;
+				case 2:
+					cmd->Etat_Photo = Photo_Multiple;
+					break;
+				case 3:
+					cmd->Etat_Photo = Photo_continue;
+					break;
+			}
+			cmd->Photo_Duree = spi_data_in[2];
+			cmd->Photo_Nbre = spi_data_in[3];
+			break;
+		case 0xA7:
+			cmd->Etat_Photo = Photo_non;
+			break;
+		default:
+			cmd->Etat_ACQ_Son = ACQ_non;
+			break;
 	}
-	
-	// DISEABLE INTERRUPT
-	EIE1 &= 0xFE;
-	
-	spi_packet->ready = 1;
-	
-	// Check Data Validation TODO
+	spi_data_ready = 0;
 }
 
-*/
-void spi_cmd(SPI_PACKET* spi_packet)
+byte spi_data_is_ready()
 {
-	spi_packet->send_data[0] = 0xAA;
-	spi_packet->send_data[1] = 'A';
-	spi_packet->send_data[2] = 'B';
-	spi_packet->send_data[3] = 'C';
-	spi_packet->send_data[4] = 'D';
-	spi_packet->send_data[5] = 'E';
-	spi_packet->send_data[6] = 'F';
-	spi_packet->send_data[7] = 'G';
-	spi_packet->send_data[8] = 'H';
-	spi_packet->send_data[9] = 0xBB;
-
+	return spi_data_ready;
 }

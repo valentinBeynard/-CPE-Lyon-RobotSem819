@@ -13,6 +13,7 @@
 enum Epreuve {Epreuve_non, epreuve1, epreuve2, epreuve3, epreuve4, epreuve5, epreuve6, epreuve7, epreuve8, Fin_Epreuve, Stop_Urgence};
 enum Mouvement {Mouvement_non, Avancer, Reculer, Stopper, Rot_90D, Rot_90G, Rot_180D, Rot_180G, Rot_AngD, Rot_AngG, Depl_Coord};
 enum ACQ_Son {ACQ_non, ACQ_oui};
+enum GEN_Son {GEN_non, GEN_oui};
 enum DCT_Obst {DCT_non, oui_180, oui_360};
 enum Lumiere {Lumiere_non, Allumer, Eteindre};
 enum Servo {Servo_non, Servo_H, Servo_V};
@@ -37,7 +38,15 @@ typedef struct COMMANDES       // Cette structure contient toutes les commandes 
    enum  ACQ_Son Etat_ACQ_Son;     // Contient la commande d'acquisition de signaux sonores "ASS"
                                    // Param?tre de la commande pr?c?dente:
    byte  ACQ_Duree;                // Param?tre dur?e de la s?quence d'acquisition
+	
+   enum	 GEN_Son Etat_GEN_Son;		 // Contient la commande de génération de signaux sonores "ASS"
 
+   byte  GEN_freq_code;
+	 byte	 GEN_son_Duree;
+	 byte	 GEN_silence_Duree;
+	 byte	 GEN_nbr_bip;
+
+	
    enum  DCT_Obst Etat_DCT_Obst;   // Contient la commande de d?tection d'obstacle "MOB D" "MOB"
                                    // Param?tre de la commandes pr?c?dente:
    byte  DCT_Obst_Resolution;      // Param?tre r?solution angulaire de la d?tection d'obstacle

@@ -9,9 +9,6 @@
 
 #include "spi_master.h"
 
-
-#define SPI_DEBUG
-
 /*
 #############################################################################
         PIN List
@@ -47,8 +44,13 @@ sfr Reg =	0xFF;
                       0,  // Coord_X
                       0,  // Coord_Y
                       0,  // Angle
-                      ACQ_oui,//ACQ_non,  // Commande d'acquisition du son
+                      ACQ_non,//ACQ_non,  // Commande d'acquisition du son
                       0,  // Durée d'acquisition
+											GEN_non,
+											0,  //  Code fréquence
+                      0,  // Duree son
+                      0,  // Duree silence
+                      0,  // Nombre de bip
                       DCT_non,  // Commande de détection d'obstacle
                       0,  // Résolution angulaire de la détection d'obstacle
                       Lumiere_non,  // Commande d'allumage du pointeur lumineux
@@ -56,7 +58,7 @@ sfr Reg =	0xFF;
                       0,  // Durée d'allumage
                       0,  // Durée d'extinction
                       0,  // Nombre de cycles d'allumage
-                      Servo_non,  // Commande de position du servo
+                      Servo_V,  // Commande de position du servo
                       0,  // Paramètre angle
                       Energie_non,  // Commande relevée courant
                       Position_non, // Commande de gestion de position
@@ -92,7 +94,7 @@ sfr Reg =	0xFF;
 											
 PARSER_RESULT parser_result = {1 , &commands, &informations};
 DD_PACKET dd_packet = {&commands, &informations, 0.0, 0};
-SPI_PACKET spi_packet = { 0, {'K','K','K','K','K','K','K','K','K','K'}, 0};
+SPI_PACKET spi_packet = { 0, {'Q','S','D','F','G'}, 0};
 
 void Init_External_clk()
 {
@@ -117,7 +119,6 @@ void enable_general_Int()
 	EA = 1; // Enable general interruption
 }
 
-#ifdef ROBOT
 
 int main (void)
 {
@@ -147,18 +148,17 @@ int main (void)
 
 	enable_general_Int();
 	
-#ifndef SPI_DEBUG
 	USART_print("Start Routine \n\n");
 	USART_print("Waiting for Serializer Init Processing... \n\n");
 	
 
 					
-	serializer_init_serial();
+	//serializer_init_serial();
 							
 	USART_print("\n\n#############################\n\n>");
 
 	//serializer_print("mogo 1:50 2:50");
-						
+	/*					
   while(1)
   {
     
@@ -179,9 +179,20 @@ int main (void)
 			
 			distance_detector_process(&dd_packet);
 			
-			spi_process(&spi_packet);
+			spi_process(&commands, &spi_packet);
 			
-			USART_print(spi_packet.spi_data);
+			if(spi_packet.ready == 1)
+			{
+				USART_print("SPI START TS ! \n ");
+				spi_transmit(&spi_packet);
+				spi_packet.ready = 0;
+				USART_print("RESULT : ");
+				USART_print(spi_packet.received_data);
+				USART_print("\n");
+				//break;
+			}
+			
+			//USART_print(spi_packet.spi_data);
 			
 			if(parser_result.commands->Etat_DCT_Obst == oui_180)
 			{
@@ -207,32 +218,23 @@ int main (void)
 	
 	USART_print("Fin Soft");
 	
-	while(1);
-	
-#else
-	USART_print("SPI Debug \n\n");
-	spi_cmd(&spi_packet);
+	while(1){}
+	*/	
+	spi_packet.ready = 1;
 	while(1)
 	{
+		//spi_transmit(&spi_packet);
+			//spi_process(&commands, &spi_packet);
+			
 		
-		
-		spi_transmit(&spi_packet);
-		if(spi_packet.ready == 1)
-		{
-			spi_packet.ready = 0;
-			USART_print("RESULT : ");
-			USART_print(spi_packet.received_data);
-			USART_print("\n");
-			//break;
-		}
-
-
+				USART_print("SPI START TS ! \n ");
+				spi_transmit(&spi_packet);
+				spi_packet.ready = 0;
+				USART_print("RESULT : ");
+				USART_print(spi_packet.received_data);
+				USART_print("\n");
 	}
-	
-	while(1){};
-	USART_print("SPI Fin \n\n");
-#endif
 	
 }
 
-#endif
+

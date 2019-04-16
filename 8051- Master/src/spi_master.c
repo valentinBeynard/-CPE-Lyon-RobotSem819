@@ -32,7 +32,7 @@ void spi_int() interrupt 6
 	// Reset Transmission Flag
 	SPIF = 0;
 	
-	// Read data 
+	// Read 
 	spi_data_in[spi_data_in_ptr] = SPI0DAT;
 	
 	spi_data_in_ptr++;
@@ -88,6 +88,7 @@ void spi_send_char(char a){
 void spi_transmit(SPI_PACKET* spi_packet)
 {
 	byte ptr = 0;
+	byte _delay = 0;
 	
 	// Reset Buffer before transmission
 	memset(spi_data_in, 0 , spi_data_in_ptr);
@@ -100,6 +101,8 @@ void spi_transmit(SPI_PACKET* spi_packet)
 	{
 		spi_send_char(spi_packet->send_data[ptr]);
 		ptr++;
+		// Wait at least 2 CLK before update SPIODAT
+		for(_delay = 0 ; _delay < 20 ; _delay++);
 	}
 
 	// DISEABLE INTERRUPT
@@ -117,18 +120,48 @@ void spi_transmit(SPI_PACKET* spi_packet)
 	// Check Data Validation TODO
 }
 
-
-void spi_cmd(SPI_PACKET* spi_packet)
+void spi_process(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 {
-	spi_packet->send_data[0] = 0xAA;
-	spi_packet->send_data[1] = 'A';
-	spi_packet->send_data[2] = 'B';
-	spi_packet->send_data[3] = 'C';
-	spi_packet->send_data[4] = 'D';
-	spi_packet->send_data[5] = 'E';
-	spi_packet->send_data[6] = 'F';
-	spi_packet->send_data[7] = 'G';
-	spi_packet->send_data[8] = 'H';
-	spi_packet->send_data[9] = 0xBB;
-
+	if(cmd->Etat_ACQ_Son == ACQ_oui)
+	{
+		
+	}
+	else if(cmd->Etat_GEN_Son == GEN_oui)
+	{
+		
+	}
+	else if(cmd->Etat_Lumiere != Lumiere_non)
+	{
+		
+	}
+	else if(cmd->Etat_Servo == Servo_V)
+	{
+		spi_cmd_servo(cmd, spi_packet);
+		cmd->Etat_Servo = Servo_non;
+		spi_packet->ready = 1;
+	}
+	else if(cmd->Etat_Photo != Photo_non)
+	{
+		
+	}
+	else
+	{
+		
+	}
 }
+
+void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+{
+	/*spi_packet->send_data[0] = SPI_SERVO_CMD;
+	spi_packet->send_data[1] = (cmd->Servo_Angle);
+	spi_packet->send_data[2] = (cmd->Servo_Angle) >> 8;
+	spi_packet->send_data[3] = 0;
+	spi_packet->send_data[4] = 0;*/
+	
+		spi_packet->send_data[0] = 'A';
+	spi_packet->send_data[1] = 'B';
+	spi_packet->send_data[2] = 'C';
+	spi_packet->send_data[3] = 'D';
+	spi_packet->send_data[4] = 'E';
+}
+
