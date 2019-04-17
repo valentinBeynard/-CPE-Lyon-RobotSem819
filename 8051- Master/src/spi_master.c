@@ -136,7 +136,18 @@ void spi_process(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 	}
 	else if(cmd->Etat_Lumiere != Lumiere_non)
 	{
-		
+		if(cmd->Etat_Lumiere == Allumer)
+		{
+			spi_cmd_light_ON(cmd, spi_packet);
+			cmd->Etat_Lumiere = Lumiere_non;
+			spi_packet->ready = 1;
+		}
+		else
+		{
+			spi_cmd_light_OFF(cmd, spi_packet);
+			cmd->Etat_Lumiere = Lumiere_non;
+			spi_packet->ready = 1;
+		}
 	}
 	else if(cmd->Etat_Servo == Servo_V)
 	{
@@ -152,6 +163,13 @@ void spi_process(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 	{
 		
 	}
+	
+	if(spi_packet->ready == 1)
+	{
+		spi_transmit(spi_packet);
+		spi_packet->ready = 0;
+	}
+	
 }
 
 void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet)
@@ -161,6 +179,26 @@ void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 	spi_packet->send_data[2] = (cmd->Servo_Angle) >> 8;
 	spi_packet->send_data[3] = 0;
 	spi_packet->send_data[4] = 0;
+}
+
+void spi_cmd_light_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+{
+	spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
+	spi_packet->send_data[1] = (cmd->Lumiere_Intensite);
+	spi_packet->send_data[2] = (cmd->Lumiere_Duree);
+	spi_packet->send_data[3] = (cmd->Lumire_Extinction);
+	spi_packet->send_data[4] = (cmd->Lumiere_Nbre);
+	
+}
+
+void spi_cmd_light_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+{
+	spi_packet->send_data[0] = SPI_LIGHT_OFF_CMD;
+	spi_packet->send_data[1] = 0;
+	spi_packet->send_data[2] = 0;
+	spi_packet->send_data[3] = 0;
+	spi_packet->send_data[4] = 0;
+	
 }
 
 byte spi_validate()

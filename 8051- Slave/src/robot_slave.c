@@ -38,10 +38,10 @@ OUT_M2 commands = {ACQ_non,
 										0,
 										0,
 										Lumiere_non,
-										0,
-										0,
-										0,
-										0,
+										10,
+										20,
+										20,
+										10,
 										Servo_non,
 										0,
 										Photo_non,
@@ -95,11 +95,7 @@ int main (void)
 		spi_process(&commands);
 		
 		light_beam_process(&commands);
-		
-		if(commands.Etat_Servo == Servo_oui)
-		{
-			LED = 1;
-		}
+
 		
 	}
 	

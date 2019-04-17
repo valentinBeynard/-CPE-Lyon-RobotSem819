@@ -181,17 +181,6 @@ int main (void)
 			
 			spi_process(&commands, &spi_packet);
 			
-			if(spi_packet.ready == 1)
-			{
-				USART_print("SPI START TS ! \n ");
-				spi_transmit(&spi_packet);
-				spi_packet.ready = 0;
-				USART_print("RESULT : ");
-				USART_print(spi_packet.received_data);
-				USART_print("\n");
-				//break;
-			}
-			
 			//USART_print(spi_packet.spi_data);
 			
 			if(parser_result.commands->Etat_DCT_Obst == oui_180)

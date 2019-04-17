@@ -391,3 +391,29 @@ byte servo_move_cmd(CMD_PACKET* cmd_packet)
 	
 	return 1;
 }
+
+byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
+{
+	// To much args
+	if(cmd_packet->cmd_size > 8)
+	{
+		return 0;
+	}
+	
+	cmd_packet->commands->Etat_Lumiere = Allumer;
+
+	return 1;
+}
+
+byte light_beam_OFF_cmd(CMD_PACKET* cmd_packet)
+{
+	// To much args
+	if(cmd_packet->cmd_size != 0)
+	{
+		return 0;
+	}
+
+	cmd_packet->commands->Etat_Lumiere = Eteindre;
+
+	return 1;
+}

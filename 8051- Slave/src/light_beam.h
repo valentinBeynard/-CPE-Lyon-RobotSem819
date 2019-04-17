@@ -12,14 +12,23 @@
 
 #define byte unsigned char
 
+// PWN period for servomotor in us
 #define SERVO_PWN_PERIOD	20000
 
 #define SERVO_PWN_ANGLE_COEF	11
+
+// Number of Timer1 ticks corresponding to 10000 us PWN period for light LM3405
+#define LIGHT_PWN_PERIOD	18333
+
+// Number of Timer1 ticks needed to achieve 1% Duty cycle regarding LIGHT_PWN_PERIOD
+#define LIGHT_PWN_DUTY_1	(LIGHT_PWN_PERIOD/100)
 
 /*
 	Init timer 0 for servomoteur control
 */
 void lb_init_timer0();
+
+void lb_init_timer1();
 
 /*
 	Initialize distance detector entity (servomotor + telemeter )
@@ -39,6 +48,7 @@ void lb_set_angle(int angle);
 void light_beam_process(OUT_M2 * cmd);
 
 void light_beam_move(OUT_M2 * cmd);
+void light_beam_switch_ON(OUT_M2 * cmd);
 
 #endif
 
