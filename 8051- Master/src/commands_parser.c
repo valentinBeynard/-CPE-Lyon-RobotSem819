@@ -33,7 +33,7 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     {"RG", left_rotation_cmd},
     {"RC", complete_rotation_cmd},
     {"RA", angle_rotation_cmd},
-    {"G", &move_to_cmd},
+    {"G", move_to_cmd},
     {"ASS", move_to_cmd},
     {"MI", default_process},
     {"ME", default_process},
@@ -43,9 +43,9 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     {"MOB", default_process},
     {"MOS", default_process},
     {"SD", default_process},
-    {"L", &light_beam_ON_cmd},
-    {"LS", &light_beam_OFF_cmd},
-    {"CS", &servo_move_cmd},
+    {"L", light_beam_ON_cmd},
+    {"LS", light_beam_OFF_cmd},
+    {"CS", servo_move_cmd},
     {"PPH", default_process},
     {"SPH", default_process},
     {"AUX", default_process}
@@ -254,14 +254,14 @@ byte parse(PARSER_RESULT* parser_result)
       switch (c)
       {
         case COMMAND_SEPARATOR:
-          //*( *(commands_data + data_index) + ptr ) = '\0';
+          *( *(commands_data + data_index) + ptr ) = '\0';
           //USART_print(commands_data[data_index]);
           data_index++;
           ptr = 0;
           break;
 
         case ARG_VALUE_SEPARATOR:
-          //*( *(commands_data + data_index) + ptr ) = '\0';
+          *( *(commands_data + data_index) + ptr ) = '\0';
           //USART_print(commands_data[data_index]);
           data_index++;
           ptr = 0;
@@ -269,7 +269,7 @@ byte parse(PARSER_RESULT* parser_result)
 
           // Fin de l'analyse
         case STOP_BYTE:
-          //*( *(commands_data + data_index) + ptr ) = '\0';
+          *( *(commands_data + data_index) + ptr ) = '\0';
           //USART_print(commands_data[data_index]);
           run = 0;
           break;
@@ -313,7 +313,7 @@ byte parse(PARSER_RESULT* parser_result)
 
 	//clear_buffer(commands_data, data_index+1);
 	memset(commands_data, 0 , MAX_COMMAND_WORD * ARGS_BUFFER_SIZE);
-	//memset(cmd_packet.commands_data, 0 , MAX_COMMAND_WORD * ARGS_BUFFER_SIZE);
+	memset(cmd_packet.commands_data, 0 , MAX_COMMAND_WORD * ARGS_BUFFER_SIZE);
 	//clear_buffer(cmd_packet.commands_data, data_index+1);
 
   return ret;

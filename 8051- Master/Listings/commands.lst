@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 1   
+C51 COMPILER V9.55   COMMANDS                                                              04/18/2019 18:05:27 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS
@@ -62,7 +62,7 @@ line level    source
   52          byte epreuve_stop(CMD_PACKET* cmd_packet)
   53          {
   54   1        //printf("Non-implemented command !!");
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 2   
+C51 COMPILER V9.55   COMMANDS                                                              04/18/2019 18:05:27 PAGE 2   
 
   55   1        cmd_packet->commands->Etat_Epreuve = Epreuve_non;
   56   1        
@@ -126,7 +126,7 @@ line level    source
  114   2          // Si valeur non numérique
  115   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
  116   2          {
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 3   
+C51 COMPILER V9.55   COMMANDS                                                              04/18/2019 18:05:27 PAGE 3   
 
  117   3            return 0;
  118   3          }
@@ -190,7 +190,7 @@ line level    source
  176   2        }
  177   1        cmd_packet->commands->Etat_Mouvement = Stopper;
  178   1        return 1;
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 4   
+C51 COMPILER V9.55   COMMANDS                                                              04/18/2019 18:05:27 PAGE 4   
 
  179   1      }
  180          
@@ -254,7 +254,7 @@ line level    source
  238   1        
  239   1        if(cmd_packet->cmd_size != 2)
  240   1        {
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 5   
+C51 COMPILER V9.55   COMMANDS                                                              04/18/2019 18:05:27 PAGE 5   
 
  241   2          return 0;
  242   2        }
@@ -318,7 +318,7 @@ line level    source
  300   3            if( strcmp(str, params[j]) == 0 )
  301   3            {
  302   4              switch(j)
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 6   
+C51 COMPILER V9.55   COMMANDS                                                              04/18/2019 18:05:27 PAGE 6   
 
  303   4              {
  304   5                case 0:
@@ -382,7 +382,7 @@ line level    source
  362   1        if(cmd_packet->cmd_size > 3)
  363   1        {
  364   2          return 0;
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 7   
+C51 COMPILER V9.55   COMMANDS                                                              04/18/2019 18:05:27 PAGE 7   
 
  365   2        }
  366   1        
@@ -416,41 +416,104 @@ line level    source
  394          
  395          byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
  396          {
- 397   1        // To much args
- 398   1        if(cmd_packet->cmd_size > 8)
- 399   1        {
- 400   2          return 0;
- 401   2        }
+ 397   1        byte i = 0, j = 0;
+ 398   1        char params[4][5] = {"I", "D", "E", "N"};
+ 399   1        int intensity = 0, delay_on = 0, delay_off = 0, nbr_flash = 0;
+ 400   1        byte param_find = 0;
+ 401   1        char * str = 0;
  402   1        
- 403   1        cmd_packet->commands->Etat_Lumiere = Allumer;
- 404   1        cmd_packet->commands->Lumiere_Intensite = 10;
- 405   1        cmd_packet->commands->Lumiere_Duree = 10;
- 406   1        cmd_packet->commands->Lumire_Extinction = 20;
- 407   1        cmd_packet->commands->Lumiere_Nbre = 15;
- 408   1        
- 409   1        return 1;
- 410   1      }
- 411          
- 412          byte light_beam_OFF_cmd(CMD_PACKET* cmd_packet)
- 413          {
- 414   1        // To much args
- 415   1        if(cmd_packet->cmd_size != 0)
- 416   1        {
- 417   2          return 0;
- 418   2        }
- 419   1      
- 420   1        cmd_packet->commands->Etat_Lumiere = Eteindre;
- 421   1      
- 422   1        return 1;
- 423   1      }
+ 403   1        // To much args
+ 404   1        if(cmd_packet->cmd_size > 8 || (cmd_packet->cmd_size % 2) != 0)
+ 405   1        {
+ 406   2          return 0;
+ 407   2        }
+ 408   1        /*
+ 409   1        // Analyse each param:value couple
+ 410   1        for(i = 0 ; i < (cmd_packet->cmd_size/2) ; ++i)
+ 411   1        {
+ 412   1          str = (cmd_packet->commands_data + ( ((2*i) + 1) * ARGS_BUFFER_SIZE));
+ 413   1          
+ 414   1          // For one couple, identify the param
+ 415   1          for(j = 0 ; j < 4 ; j++)
+ 416   1          {
+ 417   1            if( strcmp(str, params[j]) == 0 )
+ 418   1            {
+ 419   1              switch(j)
+ 420   1              {
+ 421   1                case 0:
+ 422   1                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &intensity) == 0)
+ 423   1                  {
+ 424   1                    return 0;
+ 425   1                  }         
+ 426   1                  break;
+C51 COMPILER V9.55   COMMANDS                                                              04/18/2019 18:05:27 PAGE 8   
+
+ 427   1                
+ 428   1                case 1:
+ 429   1                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_on) == 0)
+ 430   1                  {
+ 431   1                    return 0;
+ 432   1                  }   
+ 433   1                  break;
+ 434   1                
+ 435   1                case 2:
+ 436   1                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_off) == 0)
+ 437   1                  {
+ 438   1                    return 0;
+ 439   1                  } 
+ 440   1                  break;
+ 441   1                  
+ 442   1                case 3:
+ 443   1                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &nbr_flash) == 0)
+ 444   1                  {
+ 445   1                    return 0;
+ 446   1                  } 
+ 447   1                  break;
+ 448   1                
+ 449   1              }
+ 450   1              param_find = 1;
+ 451   1              break;
+ 452   1            }
+ 453   1          }
+ 454   1          
+ 455   1          if(param_find == 0)
+ 456   1          {
+ 457   1            return 0;
+ 458   1          }else{
+ 459   1            param_find = 0;
+ 460   1          }
+ 461   1          
+ 462   1        }*/
+ 463   1        
+ 464   1        cmd_packet->commands->Etat_Lumiere = Allumer;
+ 465   1        cmd_packet->commands->Lumiere_Intensite = 10;
+ 466   1        cmd_packet->commands->Lumiere_Duree = 10;
+ 467   1        cmd_packet->commands->Lumire_Extinction = 20;
+ 468   1        cmd_packet->commands->Lumiere_Nbre = 15;
+ 469   1        
+ 470   1        return 1;
+ 471   1      }
+ 472          
+ 473          byte light_beam_OFF_cmd(CMD_PACKET* cmd_packet)
+ 474          {
+ 475   1        // To much args
+ 476   1        if(cmd_packet->cmd_size != 0)
+ 477   1        {
+ 478   2          return 0;
+ 479   2        }
+ 480   1      
+ 481   1        cmd_packet->commands->Etat_Lumiere = Eteindre;
+ 482   1      
+ 483   1        return 1;
+ 484   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 8   
+   CODE SIZE        =   3924    ----
+C51 COMPILER V9.55   COMMANDS                                                              04/18/2019 18:05:27 PAGE 9   
 
-   CODE SIZE        =   3798    ----
-   CONSTANT SIZE    =     31    ----
-   XDATA SIZE       =   ----      90
+   CONSTANT SIZE    =     51    ----
+   XDATA SIZE       =   ----     124
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
