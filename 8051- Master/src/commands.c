@@ -305,7 +305,7 @@ byte move_to_cmd(CMD_PACKET* cmd_packet)
 						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &x) == 0)
 						{
 							return 0;
-						}					
+						}				
 						break;
 					
 					case 1:
@@ -396,7 +396,7 @@ byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
 {
 	byte i = 0, j = 0;
 	char params[4][5] = {"I", "D", "E", "N"};
-	int intensity = 0, delay_on = 0, delay_off = 0, nbr_flash = 0;
+	int intensity = 100, delay_on = 99, delay_off = 0, nbr_flash = 1;
 	byte param_find = 0;
 	char * str = 0;
 	
@@ -405,7 +405,7 @@ byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
 	{
 		return 0;
 	}
-	/*
+	
 	// Analyse each param:value couple
 	for(i = 0 ; i < (cmd_packet->cmd_size/2) ; ++i)
 	{
@@ -422,14 +422,30 @@ byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
 						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &intensity) == 0)
 						{
 							return 0;
-						}					
+						}
+						else
+						{
+							// Si pas dans l'intervalle de valeur acceptées
+							if(intensity < 1 || intensity > 100)
+							{
+								return 0;
+							}
+						}
 						break;
 					
 					case 1:
 						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_on) == 0)
 						{
 							return 0;
-						}		
+						}	
+						else
+						{
+							// Si pas dans l'intervalle de valeur acceptées
+							if(delay_on < 1 || delay_on > 99)
+							{
+								return 0;
+							}
+						}						
 						break;
 					
 					case 2:
@@ -437,6 +453,14 @@ byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
 						{
 							return 0;
 						}	
+						else
+						{
+							// Si pas dans l'intervalle de valeur acceptées
+							if(delay_off < 0 || delay_off > 99)
+							{
+								return 0;
+							}
+						}		
 						break;
 						
 					case 3:
@@ -444,8 +468,15 @@ byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
 						{
 							return 0;
 						}	
+						else
+						{
+							// Si pas dans l'intervalle de valeur acceptées
+							if(nbr_flash < 1 || nbr_flash > 99)
+							{
+								return 0;
+							}
+						}	
 						break;
-					
 				}
 				param_find = 1;
 				break;
@@ -459,13 +490,13 @@ byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
 			param_find = 0;
 		}
 		
-	}*/
+	}
 	
 	cmd_packet->commands->Etat_Lumiere = Allumer;
-	cmd_packet->commands->Lumiere_Intensite = 10;
-	cmd_packet->commands->Lumiere_Duree = 10;
-	cmd_packet->commands->Lumire_Extinction = 20;
-	cmd_packet->commands->Lumiere_Nbre = 15;
+	cmd_packet->commands->Lumiere_Intensite = intensity;
+	cmd_packet->commands->Lumiere_Duree = delay_on;
+	cmd_packet->commands->Lumire_Extinction = delay_off;
+	cmd_packet->commands->Lumiere_Nbre = nbr_flash;
 	
 	return 1;
 }

@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   MOTION                                                                04/18/2019 18:05:27 PAGE 1   
+C51 COMPILER V9.55   MOTION                                                                04/18/2019 18:35:49 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE MOTION
@@ -62,7 +62,7 @@ line level    source
   52   4            }
   53   3          }
   54   2          else
-C51 COMPILER V9.55   MOTION                                                                04/18/2019 18:05:27 PAGE 2   
+C51 COMPILER V9.55   MOTION                                                                04/18/2019 18:35:49 PAGE 2   
 
   55   2          {
   56   3            if((*beta) < (*alpha - 180))
