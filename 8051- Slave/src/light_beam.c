@@ -6,12 +6,14 @@ sbit FLASH_pin = P1^1;
 
 volatile int servo_angle_V = -90;
 
-volatile int duree_flash = 0;
-volatile int duree_no_flash = 0;
-volatile byte nbr_flash = 0;
-volatile byte pwn_duty = 0;
+int duree_flash = 10;
+int duree_no_flash = 10;
+byte nbr_flash = 10;
+byte pwn_duty = 10;
 
-byte light_ON = 0;
+int prescaler_counter = -1;
+LIGHT_STATE light = LIGHT_ON;
+LIGHT_GENERATOR light_genrator_state = STOP;
 
 
 /*
@@ -75,67 +77,66 @@ void timer_0_int() interrupt 1
 
 void timer_1_int() interrupt 3
 {	
-	static byte nbr_int = 0;
-	static char prescaler_counter = 0;
-	static char high = 0;
+	static char high = 1;
 	
 	int reload_value = 0;
 	
 	if (high == 1)
 	{
-		if(prescaler_counter < 10 * duree_flash)
-		{
-			FLASH_pin = !FLASH_pin;
-			reload_value = 0xFFFF - (LIGHT_PWN_PERIOD - pwn_duty * LIGHT_PWN_DUTY_1 );
-			prescaler_counter++;
-			high=0;
-		}
-		else
-		{
-			FLASH_pin = 0;
-			reload_value = 0xFFFF - LIGHT_PWN_PERIOD;
-			prescaler_counter = 0;
-			high=3;
-		}	
-	}
-	else if (high == 0)
-	{
-		FLASH_pin = !FLASH_pin;
-		reload_value = 0xFFFF - pwn_duty * LIGHT_PWN_DUTY_1;
-		prescaler_counter++;
-		high=1;
+		reload_value = 0xFFFF - (LIGHT_PWN_PERIOD - pwn_duty * LIGHT_PWN_DUTY_1 );
+		FLASH_pin = 0;
+		high=0;
 	}
 	else
 	{
-		reload_value = 0xFFFF - LIGHT_PWN_PERIOD;
-		if(prescaler_counter < 10 * duree_no_flash)
-		{
-			prescaler_counter++;
-		}
-		else{
-			prescaler_counter = 0;
-			high = 0;
-		}
+		reload_value = 0xFFFF - pwn_duty * LIGHT_PWN_DUTY_1;
+		prescaler_counter++;
+		( FLASH_pin = (light == LIGHT_ON) ? 1 : 0);
+		high=1;
 	}
+	
 	
 	TL1= reload_value;
 	TH1= reload_value >> 8; //on décale pour obtenir les bits de poids fort
 	
-	if(nbr_int >= nbr_flash)
+	light_beam_flash_sequence();
+	
+	if(light_genrator_state == FINISH)
 	{
-		ET1 = 0;	// Diseable timer1 interuption
-		FLASH_pin = 0;
-		prescaler_counter = 0;
+		ET1 = 0;
 		high = 0;
-		nbr_int = 0;
-		light_ON = 0;
-	}
-	else
-	{
-		nbr_int++;
 	}
 }
 
+void light_beam_flash_sequence()
+{
+	static byte nbr_seq = 0;
+
+	
+	if(light == LIGHT_ON)
+	{
+		if(prescaler_counter >= 10 * duree_flash)
+		{
+			prescaler_counter = 0;
+			light = LIGHT_OFF;
+		}
+	}
+	else
+	{
+		if(prescaler_counter >= 10 * duree_no_flash)
+		{
+			light = LIGHT_ON;
+			prescaler_counter = 0;
+			nbr_seq++;
+			if(nbr_seq >= nbr_flash)
+			{
+				nbr_seq = 0;
+				light_genrator_state = FINISH;
+			}
+		}
+	}
+	
+}
 /*
 #############################################################################
         End of Interrupt Routine For Timer 1
@@ -152,9 +153,10 @@ void timer_1_int() interrupt 3
 void Init_light_beam()
 {
 	
-	// Push-Pull mode
-	P1MDOUT |= 0x01;
+	// Push-Pull mode for P0.0 and P0.1
+	P1MDOUT |= 0x03;
 	PWN_pin = 0;
+	FLASH_pin = 0;
 	
 	lb_init_timer0();
 	
@@ -178,12 +180,16 @@ void lb_init_timer0()
 
 void lb_init_timer1()
 {	
+	int init_reload_value = 0;
+	
 	//Reglages Timer 0 (a SYSCLK/12 selon CKCON, soit un incrément tous les 0.545us)
 	TMOD |= 0x10; // Timer 1 Mode 1
 	TCON |= 0x44;	// Enable Timer1 (bit6) and enable interupt on edge (bit2)
 	
-	TL1=0xA8;
-	TH1=0xFB;
+	init_reload_value = 0xFFFF - pwn_duty * LIGHT_PWN_DUTY_1;
+	
+	TL1= init_reload_value;
+	TH1= init_reload_value >> 8;
 	
 }
 
@@ -196,6 +202,8 @@ void lb_init_timer1()
 
 void light_beam_process(OUT_M2 * cmd)
 {
+	
+	
 	if(cmd->Etat_Servo == Servo_oui)
 	{
 		light_beam_move(cmd);
@@ -203,14 +211,17 @@ void light_beam_process(OUT_M2 * cmd)
 
 	if(cmd->Etat_Lumiere == Allumer)
 	{
-		if(light_ON != 1)
+		switch(light_genrator_state)
 		{
-			light_beam_switch_ON(cmd);
-		}
-		else{
-			// Clear CMD Flag
-			cmd->Etat_Lumiere = Eteindre;
-		}		
+			case STOP:
+				light_beam_switch_ON(cmd);
+				break;
+			case FINISH:
+				cmd->Etat_Lumiere = Lumiere_non;
+				break;
+			default:
+				break;		
+		}	
 	}
 	else if(cmd->Etat_Lumiere == Eteindre)
 	{
@@ -250,7 +261,9 @@ void light_beam_switch_ON(OUT_M2 * cmd)
 	duree_no_flash = cmd->Lumire_Extinction;
 	nbr_flash = cmd->Lumiere_Nbre;
 	
-	light_ON = 1;
+	light_genrator_state = GENERATE;
+	
+	FLASH_pin = 1;
 	
 	// Re-launch PWN
 	ET1 = 1;
@@ -258,6 +271,8 @@ void light_beam_switch_ON(OUT_M2 * cmd)
 	LED = 1;
 
 }
+
+
 
 void lb_set_angle(int angle)
 {

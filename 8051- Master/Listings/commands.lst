@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 14:21:02 PAGE 1   
+C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS
@@ -62,7 +62,7 @@ line level    source
   52          byte epreuve_stop(CMD_PACKET* cmd_packet)
   53          {
   54   1        //printf("Non-implemented command !!");
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 14:21:02 PAGE 2   
+C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 2   
 
   55   1        cmd_packet->commands->Etat_Epreuve = Epreuve_non;
   56   1        
@@ -126,7 +126,7 @@ line level    source
  114   2          // Si valeur non numérique
  115   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
  116   2          {
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 14:21:02 PAGE 3   
+C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 3   
 
  117   3            return 0;
  118   3          }
@@ -190,7 +190,7 @@ line level    source
  176   2        }
  177   1        cmd_packet->commands->Etat_Mouvement = Stopper;
  178   1        return 1;
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 14:21:02 PAGE 4   
+C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 4   
 
  179   1      }
  180          
@@ -254,7 +254,7 @@ line level    source
  238   1        
  239   1        if(cmd_packet->cmd_size != 2)
  240   1        {
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 14:21:02 PAGE 5   
+C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 5   
 
  241   2          return 0;
  242   2        }
@@ -318,7 +318,7 @@ line level    source
  300   3            if( strcmp(str, params[j]) == 0 )
  301   3            {
  302   4              switch(j)
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 14:21:02 PAGE 6   
+C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 6   
 
  303   4              {
  304   5                case 0:
@@ -382,7 +382,7 @@ line level    source
  362   1        if(cmd_packet->cmd_size > 3)
  363   1        {
  364   2          return 0;
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 14:21:02 PAGE 7   
+C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 7   
 
  365   2        }
  366   1        
@@ -423,31 +423,35 @@ line level    source
  401   2        }
  402   1        
  403   1        cmd_packet->commands->Etat_Lumiere = Allumer;
- 404   1      
- 405   1        return 1;
- 406   1      }
- 407          
- 408          byte light_beam_OFF_cmd(CMD_PACKET* cmd_packet)
- 409          {
- 410   1        // To much args
- 411   1        if(cmd_packet->cmd_size != 0)
- 412   1        {
- 413   2          return 0;
- 414   2        }
- 415   1      
- 416   1        cmd_packet->commands->Etat_Lumiere = Eteindre;
- 417   1      
- 418   1        return 1;
- 419   1      }
+ 404   1        cmd_packet->commands->Lumiere_Intensite = 10;
+ 405   1        cmd_packet->commands->Lumiere_Duree = 10;
+ 406   1        cmd_packet->commands->Lumire_Extinction = 20;
+ 407   1        cmd_packet->commands->Lumiere_Nbre = 15;
+ 408   1        
+ 409   1        return 1;
+ 410   1      }
+ 411          
+ 412          byte light_beam_OFF_cmd(CMD_PACKET* cmd_packet)
+ 413          {
+ 414   1        // To much args
+ 415   1        if(cmd_packet->cmd_size != 0)
+ 416   1        {
+ 417   2          return 0;
+ 418   2        }
+ 419   1      
+ 420   1        cmd_packet->commands->Etat_Lumiere = Eteindre;
+ 421   1      
+ 422   1        return 1;
+ 423   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   3674    ----
+C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 18:02:21 PAGE 8   
+
+   CODE SIZE        =   3798    ----
    CONSTANT SIZE    =     31    ----
    XDATA SIZE       =   ----      90
    PDATA SIZE       =   ----    ----
-C51 COMPILER V9.55   COMMANDS                                                              04/17/2019 14:21:02 PAGE 8   
-
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

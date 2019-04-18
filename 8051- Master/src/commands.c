@@ -401,7 +401,11 @@ byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
 	}
 	
 	cmd_packet->commands->Etat_Lumiere = Allumer;
-
+	cmd_packet->commands->Lumiere_Intensite = 10;
+	cmd_packet->commands->Lumiere_Duree = 10;
+	cmd_packet->commands->Lumire_Extinction = 20;
+	cmd_packet->commands->Lumiere_Nbre = 15;
+	
 	return 1;
 }
 

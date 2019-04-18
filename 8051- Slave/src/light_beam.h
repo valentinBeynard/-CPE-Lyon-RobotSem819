@@ -23,6 +23,20 @@
 // Number of Timer1 ticks needed to achieve 1% Duty cycle regarding LIGHT_PWN_PERIOD
 #define LIGHT_PWN_DUTY_1	(LIGHT_PWN_PERIOD/100)
 
+
+typedef enum
+{
+	LIGHT_ON = 0,
+	LIGHT_OFF
+}LIGHT_STATE;
+
+typedef enum
+{
+	STOP = 0,
+	GENERATE,
+	FINISH
+}LIGHT_GENERATOR;
+
 /*
 	Init timer 0 for servomoteur control
 */
@@ -49,6 +63,7 @@ void light_beam_process(OUT_M2 * cmd);
 
 void light_beam_move(OUT_M2 * cmd);
 void light_beam_switch_ON(OUT_M2 * cmd);
+void light_beam_flash_sequence();
 
 #endif
 
