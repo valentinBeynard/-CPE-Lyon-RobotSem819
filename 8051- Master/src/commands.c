@@ -513,3 +513,113 @@ byte light_beam_OFF_cmd(CMD_PACKET* cmd_packet)
 
 	return 1;
 }
+
+byte generate_sound_cmd(CMD_PACKET* cmd_packet)
+{
+		byte i = 0, j = 0;
+	char params[4][5] = {"I", "D", "E", "N"};
+	int intensity = 100, delay_on = 99, delay_off = 0, nbr_flash = 1;
+	byte param_find = 0;
+	char * str = 0;
+	
+	// To much args
+	if(cmd_packet->cmd_size > 8 || (cmd_packet->cmd_size % 2) != 0)
+	{
+		return 0;
+	}
+	
+	// Analyse each param:value couple
+	for(i = 0 ; i < (cmd_packet->cmd_size/2) ; ++i)
+	{
+		str = (cmd_packet->commands_data + ( ((2*i) + 1) * ARGS_BUFFER_SIZE));
+		
+		// For one couple, identify the param
+		for(j = 0 ; j < 4 ; j++)
+		{
+			if( strcmp(str, params[j]) == 0 )
+			{
+				switch(j)
+				{
+					case 0:
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &intensity) == 0)
+						{
+							return 0;
+						}
+						else
+						{
+							// Si pas dans l'intervalle de valeur acceptées
+							if(intensity < 1 || intensity > 100)
+							{
+								return 0;
+							}
+						}
+						break;
+					
+					case 1:
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_on) == 0)
+						{
+							return 0;
+						}	
+						else
+						{
+							// Si pas dans l'intervalle de valeur acceptées
+							if(delay_on < 1 || delay_on > 99)
+							{
+								return 0;
+							}
+						}						
+						break;
+					
+					case 2:
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_off) == 0)
+						{
+							return 0;
+						}	
+						else
+						{
+							// Si pas dans l'intervalle de valeur acceptées
+							if(delay_off < 0 || delay_off > 99)
+							{
+								return 0;
+							}
+						}		
+						break;
+						
+					case 3:
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &nbr_flash) == 0)
+						{
+							return 0;
+						}	
+						else
+						{
+							// Si pas dans l'intervalle de valeur acceptées
+							if(nbr_flash < 1 || nbr_flash > 99)
+							{
+								return 0;
+							}
+						}	
+						break;
+				}
+				param_find = 1;
+				break;
+			}
+		}
+		
+		if(param_find == 0)
+		{
+			return 0;
+		}else{
+			param_find = 0;
+		}
+		
+	}
+	
+	cmd_packet->commands->Etat_Lumiere = Allumer;
+	cmd_packet->commands->Lumiere_Intensite = intensity;
+	cmd_packet->commands->Lumiere_Duree = delay_on;
+	cmd_packet->commands->Lumire_Extinction = delay_off;
+	cmd_packet->commands->Lumiere_Nbre = nbr_flash;
+	
+	return 1;
+	
+}
