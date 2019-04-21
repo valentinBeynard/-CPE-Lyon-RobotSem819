@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   MAIN                                                                  04/18/2019 18:35:48 PAGE 1   
+C51 COMPILER V9.55   MAIN                                                                  04/21/2019 18:57:02 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE MAIN
@@ -48,7 +48,7 @@ line level    source
   38          
   39          sfr Reg = 0xFF;
   40          
-  41            OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
+  41          OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
   42                                Mouvement_non,  // Etat mouvement
   43                                0,  //  Vitesse
   44                                0,  // Coord_X
@@ -62,7 +62,7 @@ line level    source
   52                                0,  // Duree silence
   53                                0,  // Nombre de bip
   54                                DCT_non,  // Commande de détection d'obstacle
-C51 COMPILER V9.55   MAIN                                                                  04/18/2019 18:35:48 PAGE 2   
+C51 COMPILER V9.55   MAIN                                                                  04/21/2019 18:57:02 PAGE 2   
 
   55                                0,  // Résolution angulaire de la détection d'obstacle
   56                                Lumiere_non,  // Commande d'allumage du pointeur lumineux
@@ -82,7 +82,7 @@ line level    source
   70                                0 // Nbr de photo
   71                                };
   72                                
-  73            IN_M1 informations = { Invite_non,  // Identifieur de l'etat d'Invite
+  73          IN_M1 informations = { Invite_non,  // Identifieur de l'etat d'Invite
   74                                    "Start Epreuve !\n",  // Ptr sur la chaine contenant le msg d'invite
   75                                    BUT_Atteint_non,  // Arrivée au point transmit
   76                                    BUT_Servo_non,  // Information position servomoteur
@@ -105,118 +105,118 @@ line level    source
   93                
   94                                
   95          PARSER_RESULT parser_result = {1 , &commands, &informations};
-  96          DD_PACKET dd_packet = {&commands, &informations, 0.0, 0};
+  96          DD_PACKET dd_packet = {&commands, &informations, 0.0, 0, 0};
   97          SPI_PACKET spi_packet = { 0, {0xA5,0x00,0x64,'F','G'}, 0};
   98          
-  99          void Init_External_clk()
- 100          {
- 101   1        // Config External Osci
- 102   1        OSCXCN = 0x67;
- 103   1        while(OSCXCN != 0xE7) {}
- 104   1        
- 105   1        // Use Exern CLK
- 106   1        OSCICN = 0x08;
- 107   1          
- 108   1        CKCON = 0x00;
- 109   1      }
- 110          
- 111          void Enable_Crossbar()
- 112          {
- 113   1        // Enable Crossbar
- 114   1        XBR2 |= 0x40;
- 115   1      }
- 116          
-C51 COMPILER V9.55   MAIN                                                                  04/18/2019 18:35:48 PAGE 3   
+  99          byte epreuve_start = 0;
+ 100          
+ 101          void Init_External_clk()
+ 102          {
+ 103   1        // Config External Osci
+ 104   1        OSCXCN = 0x67;
+ 105   1        while(OSCXCN != 0xE7) {}
+ 106   1        
+ 107   1        // Use Exern CLK
+ 108   1        OSCICN = 0x08;
+ 109   1          
+ 110   1        CKCON = 0x00;
+ 111   1      }
+ 112          
+ 113          void Enable_Crossbar()
+ 114          {
+ 115   1        // Enable Crossbar
+ 116   1        XBR2 |= 0x40;
+C51 COMPILER V9.55   MAIN                                                                  04/21/2019 18:57:02 PAGE 3   
 
- 117          void enable_general_Int()
- 118          {
- 119   1        EA = 1; // Enable general interruption
- 120   1      }
- 121          
- 122          
- 123          int main (void)
- 124          {
- 125   1        char mes[10];
- 126   1        float f = 0.0;
- 127   1        int angle = 80;
- 128   1        int ij = 0;
- 129   1        
- 130   1        
- 131   1        Reg = 0xDE;   // Dévalidation du watchdog 
- 132   1        Reg = 0xAD;
- 133   1        
- 134   1        // µP candencé sur clk extern à 22 MHz           
- 135   1        Init_External_clk();
- 136   1        
- 137   1        // Initialise l'UART0 et le Timer 2 pour le parser de commandes       
- 138   1        init_parser();
- 139   1          
- 140   1        // Initialise l'UART1 utilisé pour communiquer avec le sérializer
- 141   1        init_serializer_UART1();
- 142   1                    
- 143   1        Init_distance_detector();
- 144   1        
- 145   1        Init_SPI();
- 146   1        
- 147   1        Enable_Crossbar();
- 148   1      
- 149   1        enable_general_Int();
- 150   1        
- 151   1        USART_print("Start Routine \n\n");
- 152   1        USART_print("Waiting for Serializer Init Processing... \n\n");
+ 117   1      }
+ 118          
+ 119          void enable_general_Int()
+ 120          {
+ 121   1        EA = 1; // Enable general interruption
+ 122   1      }
+ 123          
+ 124          
+ 125          int main (void)
+ 126          {
+ 127   1        char mes[10];
+ 128   1        float f = 0.0;
+ 129   1        int angle = 80;
+ 130   1        int ij = 0;
+ 131   1        
+ 132   1        
+ 133   1        Reg = 0xDE;   // Dévalidation du watchdog 
+ 134   1        Reg = 0xAD;
+ 135   1        
+ 136   1        // µP candencé sur clk extern à 22 MHz           
+ 137   1        Init_External_clk();
+ 138   1        
+ 139   1        // Initialise l'UART0 et le Timer 2 pour le parser de commandes, et init le buffer des msg retour     
+ 140   1        Init_parser(&parser_result);
+ 141   1      
+ 142   1          
+ 143   1        // Initialise l'UART1 utilisé pour communiquer avec le sérializer
+ 144   1        init_serializer_UART1();
+ 145   1                    
+ 146   1        Init_distance_detector();
+ 147   1        
+ 148   1        Init_SPI();
+ 149   1        
+ 150   1        Enable_Crossbar();
+ 151   1      
+ 152   1        enable_general_Int();
  153   1        
- 154   1      
- 155   1                
- 156   1        //serializer_init_serial();
- 157   1                    
- 158   1        USART_print("\n\n#############################\n\n>");
- 159   1      
- 160   1        //serializer_print("mogo 1:50 2:50");
- 161   1                  
- 162   1        while(1)
- 163   1        {
- 164   2          
- 165   2          cmd_parser_process(&parser_result);
- 166   2          
- 167   2          if( parser_result.commands->Etat_Epreuve == Stop_Urgence)
- 168   2          {
- 169   3            USART_print("Quit");
- 170   3            break;
- 171   3          }
- 172   2          
- 173   2          if( parser_result.commands->Etat_Epreuve == epreuve1)
- 174   2          {
- 175   3            //USART_print(parser_result.informations.MSG_Invit);      
- 176   3            
- 177   3            serializer_process(&parser_result);
- 178   3            
-C51 COMPILER V9.55   MAIN                                                                  04/18/2019 18:35:48 PAGE 4   
+ 154   1        USART_print("Start Routine \n\n");
+ 155   1        USART_print("Waiting for Serializer Init Processing... \n\n");
+ 156   1        
+ 157   1      
+ 158   1                
+ 159   1        //serializer_init_serial();
+ 160   1                    
+ 161   1        USART_print("\n\n#############################\n\n>");
+ 162   1      
+ 163   1        //serializer_print("mogo 1:50 2:50");
+ 164   1                  
+ 165   1        while(1)
+ 166   1        {
+ 167   2          
+ 168   2          cmd_parser_process(&parser_result);
+ 169   2          
+ 170   2          if( parser_result.commands->Etat_Epreuve == Stop_Urgence)
+ 171   2          {
+ 172   3            USART_print("Quit");
+ 173   3            break;
+ 174   3          }
+ 175   2          
+ 176   2          if( parser_result.commands->Etat_Epreuve == epreuve1)
+ 177   2          {
+ 178   3            // Start epreuve message
+C51 COMPILER V9.55   MAIN                                                                  04/21/2019 18:57:02 PAGE 4   
 
- 179   3            
- 180   3            distance_detector_process(&dd_packet);
- 181   3            
- 182   3            spi_process(&commands, &spi_packet);
- 183   3            
- 184   3            //USART_print(spi_packet.spi_data);
- 185   3            
- 186   3            if(parser_result.commands->Etat_DCT_Obst == oui_180)
- 187   3            {
- 188   4              dd_packet.measure = dd_start_conversion();
- 189   4              sprintf(mes, "%f", dd_packet.measure);
- 190   4              USART_print(mes);
- 191   4              memset(mes, 0, 10);
- 192   4              parser_result.commands->Etat_DCT_Obst = DCT_non;
- 193   4            }
- 194   3            
- 195   3            if(parser_result.informations->Etat_BUT_Mouvement == BUT_Atteint_oui)
+ 179   3            if(epreuve_start == 0)
+ 180   3            {
+ 181   4              parser_result.informations->Etat_Invite = Invite_oui;
+ 182   4              epreuve_start = 1;
+ 183   4            }
+ 184   3            
+ 185   3            // Robot movments handler
+ 186   3            serializer_process(&parser_result);
+ 187   3            
+ 188   3            // Robot obstacles detection handler
+ 189   3            distance_detector_process(&dd_packet);
+ 190   3            
+ 191   3            // Master-Slave communication
+ 192   3            spi_process(&commands, &spi_packet);
+ 193   3          
+ 194   3            /*
+ 195   3            if(parser_result.commands->Etat_DCT_Obst == oui_180)
  196   3            {
- 197   4              USART_print("Target Reached !! Success !\n");
- 198   4              parser_result.informations->Etat_BUT_Mouvement = BUT_Atteint_non;
- 199   4            }
- 200   3            
- 201   3          }
- 202   2          else{
- 203   3            parser_result.commands->Etat_Mouvement = Mouvement_non;
+ 197   3              dd_packet.measure = dd_start_conversion();
+ 198   3              sprintf(mes, "%f", dd_packet.measure);
+ 199   3              USART_print(mes);
+ 200   3              memset(mes, 0, 10);
+ 201   3              parser_result.commands->Etat_DCT_Obst = DCT_non;
+ 202   3            }*/
+ 203   3          
  204   3          }
  205   2          
  206   2        }
@@ -224,38 +224,22 @@ line level    source
  208   1        USART_print("Fin Soft");
  209   1        
  210   1        while(1){}
- 211   1          
- 212   1        /*spi_packet.ready = 1;
- 213   1        while(1)
- 214   1        {
- 215   1          //spi_transmit(&spi_packet);
- 216   1            //spi_process(&commands, &spi_packet);
- 217   1            
- 218   1          
- 219   1              USART_print("SPI START TS ! \n ");
- 220   1              spi_transmit(&spi_packet);
- 221   1              spi_packet.ready = 0;
- 222   1              USART_print("RESULT : ");
- 223   1              USART_print(spi_packet.received_data);
- 224   1              USART_print("\n");
- 225   1        }*/
- 226   1        
- 227   1      }
- 228          
- 229          
+ 211   1        
+ 212   1      }
+*** WARNING C280 IN LINE 127 OF src\main.c: 'mes': unreferenced local variable
+ 213          
+ 214          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    458    ----
-   CONSTANT SIZE    =    160    ----
-   XDATA SIZE       =     85      18
+   CODE SIZE        =    268    ----
+   CONSTANT SIZE    =    128    ----
+   XDATA SIZE       =     88      18
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
-C51 COMPILER V9.55   MAIN                                                                  04/18/2019 18:35:48 PAGE 5   
 
-
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

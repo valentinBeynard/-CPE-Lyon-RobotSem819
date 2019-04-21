@@ -6,7 +6,10 @@
 
 
 // Taille en octect que l'on alloue au buffer qui récupère la commande envoyé
-#define COMMAND_BUFFER_SIZE 100
+#define COMMAND_BUFFER_SIZE 32
+
+// Taille en octect que l'on alloue au buffer qui envoie les informations au PC
+#define MSG_INFO_BUFFER_SIZE 32
 
 // Nombre de commandes implémentée
 #define NUMBER_OF_COMMAND 27
@@ -40,7 +43,6 @@ typedef enum
 {
   WAIT,
   GET_COMMAND,
-  SEND_COMMAND
 }COMMANDS_PARSER_STATE;
 
 typedef struct
@@ -57,11 +59,6 @@ typedef struct
 #############################################################################
 */
 
-/**
-  Initialize devices for commands_parser : UART0 and Interrupt
-**/
-byte init_parser();
-
 /*
   Envoie un caractere sur la liaison UART0
 */
@@ -77,6 +74,11 @@ void USART_receive(byte* read_byte);
         Core Code of commands_parser.c
 #############################################################################
 */
+
+/**
+  Initialize devices for commands_parser : UART0 and Interrupt
+**/
+byte Init_parser(PARSER_RESULT* parser_result);
 
 /*
   Envoie une chaine de caractères sur la liaison UART0
@@ -105,11 +107,6 @@ void wait(PARSER_RESULT* parser_result);
 void get_command(PARSER_RESULT* parser_result);
 
 /*
-  TODO
-*/
-//void send_command(PARSER_RESULT* parser_result);
-
-/*
   Découpe le buffer brute afin d'en extraire le nom de la commande, les paramètres,
   et leurs valeurs
 */
@@ -125,5 +122,11 @@ Renvoie la séquence définie par le CdC lorsque la commande est éronnée : "\n
 */
 void error_cmd_flag();
 
+/*
+  TODO
+*/
+void send_informations(PARSER_RESULT* parser_result);
+
+void send_KOB_MOU(PARSER_RESULT* parser_result);
 
 #endif

@@ -351,7 +351,7 @@ byte detecte_obstacle(CMD_PACKET* cmd_packet)
 		return 0;
 	}
 	
-	cmd_packet->commands->Etat_DCT_Obst = oui_180;
+	cmd_packet->commands->Etat_DCT_Obst = oui_single;
 	return 1;
 }
 
@@ -517,8 +517,8 @@ byte light_beam_OFF_cmd(CMD_PACKET* cmd_packet)
 byte generate_sound_cmd(CMD_PACKET* cmd_packet)
 {
 		byte i = 0, j = 0;
-	char params[4][5] = {"I", "D", "E", "N"};
-	int intensity = 100, delay_on = 99, delay_off = 0, nbr_flash = 1;
+	char params[4][5] = {"F", "P", "W", "B"};
+	int frequency_code = 100, delay_son = 25, delay_silence = 50, nbr_bip = 3;
 	byte param_find = 0;
 	char * str = 0;
 	
@@ -541,14 +541,14 @@ byte generate_sound_cmd(CMD_PACKET* cmd_packet)
 				switch(j)
 				{
 					case 0:
-						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &intensity) == 0)
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &frequency_code) == 0)
 						{
 							return 0;
 						}
 						else
 						{
 							// Si pas dans l'intervalle de valeur acceptées
-							if(intensity < 1 || intensity > 100)
+							if(frequency_code < 1 || frequency_code > 99)
 							{
 								return 0;
 							}
@@ -556,14 +556,14 @@ byte generate_sound_cmd(CMD_PACKET* cmd_packet)
 						break;
 					
 					case 1:
-						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_on) == 0)
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_son) == 0)
 						{
 							return 0;
 						}	
 						else
 						{
 							// Si pas dans l'intervalle de valeur acceptées
-							if(delay_on < 1 || delay_on > 99)
+							if(delay_son < 1 || delay_son > 99)
 							{
 								return 0;
 							}
@@ -571,14 +571,14 @@ byte generate_sound_cmd(CMD_PACKET* cmd_packet)
 						break;
 					
 					case 2:
-						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_off) == 0)
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_silence) == 0)
 						{
 							return 0;
 						}	
 						else
 						{
 							// Si pas dans l'intervalle de valeur acceptées
-							if(delay_off < 0 || delay_off > 99)
+							if(delay_silence < 1 || delay_silence > 99)
 							{
 								return 0;
 							}
@@ -586,14 +586,14 @@ byte generate_sound_cmd(CMD_PACKET* cmd_packet)
 						break;
 						
 					case 3:
-						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &nbr_flash) == 0)
+						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &nbr_bip) == 0)
 						{
 							return 0;
 						}	
 						else
 						{
 							// Si pas dans l'intervalle de valeur acceptées
-							if(nbr_flash < 1 || nbr_flash > 99)
+							if(nbr_bip < 1 || nbr_bip > 99)
 							{
 								return 0;
 							}
@@ -614,11 +614,11 @@ byte generate_sound_cmd(CMD_PACKET* cmd_packet)
 		
 	}
 	
-	cmd_packet->commands->Etat_Lumiere = Allumer;
-	cmd_packet->commands->Lumiere_Intensite = intensity;
-	cmd_packet->commands->Lumiere_Duree = delay_on;
-	cmd_packet->commands->Lumire_Extinction = delay_off;
-	cmd_packet->commands->Lumiere_Nbre = nbr_flash;
+	cmd_packet->commands->Etat_GEN_Son = GEN_oui;
+	cmd_packet->commands->GEN_freq_code = frequency_code;
+	cmd_packet->commands->GEN_son_Duree = delay_son;
+	cmd_packet->commands->GEN_silence_Duree = delay_silence;
+	cmd_packet->commands->GEN_nbr_bip = nbr_bip;
 	
 	return 1;
 	

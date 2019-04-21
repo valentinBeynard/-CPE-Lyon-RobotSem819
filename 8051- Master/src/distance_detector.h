@@ -16,11 +16,16 @@
 
 #define POW 4096.0
 
+#define MAX_DISTANCE	67.367
+
+#define VAL_OBS_BUFFER_SIZE	10
+
 typedef struct
 {
   OUT_M1 * commands;
 	IN_M1 * informations;
 	float measure;
+	int angle;
 	byte obs_detected;
 	// Info sur l'obstacle ?
 }DD_PACKET;
@@ -34,6 +39,12 @@ typedef enum
 	OBS_DETECTION
 }DD_STATE;
 
+typedef enum
+{
+	PWN_IDDLE,
+	PWN_RUN,
+	PWN_FINISH
+}PWN_STATE;
 
 typedef struct
 {
@@ -94,6 +105,6 @@ void dd_single_measure(DD_PACKET * dd_packet);
 void dd_slew_detection(DD_PACKET * dd_packet);
 void dd_obs_detection(DD_PACKET * dd_packet);
 
-
+void clear_val_obs_buffer();
 #endif
 

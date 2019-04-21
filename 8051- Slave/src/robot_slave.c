@@ -80,6 +80,8 @@ int main (void)
 	
 	Init_External_clk();
 	
+	Init_uart0();
+	
 	Init_SPI();
 	
 	Init_light_beam();

@@ -22,17 +22,25 @@ Dialog DLL:      TCYG.DLL V2.70
  
 <h2>Project:</h2>
 C:\Users\BEYNARD\Documents\GitHub\-CPE-Lyon-RobotSem819\8051- Slave\SLAVE.uvproj
-Project File Date:  04/18/2019
+Project File Date:  04/20/2019
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
 compiling spi_slave.c...
 compiling robot_slave.c...
+src\robot_slave.c(83): warning C206: 'Init_uart0': missing function-prototype
 assembling STARTUP.A51...
 compiling light_beam.c...
+compiling sound_handler.c...
 linking...
-Program Size: data=9.0 xdata=72 code=2422
-"SLAVE" - 0 Error(s), 0 Warning(s).
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UART0_PRINT?SOUND_HANDLER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SOUND_HANDLER_PROCESS?SOUND_HANDLER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SD_GEN_PARSE?SOUND_HANDLER
+Program Size: data=9.0 xdata=111 code=3698
+"SLAVE" - 0 Error(s), 4 Warning(s).
 </pre>
 </body>
 </html>

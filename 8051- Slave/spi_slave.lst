@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   SPI_SLAVE                                                             04/18/2019 17:00:09 PAGE 1   
+C51 COMPILER V9.55   SPI_SLAVE                                                             04/20/2019 18:50:34 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE SPI_SLAVE
@@ -62,7 +62,7 @@ line level    source
   52   1        if(spi_data_in_ptr == TRAM_SIZE)
   53   1        {
   54   2          spi_data_in_ptr = 0;
-C51 COMPILER V9.55   SPI_SLAVE                                                             04/18/2019 17:00:09 PAGE 2   
+C51 COMPILER V9.55   SPI_SLAVE                                                             04/20/2019 18:50:34 PAGE 2   
 
   55   2          spi_data_out_ptr = 0;
   56   2          spi_data_ready = 1;
@@ -126,26 +126,26 @@ line level    source
  113   2            cmd->Etat_ACQ_Son = ACQ_oui;
  114   2            cmd->ACQ_Duree = spi_data_in[1];
  115   2            break;
-C51 COMPILER V9.55   SPI_SLAVE                                                             04/18/2019 17:00:09 PAGE 3   
+C51 COMPILER V9.55   SPI_SLAVE                                                             04/20/2019 18:50:34 PAGE 3   
 
- 116   2          case 0xA2:
+ 116   2          case SPI_GENERATE_SOUND_CMD:
  117   2            cmd->Etat_GEN_Son = GEN_oui;
  118   2            cmd->GEN_freq_code = spi_data_in[1];
  119   2            cmd->GEN_son_Duree = spi_data_in[2];
  120   2            cmd->GEN_silence_Duree = spi_data_in[3];
  121   2            cmd->GEN_nbr_bip = spi_data_in[4];
  122   2            break;
- 123   2          case 0xA3:
+ 123   2          case SPI_LIGHT_ON_CMD:
  124   2            cmd->Etat_Lumiere = Allumer;
  125   2            cmd->Lumiere_Intensite = spi_data_in[1];
  126   2            cmd->Lumiere_Duree = spi_data_in[2];
  127   2            cmd->Lumire_Extinction = spi_data_in[3];
  128   2            cmd->Lumiere_Nbre = spi_data_in[4];
  129   2            break;
- 130   2          case 0xA4:
+ 130   2          case SPI_LIGHT_OFF_CMD:
  131   2            cmd->Etat_Lumiere = Eteindre;
  132   2            break;
- 133   2          case 0xA5:
+ 133   2          case SPI_SERVO_CMD:
  134   2            cmd->Etat_Servo = Servo_oui;
  135   2            cmd->Servo_Angle = (spi_data_in[2] << 8) + spi_data_in[1];
  136   2            break;

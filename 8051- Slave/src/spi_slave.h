@@ -15,8 +15,10 @@
 					Protocol SPI : Commands ID
 #############################################################################
 */
-#define SPI_SERVO_CMD	0xA1
-
+#define SPI_GENERATE_SOUND_CMD	0xA2
+#define SPI_LIGHT_ON_CMD	0xA3
+#define SPI_LIGHT_OFF_CMD	0xA4
+#define SPI_SERVO_CMD	0xA5
 
 #define byte unsigned char
 

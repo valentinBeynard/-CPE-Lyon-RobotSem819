@@ -113,24 +113,24 @@ void spi_parse_cmd(OUT_M2* cmd)
 			cmd->Etat_ACQ_Son = ACQ_oui;
 			cmd->ACQ_Duree = spi_data_in[1];
 			break;
-		case 0xA2:
+		case SPI_GENERATE_SOUND_CMD:
 			cmd->Etat_GEN_Son = GEN_oui;
 			cmd->GEN_freq_code = spi_data_in[1];
 			cmd->GEN_son_Duree = spi_data_in[2];
 			cmd->GEN_silence_Duree = spi_data_in[3];
 			cmd->GEN_nbr_bip = spi_data_in[4];
 			break;
-		case 0xA3:
+		case SPI_LIGHT_ON_CMD:
 			cmd->Etat_Lumiere = Allumer;
 			cmd->Lumiere_Intensite = spi_data_in[1];
 			cmd->Lumiere_Duree = spi_data_in[2];
 			cmd->Lumire_Extinction = spi_data_in[3];
 			cmd->Lumiere_Nbre = spi_data_in[4];
 			break;
-		case 0xA4:
+		case SPI_LIGHT_OFF_CMD:
 			cmd->Etat_Lumiere = Eteindre;
 			break;
-		case 0xA5:
+		case SPI_SERVO_CMD:
 			cmd->Etat_Servo = Servo_oui;
 			cmd->Servo_Angle = (spi_data_in[2] << 8) + spi_data_in[1];
 			break;

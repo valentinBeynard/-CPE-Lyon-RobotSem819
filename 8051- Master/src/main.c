@@ -38,7 +38,7 @@
 
 sfr Reg =	0xFF;
 
-	OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
+OUT_M1 commands = {Epreuve_non, // Numéro Epreuve
                       Mouvement_non,  // Etat mouvement
                       0,  //  Vitesse
                       0,  // Coord_X
@@ -70,7 +70,7 @@ sfr Reg =	0xFF;
                       0 // Nbr de photo
                       };
 											
-	IN_M1 informations = { Invite_non,	// Identifieur de l'etat d'Invite
+IN_M1 informations = { Invite_non,	// Identifieur de l'etat d'Invite
 													"Start Epreuve !\n",	// Ptr sur la chaine contenant le msg d'invite
 													BUT_Atteint_non,	// Arrivée au point transmit
 													BUT_Servo_non,	// Information position servomoteur
@@ -93,8 +93,10 @@ sfr Reg =	0xFF;
 			
 											
 PARSER_RESULT parser_result = {1 , &commands, &informations};
-DD_PACKET dd_packet = {&commands, &informations, 0.0, 0};
+DD_PACKET dd_packet = {&commands, &informations, 0.0, 0, 0};
 SPI_PACKET spi_packet = { 0, {0xA5,0x00,0x64,'F','G'}, 0};
+
+byte epreuve_start = 0;
 
 void Init_External_clk()
 {
@@ -134,8 +136,9 @@ int main (void)
 	// µP candencé sur clk extern à 22 MHz						
 	Init_External_clk();
 	
-	// Initialise l'UART0 et le Timer 2 pour le parser de commandes				
-  init_parser();
+	// Initialise l'UART0 et le Timer 2 pour le parser de commandes, et init le buffer des msg retour			
+  Init_parser(&parser_result);
+
 		
 	// Initialise l'UART1 utilisé pour communiquer avec le sérializer
 	init_serializer_UART1();
@@ -172,17 +175,23 @@ int main (void)
 		
 		if( parser_result.commands->Etat_Epreuve == epreuve1)
     {
-      //USART_print(parser_result.informations.MSG_Invit);			
+      // Start epreuve message
+			if(epreuve_start == 0)
+			{
+				parser_result.informations->Etat_Invite = Invite_oui;
+				epreuve_start = 1;
+			}
 			
+			// Robot movments handler
 			serializer_process(&parser_result);
 			
-			
+			// Robot obstacles detection handler
 			distance_detector_process(&dd_packet);
 			
+			// Master-Slave communication
 			spi_process(&commands, &spi_packet);
-			
-			//USART_print(spi_packet.spi_data);
-			
+		
+			/*
 			if(parser_result.commands->Etat_DCT_Obst == oui_180)
 			{
 				dd_packet.measure = dd_start_conversion();
@@ -190,39 +199,15 @@ int main (void)
 				USART_print(mes);
 				memset(mes, 0, 10);
 				parser_result.commands->Etat_DCT_Obst = DCT_non;
-			}
-			
-			if(parser_result.informations->Etat_BUT_Mouvement == BUT_Atteint_oui)
-			{
-				USART_print("Target Reached !! Success !\n");
-				parser_result.informations->Etat_BUT_Mouvement = BUT_Atteint_non;
-			}
-			
+			}*/
+		
     }
-		else{
-			parser_result.commands->Etat_Mouvement = Mouvement_non;
-		}
 		
 	}
 	
 	USART_print("Fin Soft");
 	
 	while(1){}
-		
-	/*spi_packet.ready = 1;
-	while(1)
-	{
-		//spi_transmit(&spi_packet);
-			//spi_process(&commands, &spi_packet);
-			
-		
-				USART_print("SPI START TS ! \n ");
-				spi_transmit(&spi_packet);
-				spi_packet.ready = 0;
-				USART_print("RESULT : ");
-				USART_print(spi_packet.received_data);
-				USART_print("\n");
-	}*/
 	
 }
 

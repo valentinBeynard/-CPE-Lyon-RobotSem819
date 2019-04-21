@@ -1,6 +1,6 @@
 #include "commands_parser.h"
 #include <string.h>
-//#include <stdlib.h>
+#include <stdio.h>
 
 /*
     DISPATCH TABLE
@@ -34,7 +34,7 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     {"RC", complete_rotation_cmd},
     {"RA", angle_rotation_cmd},
     {"G", move_to_cmd},
-    {"ASS", move_to_cmd},
+    {"ASS", default_process},
     {"MI", default_process},
     {"ME", default_process},
     {"IPO", default_process},
@@ -42,7 +42,7 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     {"MOU", detecte_obstacle},
     {"MOB", default_process},
     {"MOS", default_process},
-    {"SD", default_process},
+    {"SD", generate_sound_cmd},
     {"L", light_beam_ON_cmd},
     {"LS", light_beam_OFF_cmd},
     {"CS", servo_move_cmd},
@@ -56,10 +56,9 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
 
     Liste des Etats de la machines d'état du Parser associés à leur fonction
 */
-const FSM_PROCESS full_state_machine[3] = {
+const FSM_PROCESS full_state_machine[2] = {
     {WAIT, &wait},
-    {GET_COMMAND, &get_command},
-    {SEND_COMMAND, &wait}
+    {GET_COMMAND, &get_command}
 };
 
 /* Etat courant de la machine d'Etat */
@@ -70,6 +69,8 @@ byte raw_data[COMMAND_BUFFER_SIZE];
 
 /* Pointer permettant de parcourir le Buffer Principal */
 byte buffer_index = 0;
+
+byte MSG_buffer[MSG_INFO_BUFFER_SIZE] = "Start Epreuve !\n";
 
 /*
 #############################################################################
@@ -82,7 +83,7 @@ byte buffer_index = 0;
   Initialize devices for commands_parser : UART0 and Timer 2
 	UART0 = TX0 -> P0.0 | RX0 -> P0.1
 **/
-byte init_parser()
+byte Init_parser(PARSER_RESULT* parser_result)
 {
 	
 	/****** INIT UART0 *****/
@@ -108,6 +109,9 @@ byte init_parser()
 	RCAP2L = 0xDC;
 	RCAP2H = 0xFF;
 	TR2 = 1;
+	
+	// Load MSG_invite ptr to MSG_buffer
+	parser_result->informations->MSG_Invit = &MSG_buffer;
 	
   return 0;
 }
@@ -177,7 +181,8 @@ void cmd_parser_process(PARSER_RESULT* result)
 		break;
 		
 	}
-	//wait(result);
+	
+	send_informations(result);
 }
 
 void wait(PARSER_RESULT* parser_result)
@@ -333,19 +338,56 @@ void error_cmd_flag()
 	USART_send(COMMAND_ERROR_BYTE);	
 }
 
-/*
-void send_command(PARSER_RESULT* parser_result)
+
+void send_informations(PARSER_RESULT* parser_result)
 {
-  // For WARNING C280 supression
-	parser_result = parser_result;
-	
+	// If Information Msg to PC required
+	if(parser_result->informations->Etat_Invite == Invite_oui)
+	{
+		// Target reached message Info
+		if(parser_result->informations->Etat_BUT_Mouvement == BUT_Atteint_oui)
+		{
+			parser_result->informations->MSG_Invit = "\nB\n";
+			parser_result->informations->Etat_BUT_Mouvement = BUT_Atteint_non;
+		}
+		
+		else if(parser_result->informations->Etat_BUT_Servo == BUT_Servo_H)
+		{
+			parser_result->informations->MSG_Invit = "\nAS H\n";
+			parser_result->informations->Etat_BUT_Servo = BUT_Servo_non;
+		}
+		
+		else if(parser_result->informations->Etat_BUT_Servo == BUT_Servo_V)
+		{
+			parser_result->informations->MSG_Invit = "\nAS V\n";
+			parser_result->informations->Etat_BUT_Servo = BUT_Servo_non;
+		}
+		
+		// "KOB" return message after single detection operation "MOU"
+		else if(parser_result->informations->Etat_DCT_Obst == DCT_Obst_single_oui)
+		{
+			send_KOB_MOU(parser_result);
+			parser_result->informations->Etat_BUT_Servo = BUT_Servo_non;
+		}
+		
+		else
+		{
+			parser_result->informations->MSG_Invit = "\nI \tStart Epreuve !\n";
+		}
+		
+		parser_result->informations->Etat_Invite = Invite_non;
+		USART_print(parser_result->informations->MSG_Invit);
+		
+	}
+
 	// Nothing TODO
 }
-*/
 
-/*
-char encode_data()
+void send_KOB_MOU(PARSER_RESULT* parser_result)
 {
+	byte msg[32];
+	
+	sprintf(msg, "\nKOB %d:%f", &parser_result->informations->Tab_Val_Obst[0], &parser_result->informations->Tab_Val_Obst[1]);
 
-
-}*/
+	//strcpy(parser_result->informations->MSG_Invit, msg);
+}

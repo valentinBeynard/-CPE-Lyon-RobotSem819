@@ -417,6 +417,16 @@
               <FileType>5</FileType>
               <FilePath>..\Src\sinus_generator.h</FilePath>
             </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\uart.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -521,6 +531,16 @@
               <FileName>stm32f3xx_hal_flash_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_flash_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f3xx_hal_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32F3xx_HAL_Driver\Src\stm32f3xx_hal_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f3xx_hal_uart_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32F3xx_HAL_Driver\Src\stm32f3xx_hal_uart_ex.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/18/2019 17:00:09 PAGE 1   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/20/2019 18:50:34 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE ROBOT_SLAVE
@@ -62,7 +62,7 @@ line level    source
   52          {
   53   1        // Config External Osci
   54   1        OSCXCN = 0x67;
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/18/2019 17:00:09 PAGE 2   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/20/2019 18:50:34 PAGE 2   
 
   55   1        while(OSCXCN != 0xE7) {}
   56   1        
@@ -92,30 +92,33 @@ line level    source
   80   1        
   81   1        Init_External_clk();
   82   1        
-  83   1        Init_SPI();
+  83   1        Init_uart0();
+*** WARNING C206 IN LINE 83 OF src\robot_slave.c: 'Init_uart0': missing function-prototype
   84   1        
-  85   1        Init_light_beam();
+  85   1        Init_SPI();
   86   1        
-  87   1        Enable_Crossbar();
-  88   1      
-  89   1        Enable_general_Int();
-  90   1        
-  91   1        LED = 0;
+  87   1        Init_light_beam();
+  88   1        
+  89   1        Enable_Crossbar();
+  90   1      
+  91   1        Enable_general_Int();
   92   1        
-  93   1        while(1)
-  94   1        {
-  95   2          spi_process(&commands);
-  96   2          
-  97   2          light_beam_process(&commands);
-  98   2      
-  99   2          
- 100   2        }
- 101   1        
- 102   1      }
+  93   1        LED = 0;
+  94   1        
+  95   1        while(1)
+  96   1        {
+  97   2          spi_process(&commands);
+  98   2          
+  99   2          light_beam_process(&commands);
+ 100   2      
+ 101   2          
+ 102   2        }
+ 103   1        
+ 104   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     66    ----
+   CODE SIZE        =     69    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     17    ----
    PDATA SIZE       =   ----    ----
@@ -124,5 +127,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/20/2019 18:50:34 PAGE 3   
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

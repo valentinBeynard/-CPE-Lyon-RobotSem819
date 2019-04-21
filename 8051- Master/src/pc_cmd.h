@@ -14,7 +14,7 @@ enum Epreuve {Epreuve_non, epreuve1, epreuve2, epreuve3, epreuve4, epreuve5, epr
 enum Mouvement {Mouvement_non, Avancer, Reculer, Stopper, Rot_90D, Rot_90G, Rot_180D, Rot_180G, Rot_AngD, Rot_AngG, Depl_Coord};
 enum ACQ_Son {ACQ_non, ACQ_oui};
 enum GEN_Son {GEN_non, GEN_oui};
-enum DCT_Obst {DCT_non, oui_180, oui_360};
+enum DCT_Obst {DCT_non, oui_single, oui_180, oui_360};
 enum Lumiere {Lumiere_non, Allumer, Eteindre};
 enum Servo {Servo_non, Servo_H, Servo_V};
 enum Energie{Energie_non,Mesure_I,Mesure_E};
@@ -87,7 +87,7 @@ enum BUT_Servo {BUT_Servo_non, BUT_Servo_H, BUT_Servo_V, BUT_Servo_C};
 enum RESULT_Courant{RESULT_Courant_non,RESULT_Courant_oui};
 enum RESULT_Energie{RESULT_Energie_non,RESULT_Energie_oui};
 enum RESULT_Position{RESULT_Position_non,RESULT_Position_oui};
-enum RESULT_DCT_Obst {DCT_Obst_non, DCT_Obst_180_oui, DCT_Obst_360_oui};
+enum RESULT_DCT_Obst {DCT_Obst_non, DCT_Obst_single_oui, DCT_Obst_180_oui, DCT_Obst_360_oui};
 enum Aux {Aux_non, Aux_oui};
 
 typedef struct INFORMATIONS       // Cette structure contient toutes les informations susceptibles d'?tre transmises ? la centrale de commande
@@ -98,7 +98,7 @@ typedef struct INFORMATIONS       // Cette structure contient toutes les informa
    enum  Invite Etat_Invite;      // Contient l'identificateur information d'invite "I"
                                   // Param?tre de l'information pr?c?dente:
    char  *MSG_Invit;	            //Pointeur sur une chaine de caract?re d'invite
-
+	
    enum  BUT_Mouvement Etat_BUT_Mouvement; // Contient l'identificateur information Arriv?e au point sp?cifi? "B"
 	                                         // Pas de param?tre associ? pour l'information pr?c?dente:
    enum  BUT_Servo Etat_BUT_Servo;         // Contient l'identificateur information Servomoteur positionn? "AS C" "AS H" "AS H"

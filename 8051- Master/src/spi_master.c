@@ -132,7 +132,9 @@ void spi_process(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 	}
 	else if(cmd->Etat_GEN_Son == GEN_oui)
 	{
-		
+		spi_cmd_generate_sound(cmd, spi_packet);
+		cmd->Etat_GEN_Son = GEN_non;
+		spi_packet->ready = 1;
 	}
 	else if(cmd->Etat_Lumiere != Lumiere_non)
 	{
@@ -199,6 +201,15 @@ void spi_cmd_light_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 	spi_packet->send_data[3] = 0;
 	spi_packet->send_data[4] = 0;
 	
+}
+
+void spi_cmd_generate_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+{
+	spi_packet->send_data[0] = SPI_GENERATE_SOUND_CMD;
+	spi_packet->send_data[1] = (cmd->GEN_freq_code);
+	spi_packet->send_data[2] = (cmd->GEN_son_Duree);
+	spi_packet->send_data[3] = (cmd->GEN_silence_Duree);
+	spi_packet->send_data[4] = (cmd->GEN_nbr_bip);
 }
 
 byte spi_validate()

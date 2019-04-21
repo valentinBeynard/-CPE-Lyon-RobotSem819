@@ -15,9 +15,12 @@ sfr16 ADC0 = 0xbe;
 
 volatile int servo_angle_H = 0;
 
-byte pwn_over = 0;
+PWN_STATE pwn_state = PWN_IDDLE;
 
 DD_STATE dd_current_state = DD_IDLE;
+
+int val_obs_buffer[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+byte val_obs_buffer_size = 0;
 
 /*
     FULL STATE MACHINE
@@ -66,7 +69,7 @@ void timer_0_int() interrupt 1
 	{
 		ET0 = 0;	// Enable timer0 interuption
 		nbr_interrupt = 0;
-		pwn_over = 1;
+		pwn_state = PWN_FINISH;
 	}
 	else
 	{
@@ -160,6 +163,9 @@ void dd_idle(DD_PACKET * dd_packet)
 				
 				break;
 			
+			case oui_single:
+				dd_current_state = SINGLE_MEASURE;
+				break;
 			default:
 				dd_current_state = DD_IDLE;
 		}
@@ -171,16 +177,32 @@ void dd_idle(DD_PACKET * dd_packet)
 			dd_current_state = MOVE_SERVO_H;
 			dd_packet->commands->Etat_Servo = Servo_non;
 		}
+	
 	}
 
 }
 
 void dd_move_servo_h(DD_PACKET * dd_packet)
 {
-	dd_set_angle(dd_packet->commands->Servo_Angle);
-	pwn_over = 0;
-	ET0 = 1;	// Enable timer0 interuption
-	dd_current_state = DD_IDLE;
+	if(pwn_state == PWN_IDDLE)
+	{
+		dd_set_angle(dd_packet->commands->Servo_Angle);
+		pwn_state = PWN_RUN;
+		ET0 = 1;	// Enable timer0 interuption
+		
+	}
+	else if (pwn_state == PWN_FINISH)
+	{
+		dd_packet->informations->Etat_BUT_Servo = BUT_Servo_H;
+		dd_packet->informations->Etat_Invite = Invite_oui;
+		pwn_state = PWN_IDDLE;
+		dd_current_state = DD_IDLE;
+	}
+	else{
+		// Nothing to do
+	}
+	
+
 }
 
 void dd_slew_detection(DD_PACKET * dd_packet)
@@ -199,12 +221,13 @@ void dd_slew_detection(DD_PACKET * dd_packet)
 			break;
 		case 1:
 			delta_angle += dd_packet->commands->DCT_Obst_Resolution;
-			dd_set_angle(delta_angle);
+			// TODO
+			/**dd_set_angle(delta_angle);
 			if(delta_angle == 90)
 			{
 				step++;
 			}
-			dd_current_state = SINGLE_MEASURE;
+			dd_current_state = SINGLE_MEASURE;*/
 			break;
 		default:
 			delta_angle = -90;
@@ -214,11 +237,48 @@ void dd_slew_detection(DD_PACKET * dd_packet)
 	}
 }
 
+void dd_single_measure(DD_PACKET * dd_packet)
+{
+	dd_packet->measure = dd_start_conversion();
+	
+	clear_val_obs_buffer();
+	
+	if(dd_packet->measure <= MAX_DISTANCE)
+	{
+		val_obs_buffer[0] = (int)(10 * dd_packet->measure);
+		val_obs_buffer[1] = servo_angle_H;
+		dd_packet->obs_detected = 1;
+	}
+	else
+	{
+		dd_packet->obs_detected = 0;
+	}
+	
+	dd_packet->informations->Tab_Val_Obst = val_obs_buffer;
+	dd_packet->informations->Nbre_Val_obst = val_obs_buffer_size;
+	
+	// Switch ON "KOB" info return
+	dd_packet->informations->Etat_DCT_Obst = DCT_Obst_single_oui;
+	dd_packet->informations->Etat_Invite = Invite_oui;
+	
+	dd_current_state = DD_IDLE;
+}
+
 void dd_set_angle(int angle)
 {
 	servo_angle_H = angle;
 }
 
+void clear_val_obs_buffer()
+{
+	byte i = 0;
+	
+	for(i = 0 ; i < VAL_OBS_BUFFER_SIZE ; i++)
+	{
+		val_obs_buffer[i] = 0;
+	}
+	val_obs_buffer_size = 0;
+}
 
 float dd_mesure(){
 	
@@ -232,7 +292,7 @@ float dd_mesure(){
 	V_mes=ADC0/(POW*5.6);
 	
 	//Calcul des distances
-	d=-16.669*V_mes+67.367; 
+	d=-16.669*V_mes+MAX_DISTANCE; 
 	//putchar((char)d);
 	
 	return d;

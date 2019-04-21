@@ -75,10 +75,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				inverse_signal = 1;
 				signal_time_counter = 0;
 			}
-			else
+			/*else
 			{
 				signal_time_counter++;
-			}
+			}*/
 		}
 		
 	}
