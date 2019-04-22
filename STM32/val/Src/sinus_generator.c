@@ -75,10 +75,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				inverse_signal = 1;
 				signal_time_counter = 0;
 			}
-			/*else
+			else
 			{
 				signal_time_counter++;
-			}*/
+			}
 		}
 		
 	}
@@ -91,17 +91,77 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void freq_calculator(SINUS_PCK* pck)
 {
-	pck->htim6->Init.Period = 48000000/ ((pck->frequence) * (pck->htim6->Init.Prescaler + 1));
-}
-
-void init_sinus_generator(SINUS_PCK* pck)
-{
-	HAL_TIM_Base_Start(pck->htim6);  
-  HAL_DAC_Start(pck->hdac,DAC_CHANNEL_1);  
-  HAL_DAC_Start_DMA(pck->hdac, DAC_CHANNEL_1, (uint32_t*)sine_wave_array, 256, DAC_ALIGN_12B_R);
-	
-	// Enable interrupt on timer 3
-	HAL_TIM_Base_Start_IT(pck->htim3);
+	switch(pck->cmd_pck->frequency_code)
+	{
+		case 0x01: // DO 261.6 Hz
+			pck->htim6->Init.Period = 125;
+			break;
+		case 0x02:	// RE 293.7 Hz
+			pck->htim6->Init.Period = 140;
+			break;
+		case 0x03:
+			pck->htim6->Init.Period = 157;
+			break;
+		case 0x04:
+			pck->htim6->Init.Period = 167;
+			break;
+		case 0x05:
+			pck->htim6->Init.Period = 187;
+			break;
+		case 0x06:
+			pck->htim6->Init.Period = 210;
+			break;
+		case 0x07:
+			pck->htim6->Init.Period = 236;
+			break;
+		case 0x08:
+			pck->htim6->Init.Period = 250;
+			break;
+		case 0x09:
+			pck->htim6->Init.Period = 280;
+			break;
+		case 0x0A:
+			pck->htim6->Init.Period = 315;
+			break;
+		case 0x0B:
+			pck->htim6->Init.Period = 333;
+			break;
+		case 0x0C:
+			pck->htim6->Init.Period = 374;
+			break;
+		case 0x0D:
+			pck->htim6->Init.Period = 420;
+			break;
+		case 0x0E:
+			pck->htim6->Init.Period = 471;
+			break;
+		case 0x0F:
+			pck->htim6->Init.Period = 499;
+			break;
+		case 0x10:
+			pck->htim6->Init.Period = 560;
+			break;
+		case 0x11:
+			pck->htim6->Init.Period = 629;
+			break;
+		case 0x12:
+			pck->htim6->Init.Period = 667;
+			break;
+		case 0x13:
+			pck->htim6->Init.Period = 748;
+			break;
+		case 0x14:
+			pck->htim6->Init.Period = 840;
+			break;
+		case 0x15:
+			pck->htim6->Init.Period = 943;
+			break;
+		default:
+			pck->htim6->Init.Period = 210;
+			break;			
+	}
+	//pck->htim6->Init.Period = 48000000/ ((pck->cmd_pck->frequency_code) * (pck->htim6->Init.Prescaler + 1));
+	//pck->htim6->Init.Period = 210;
 }
 
 /*
@@ -110,8 +170,8 @@ Initialise le generateur de sinus : temps son/silence et fréquence
 void init_sinus(SINUS_PCK* pck)
 {
 	// Initialise Temps son/silence
-	signal_time_H = pck->time_H;
-	signal_time_L = pck->time_L;
+	signal_time_H = 100 * pck->cmd_pck->delay_ON;
+	signal_time_L = 100 * pck->cmd_pck->delay_OFF;
 	
 	// Initialise la nouvelle fréquence
 	pck->htim6->Init.Prescaler = 1;
@@ -150,13 +210,15 @@ void init_sinus(SINUS_PCK* pck)
   HAL_DAC_Start(pck->hdac,DAC_CHANNEL_1);  
   HAL_DAC_Start_DMA(pck->hdac, DAC_CHANNEL_1, (uint32_t*)sine_wave_array, 256, DAC_ALIGN_12B_R);
 
+	// Enable interrupt on timer 3
+	HAL_TIM_Base_Start_IT(pck->htim3);
 }
 
 unsigned char send_signal(SINUS_PCK* pck)
 {
 	static unsigned char bips_counter = 0;
 	
-	if(bips_counter <= pck->nbr_bip)
+	if(bips_counter <= pck->cmd_pck->nbr_sound)
 	{
 		if(inverse_signal == 1)
 		{			
@@ -164,6 +226,7 @@ unsigned char send_signal(SINUS_PCK* pck)
 			{
 				HAL_DAC_Start(pck->hdac,DAC_CHANNEL_1);
 				HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
+				bips_counter++;
 			}
 			else
 			{
@@ -171,13 +234,14 @@ unsigned char send_signal(SINUS_PCK* pck)
 				HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
 			}
 			inverse_signal = 0;
-			bips_counter++;
 		}
 
 		return 1;
 	}
 	else
 	{
+		HAL_DAC_Stop(pck->hdac,DAC_CHANNEL_1);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
 		bips_counter = 0;
 		inverse_signal = 0;
 		return 0;
@@ -188,7 +252,7 @@ void sinus_generator_process(SINUS_PCK * pck)
 {
 	static unsigned char init_flag = 2;
 	
-	if(pck->start == 1)
+	if(pck->cmd_pck->Etat_GEN == GEN_oui)
 	{		
 		if(init_flag != 0)
 		{
@@ -199,11 +263,11 @@ void sinus_generator_process(SINUS_PCK * pck)
 		{
 			if(send_signal(pck) == 0)
 			{
-				pck->start = 0;
+				pck->cmd_pck->Etat_GEN = GEN_non;
 				init_flag = 1;
 			}
 		}
-		
+		//HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_9);
 
 	}
 	else

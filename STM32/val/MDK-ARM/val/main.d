@@ -38,3 +38,5 @@ val\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim_ex.h
 val\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h
 val\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h
 val\main.o: ../Src/sinus_generator.h
+val\main.o: ../Src/cmd_pck.h
+val\main.o: ../Src/uart.h

@@ -3,31 +3,20 @@
 #define UART_H
 
 #include "main.h"
+#include "cmd_pck.h" 
 
 #define UART_BUFFER_SIZE	16
+
+#define UART1_BAUDRATE	19200
 
 // Byte de stop à la fin de chaque commande
 #define STOP_BYTE 0x0D
 
+#define SD_GEN_GENERATE_CMD	'G'
+
 typedef unsigned char byte;
 
-enum GEN_son {GEN_non, GEN_oui};
-enum ACQ_son {ACQ_non, ACQ_oui};
-
-
-typedef struct
-{
-	enum GEN_son Etat_GEN;
-	
-	byte frequency_code;
-	byte delay_ON;
-	byte delay_OFF;
-	byte nbr_sound;
-	
-	enum ACQ_son Etat_ACQ;
-	
-}CMD_PCK;
-
+void uart_init(UART_HandleTypeDef *huart);
 void uart_cmd_process(CMD_PCK * cmd);
-
+void clear_raw_buffer();
 #endif

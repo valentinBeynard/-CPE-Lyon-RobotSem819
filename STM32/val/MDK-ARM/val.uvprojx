@@ -312,7 +312,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -426,6 +426,11 @@
               <FileName>uart.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\uart.h</FilePath>
+            </File>
+            <File>
+              <FileName>cmd_pck.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\cmd_pck.h</FilePath>
             </File>
           </Files>
         </Group>

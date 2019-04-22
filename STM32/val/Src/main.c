@@ -41,6 +41,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "sinus_generator.h"
+#include "uart.h"
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -64,16 +65,19 @@ PCD_HandleTypeDef hpcd_USB_FS;
 *		####################################################
 */
 
+CMD_PCK cmd_packet = {GEN_non,
+											44,
+											10,
+											20,
+											10,
+											ACQ_non		
+											};
+
 SINUS_PCK sinus_info = {&htim3,
 												&htim6,
 												&hdac,
-												15,
-												2 * 8000,
-												2 * 250,
-												2000,
-												0
+												&cmd_packet
 												};
-
 
 /*
 *		####################################################
@@ -142,15 +146,15 @@ int main(void)
   MX_TIM3_Init();
   MX_USART1_UART_Init();
 
-	init_sinus_generator(&sinus_info);
 	
-	sinus_info.start = 1;
-
+	//sinus_info.start = 1;
+	uart_init(&huart1);
+	
   while (1)
   {
 		sinus_generator_process(&sinus_info);
 		
-		
+		uart_cmd_process(&cmd_packet);
   }
 
 }
@@ -440,7 +444,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 19200;
+  huart1.Init.BaudRate = UART1_BAUDRATE;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;

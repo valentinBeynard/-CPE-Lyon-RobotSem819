@@ -3,6 +3,7 @@
 #define SINUS_GENERATOR_H
 
 #include "main.h"
+#include "cmd_pck.h" 
 
 /*
 *		####################################################
@@ -15,11 +16,7 @@ typedef struct
 	TIM_HandleTypeDef * htim3;
 	TIM_HandleTypeDef * htim6;
 	DAC_HandleTypeDef * hdac;
-	unsigned char nbr_bip;
-	unsigned int time_H;
-	unsigned int time_L;
-	unsigned int frequence;
-	unsigned char start;
+	CMD_PCK * cmd_pck;
 }SINUS_PCK;
 
 
