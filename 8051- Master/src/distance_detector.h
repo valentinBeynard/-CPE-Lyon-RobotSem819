@@ -106,5 +106,6 @@ void dd_slew_detection(DD_PACKET * dd_packet);
 void dd_obs_detection(DD_PACKET * dd_packet);
 
 void clear_val_obs_buffer();
+
 #endif
 

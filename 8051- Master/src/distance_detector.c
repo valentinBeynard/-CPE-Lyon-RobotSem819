@@ -293,7 +293,6 @@ float dd_mesure(){
 	
 	//Calcul des distances
 	d=-16.669*V_mes+MAX_DISTANCE; 
-	//putchar((char)d);
 	
 	return d;
 	

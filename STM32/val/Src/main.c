@@ -149,6 +149,8 @@ int main(void)
   while (1)
   {
 		sinus_generator_process(&sinus_info);
+		
+		
   }
 
 }

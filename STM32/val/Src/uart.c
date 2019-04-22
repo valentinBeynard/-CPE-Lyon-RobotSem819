@@ -32,3 +32,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		HAL_UART_Receive_IT(huart, &c, 1);
 	}	
 }
+
+void uart_cmd_process(CMD_PCK * cmd)
+{
+	if(cmd_received)
+	{
+		switch(raw_data[0])
+		{
+			
+		}
+		
+	}
+	
+	
+}
