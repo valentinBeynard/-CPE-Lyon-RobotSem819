@@ -1,5 +1,6 @@
 #include "spi_slave.h"
 #include "light_beam.h"
+//#include "pointeur_lumineux.h"
 #include "c8051F020.h"
 
 /*
@@ -7,9 +8,9 @@
         PIN List
 #############################################################################
 *
-*	
+*	UART0 = TX0 -> P0.0 | RX0 -> P0.1
 *
-*	SPI = SCK -> P0.0 | MISO -> P0.1 | MOSI -> P0.2 | NSS -> P0.3
+*	SPI = SCK -> P0.2 | MISO -> P0.3 | MOSI -> P0.4 | NSS -> P0.5
 *				SCK : OUT
 *				MISO : IN
 *				MOSI : OUT
@@ -37,7 +38,7 @@ OUT_M2 commands = {ACQ_non,
 										0,
 										0,
 										0,
-										Allumer,
+										Lumiere_non,
 										10,
 										10,
 										20,
@@ -85,6 +86,7 @@ int main (void)
 	Init_SPI();
 	
 	Init_light_beam();
+	//init();
 	
 	Enable_Crossbar();
 
@@ -97,7 +99,9 @@ int main (void)
 		spi_process(&commands);
 		
 		light_beam_process(&commands);
-
+		
+		//change_lumiere(1, 2, 10, 10, &commands.Etat_Lumiere);
+		
 		
 	}
 	

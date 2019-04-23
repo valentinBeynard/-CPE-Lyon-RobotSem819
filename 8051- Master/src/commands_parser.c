@@ -389,5 +389,5 @@ void send_KOB_MOU(PARSER_RESULT* parser_result)
 	
 	sprintf(msg, "\nKOB %d:%f", &parser_result->informations->Tab_Val_Obst[0], &parser_result->informations->Tab_Val_Obst[1]);
 
-	//strcpy(parser_result->informations->MSG_Invit, msg);
+	strcpy(parser_result->informations->MSG_Invit, msg);
 }

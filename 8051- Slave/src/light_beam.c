@@ -1,10 +1,10 @@
 #include "light_beam.h"
 
 //port de sortie
-sbit PWN_pin = P1^0;
-sbit FLASH_pin = P1^1;
+sbit PWN_pin = P1^2;
+sbit FLASH_pin = P1^0;
 
-volatile int servo_angle_V = -90;
+volatile int servo_angle_V = 0;
 
 int duree_flash = 10;
 int duree_no_flash = 10;
@@ -25,21 +25,23 @@ LIGHT_GENERATOR light_genrator_state = STOP;
 
 void timer_0_int() interrupt 1
 {	
-	static byte nbr_interrupt = 0;
+	static int nbr_interrupt = 0;
 	static char high = 0;
 	
 	int duree_imp = 0;
 	int reload_value = 0;
-
-	//duree_imp = 10*(servo_angle_V+90) + 600 ;// 600us pour 90°  (cf doc technique)
 	
-	duree_imp = SERVO_PWN_ANGLE_COEF *(servo_angle_V+90) + 2000 ;// 1ms pour -90°  (cf doc technique)
+	duree_imp = 13 * servo_angle_V + 2768;// (cf excel table 3)
+	
+	//duree_imp = 13*(servo_angle_V+90) + 1800 ;// 900us pour 90°  (cf doc technique)
+	
+	//duree_imp = SERVO_PWN_ANGLE_COEF *(servo_angle_V+90) + 2000 ;// 1ms pour -90°  (cf doc technique)
 
 	PWN_pin = !PWN_pin;
 	
 	if (high == 1)
 	{
-		reload_value = 0xFFFF - (2 * SERVO_PWN_PERIOD - duree_imp );
+		reload_value = 0xFFFF - (36666 - duree_imp );
 		high=0;
 	} else {
 		
@@ -50,7 +52,7 @@ void timer_0_int() interrupt 1
 	TH0= reload_value >> 8; //on décale pour obtenir les bits de poids fort
 	
 	
-	if(nbr_interrupt >= 150)
+	if(nbr_interrupt >= 500)
 	{
 		ET0 = 0;	// Diseable timer0 interuption
 		PWN_pin = 0;
@@ -154,7 +156,7 @@ void Init_light_beam()
 {
 	
 	// Push-Pull mode for P0.0 and P0.1
-	P1MDOUT |= 0x03;
+	P1MDOUT |= 0x0F;
 	PWN_pin = 0;
 	FLASH_pin = 0;
 	
@@ -208,7 +210,7 @@ void light_beam_process(OUT_M2 * cmd)
 	{
 		light_beam_move(cmd);
 	}
-
+	
 	if(cmd->Etat_Lumiere == Allumer)
 	{
 		switch(light_genrator_state)
@@ -233,15 +235,7 @@ void light_beam_process(OUT_M2 * cmd)
 void light_beam_move(OUT_M2 * cmd)
 {
 	// Set angle
-	if(cmd->Servo_Angle != 0)
-	{
-		lb_set_angle(cmd->Servo_Angle);
-	}
-	else
-	{
-		cmd->Servo_Angle = 90;
-		lb_set_angle(cmd->Servo_Angle);
-	}
+	lb_set_angle(cmd->Servo_Angle);
 	
 	// Re-launch PWN
 	//pwn_over = 0;

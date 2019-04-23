@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/21/2019 18:57:02 PAGE 1   
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE DISTANCE_DETECTOR
@@ -62,7 +62,7 @@ line level    source
   52   1        duree_imp = 10*(servo_angle_H+90) + 600 ;// 600us pour 90°  (cf doc technique)
   53   1        
   54   1        P1_2 = !P1_2;
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/21/2019 18:57:02 PAGE 2   
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 2   
 
   55   1        
   56   1        if (high == 0)
@@ -126,7 +126,7 @@ line level    source
  114          { 
  115   1        //Reglages Timer 0
  116   1        TMOD=0x01; //mode 1
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/21/2019 18:57:02 PAGE 3   
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 3   
 
  117   1        TCON= 0x11; // Enable Timer0 (bit4) and enable interupt on edge (bit0)
  118   1        TL0=0xA8;
@@ -190,7 +190,7 @@ line level    source
  176   2          {
  177   3            dd_current_state = MOVE_SERVO_H;
  178   3            dd_packet->commands->Etat_Servo = Servo_non;
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/21/2019 18:57:02 PAGE 4   
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 4   
 
  179   3          }
  180   2        
@@ -254,7 +254,7 @@ line level    source
  238   1      }
 *** WARNING C280 IN LINE 212 OF src\distance_detector.c: 'smallest_measure': unreferenced local variable
 *** WARNING C280 IN LINE 213 OF src\distance_detector.c: 'angle_obs': unreferenced local variable
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/21/2019 18:57:02 PAGE 5   
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 5   
 
  239          
  240          void dd_single_measure(DD_PACKET * dd_packet)
@@ -282,68 +282,69 @@ line level    source
  261   1        dd_packet->informations->Etat_DCT_Obst = DCT_Obst_single_oui;
  262   1        dd_packet->informations->Etat_Invite = Invite_oui;
  263   1        
- 264   1        dd_current_state = DD_IDLE;
- 265   1      }
- 266          
- 267          void dd_set_angle(int angle)
- 268          {
- 269   1        servo_angle_H = angle;
- 270   1      }
- 271          
- 272          void clear_val_obs_buffer()
- 273          {
- 274   1        byte i = 0;
- 275   1        
- 276   1        for(i = 0 ; i < VAL_OBS_BUFFER_SIZE ; i++)
- 277   1        {
- 278   2          val_obs_buffer[i] = 0;
- 279   2        }
- 280   1        val_obs_buffer_size = 0;
- 281   1      }
- 282          
- 283          float dd_mesure(){
- 284   1        
- 285   1        float d;
- 286   1        float V_mes;
- 287   1        
- 288   1        //lecture de la tension mesurée sur AIN2
- 289   1        AMX0SL&=0x00;
- 290   1        AMX0SL|=0x01;
- 291   1        
- 292   1        V_mes=ADC0/(POW*5.6);
+ 264   1        dd_packet->commands->Etat_DCT_Obst = DCT_non;
+ 265   1        
+ 266   1        dd_current_state = DD_IDLE;
+ 267   1      }
+ 268          
+ 269          void dd_set_angle(int angle)
+ 270          {
+ 271   1        servo_angle_H = angle;
+ 272   1      }
+ 273          
+ 274          void clear_val_obs_buffer()
+ 275          {
+ 276   1        byte i = 0;
+ 277   1        
+ 278   1        for(i = 0 ; i < VAL_OBS_BUFFER_SIZE ; i++)
+ 279   1        {
+ 280   2          val_obs_buffer[i] = 0;
+ 281   2        }
+ 282   1        val_obs_buffer_size = 0;
+ 283   1      }
+ 284          
+ 285          float dd_mesure(){
+ 286   1        
+ 287   1        float d;
+ 288   1        float V_mes;
+ 289   1        
+ 290   1        //lecture de la tension mesurée sur AIN2
+ 291   1        AMX0SL&=0x00;
+ 292   1        AMX0SL|=0x01;
  293   1        
- 294   1        //Calcul des distances
- 295   1        d=-16.669*V_mes+MAX_DISTANCE; 
- 296   1        //putchar((char)d);
- 297   1        
- 298   1        return d;
- 299   1        
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/21/2019 18:57:02 PAGE 6   
+ 294   1        V_mes=ADC0/(POW*5.6);
+ 295   1        
+ 296   1        //Calcul des distances
+ 297   1        d=-16.669*V_mes+MAX_DISTANCE; 
+ 298   1        
+ 299   1        return d;
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 6   
 
- 300   1      } 
- 301          
+ 300   1        
+ 301   1      } 
  302          
- 303          float dd_start_conversion(){
- 304   1        float conv;
- 305   1        unsigned int j;
- 306   1        AD0INT=0;
- 307   1        AD0BUSY=1;
- 308   1        dd_mesure();
- 309   1        AD0BUSY=0;
- 310   1        
- 311   1        for(j=0;j<1000;j++); //On temporise pour atteindre la stabilité
- 312   1        
- 313   1        AD0INT=0;
- 314   1        AD0BUSY=1;
- 315   1        conv =dd_mesure();
- 316   1        AD0BUSY=0;
- 317   1        
- 318   1        return conv;
- 319   1      }
+ 303          
+ 304          float dd_start_conversion(){
+ 305   1        float conv;
+ 306   1        unsigned int j;
+ 307   1        AD0INT=0;
+ 308   1        AD0BUSY=1;
+ 309   1        dd_mesure();
+ 310   1        AD0BUSY=0;
+ 311   1        
+ 312   1        for(j=0;j<1000;j++); //On temporise pour atteindre la stabilité
+ 313   1        
+ 314   1        AD0INT=0;
+ 315   1        AD0BUSY=1;
+ 316   1        conv =dd_mesure();
+ 317   1        AD0BUSY=0;
+ 318   1        
+ 319   1        return conv;
+ 320   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1328    ----
+   CODE SIZE        =   1352    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     54      36
    PDATA SIZE       =   ----    ----

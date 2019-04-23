@@ -2,6 +2,7 @@
 "robot_slave.obj",
 "STARTUP.obj",
 "light_beam.obj",
-"sound_handler.obj" 
+"sound_handler.obj",
+"pointeur_lumineux.obj" 
 TO "SLAVE" 
 RAMSIZE(256) 

@@ -175,7 +175,7 @@
             <Capability>1</Capability>
             <DriverSelection>-1</DriverSelection>
           </Flash1>
-          <bUseTDR>1</bUseTDR>
+          <bUseTDR>0</bUseTDR>
           <Flash2></Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -420,6 +420,16 @@
               <FileName>sound_handler.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\sound_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>pointeur_lumineux.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\pointeur_lumineux.c</FilePath>
+            </File>
+            <File>
+              <FileName>pointeur_lumineux.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\pointeur_lumineux.h</FilePath>
             </File>
           </Files>
         </Group>

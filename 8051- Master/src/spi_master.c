@@ -185,11 +185,17 @@ void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 
 void spi_cmd_light_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 {
-	spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
+	/*spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
 	spi_packet->send_data[1] = (cmd->Lumiere_Intensite);
 	spi_packet->send_data[2] = (cmd->Lumiere_Duree);
 	spi_packet->send_data[3] = (cmd->Lumire_Extinction);
-	spi_packet->send_data[4] = (cmd->Lumiere_Nbre);
+	spi_packet->send_data[4] = (cmd->Lumiere_Nbre);*/
+	
+	spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
+	spi_packet->send_data[1] = 10;//(cmd->Lumiere_Intensite);
+	spi_packet->send_data[2] = 10;//(cmd->Lumiere_Duree);
+	spi_packet->send_data[3] = 20;//(cmd->Lumire_Extinction);
+	spi_packet->send_data[4] = 10;//(cmd->Lumiere_Nbre)
 	
 }
 

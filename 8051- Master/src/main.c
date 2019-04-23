@@ -156,7 +156,7 @@ int main (void)
 	
 
 					
-	//serializer_init_serial();
+	serializer_init_serial();
 							
 	USART_print("\n\n#############################\n\n>");
 

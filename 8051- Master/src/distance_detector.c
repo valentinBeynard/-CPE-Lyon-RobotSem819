@@ -261,6 +261,8 @@ void dd_single_measure(DD_PACKET * dd_packet)
 	dd_packet->informations->Etat_DCT_Obst = DCT_Obst_single_oui;
 	dd_packet->informations->Etat_Invite = Invite_oui;
 	
+	dd_packet->commands->Etat_DCT_Obst = DCT_non;
+	
 	dd_current_state = DD_IDLE;
 }
 

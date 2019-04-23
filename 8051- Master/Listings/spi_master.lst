@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   SPI_MASTER                                                            04/21/2019 18:57:02 PAGE 1   
+C51 COMPILER V9.55   SPI_MASTER                                                            04/23/2019 12:16:33 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE SPI_MASTER
@@ -62,7 +62,7 @@ line level    source
   52   1        //EIE1 |= 0x01;
   53   1        
   54   1        // Active Crossbar
-C51 COMPILER V9.55   SPI_MASTER                                                            04/21/2019 18:57:02 PAGE 2   
+C51 COMPILER V9.55   SPI_MASTER                                                            04/23/2019 12:16:33 PAGE 2   
 
   55   1        XBR0 |= 0x02;  //Route les 4 ports de la SPI et les 2 de l'UART0;
   56   1        
@@ -126,7 +126,7 @@ line level    source
  113   1        {
  114   2          spi_error();
  115   2        }
-C51 COMPILER V9.55   SPI_MASTER                                                            04/21/2019 18:57:02 PAGE 3   
+C51 COMPILER V9.55   SPI_MASTER                                                            04/23/2019 12:16:33 PAGE 3   
 
  116   1        else{
  117   2          spi_packet->ready = 1;
@@ -190,7 +190,7 @@ line level    source
  174   1        
  175   1      }
  176          
-C51 COMPILER V9.55   SPI_MASTER                                                            04/21/2019 18:57:02 PAGE 4   
+C51 COMPILER V9.55   SPI_MASTER                                                            04/23/2019 12:16:33 PAGE 4   
 
  177          void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet)
  178          {
@@ -203,68 +203,75 @@ line level    source
  185          
  186          void spi_cmd_light_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
  187          {
- 188   1        spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
+ 188   1        /*spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
  189   1        spi_packet->send_data[1] = (cmd->Lumiere_Intensite);
  190   1        spi_packet->send_data[2] = (cmd->Lumiere_Duree);
  191   1        spi_packet->send_data[3] = (cmd->Lumire_Extinction);
- 192   1        spi_packet->send_data[4] = (cmd->Lumiere_Nbre);
+ 192   1        spi_packet->send_data[4] = (cmd->Lumiere_Nbre);*/
  193   1        
- 194   1      }
- 195          
- 196          void spi_cmd_light_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
- 197          {
- 198   1        spi_packet->send_data[0] = SPI_LIGHT_OFF_CMD;
- 199   1        spi_packet->send_data[1] = 0;
- 200   1        spi_packet->send_data[2] = 0;
- 201   1        spi_packet->send_data[3] = 0;
- 202   1        spi_packet->send_data[4] = 0;
- 203   1        
- 204   1      }
-*** WARNING C280 IN LINE 196 OF src\spi_master.c: 'cmd': unreferenced local variable
- 205          
- 206          void spi_cmd_generate_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet)
- 207          {
- 208   1        spi_packet->send_data[0] = SPI_GENERATE_SOUND_CMD;
- 209   1        spi_packet->send_data[1] = (cmd->GEN_freq_code);
- 210   1        spi_packet->send_data[2] = (cmd->GEN_son_Duree);
- 211   1        spi_packet->send_data[3] = (cmd->GEN_silence_Duree);
- 212   1        spi_packet->send_data[4] = (cmd->GEN_nbr_bip);
- 213   1      }
- 214          
- 215          byte spi_validate()
- 216          {
- 217   1        int hash = 0, i =0;
- 218   1        
- 219   1        for(i = 0; i < 5 ; i++)
- 220   1        {
- 221   2          hash += spi_data_in[i];
- 222   2        }
- 223   1        
- 224   1        if(hash != 368)
- 225   1        {
- 226   2          return 0;
- 227   2        }
- 228   1        else 
- 229   1        {
- 230   2          return 1;
- 231   2        }
- 232   1      }
- 233          
- 234          void spi_error()
- 235          {
- 236   1        spi_data_in[0] = 'E';
- 237   1        spi_data_in[1] = 'R';
-C51 COMPILER V9.55   SPI_MASTER                                                            04/21/2019 18:57:02 PAGE 5   
+ 194   1        spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
+ 195   1        spi_packet->send_data[1] = 10;//(cmd->Lumiere_Intensite);
+ 196   1        spi_packet->send_data[2] = 10;//(cmd->Lumiere_Duree);
+ 197   1        spi_packet->send_data[3] = 20;//(cmd->Lumire_Extinction);
+ 198   1        spi_packet->send_data[4] = 10;//(cmd->Lumiere_Nbre)
+ 199   1        
+ 200   1      }
+*** WARNING C280 IN LINE 186 OF src\spi_master.c: 'cmd': unreferenced local variable
+ 201          
+ 202          void spi_cmd_light_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+ 203          {
+ 204   1        spi_packet->send_data[0] = SPI_LIGHT_OFF_CMD;
+ 205   1        spi_packet->send_data[1] = 0;
+ 206   1        spi_packet->send_data[2] = 0;
+ 207   1        spi_packet->send_data[3] = 0;
+ 208   1        spi_packet->send_data[4] = 0;
+ 209   1        
+ 210   1      }
+*** WARNING C280 IN LINE 202 OF src\spi_master.c: 'cmd': unreferenced local variable
+ 211          
+ 212          void spi_cmd_generate_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+ 213          {
+ 214   1        spi_packet->send_data[0] = SPI_GENERATE_SOUND_CMD;
+ 215   1        spi_packet->send_data[1] = (cmd->GEN_freq_code);
+ 216   1        spi_packet->send_data[2] = (cmd->GEN_son_Duree);
+ 217   1        spi_packet->send_data[3] = (cmd->GEN_silence_Duree);
+ 218   1        spi_packet->send_data[4] = (cmd->GEN_nbr_bip);
+ 219   1      }
+ 220          
+ 221          byte spi_validate()
+ 222          {
+ 223   1        int hash = 0, i =0;
+ 224   1        
+ 225   1        for(i = 0; i < 5 ; i++)
+ 226   1        {
+ 227   2          hash += spi_data_in[i];
+ 228   2        }
+ 229   1        
+ 230   1        if(hash != 368)
+ 231   1        {
+ 232   2          return 0;
+ 233   2        }
+ 234   1        else 
+ 235   1        {
+ 236   2          return 1;
+C51 COMPILER V9.55   SPI_MASTER                                                            04/23/2019 12:16:33 PAGE 5   
 
- 238   1        spi_data_in[2] = 'R';
- 239   1        spi_data_in[3] = 'O';
- 240   1        spi_data_in[4] = 'R';
- 241   1      }
- 242          
+ 237   2        }
+ 238   1      }
+ 239          
+ 240          void spi_error()
+ 241          {
+ 242   1        spi_data_in[0] = 'E';
+ 243   1        spi_data_in[1] = 'R';
+ 244   1        spi_data_in[2] = 'R';
+ 245   1        spi_data_in[3] = 'O';
+ 246   1        spi_data_in[4] = 'R';
+ 247   1      }
+ 248          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1719    ----
+   CODE SIZE        =   1639    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     11      40
    PDATA SIZE       =   ----    ----
@@ -274,4 +281,4 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  3 WARNING(S),  0 ERROR(S)
