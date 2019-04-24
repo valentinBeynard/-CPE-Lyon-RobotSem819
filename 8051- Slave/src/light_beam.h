@@ -63,6 +63,7 @@ void light_beam_process(OUT_M2 * cmd);
 
 void light_beam_move(OUT_M2 * cmd);
 void light_beam_switch_ON(OUT_M2 * cmd);
+void light_beam_switch_OFF(OUT_M2 * cmd);
 void light_beam_flash_sequence();
 
 #endif

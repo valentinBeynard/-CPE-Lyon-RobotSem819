@@ -422,14 +422,14 @@
               <FilePath>.\src\sound_handler.c</FilePath>
             </File>
             <File>
-              <FileName>pointeur_lumineux.c</FileName>
+              <FileName>img_handler.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\pointeur_lumineux.c</FilePath>
+              <FilePath>.\src\img_handler.c</FilePath>
             </File>
             <File>
-              <FileName>pointeur_lumineux.h</FileName>
+              <FileName>img_handler.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\pointeur_lumineux.h</FilePath>
+              <FilePath>.\src\img_handler.h</FilePath>
             </File>
           </Files>
         </Group>

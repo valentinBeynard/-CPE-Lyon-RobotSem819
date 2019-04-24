@@ -239,19 +239,36 @@ void dd_slew_detection(DD_PACKET * dd_packet)
 
 void dd_single_measure(DD_PACKET * dd_packet)
 {
-	dd_packet->measure = dd_start_conversion();
-	
 	clear_val_obs_buffer();
 	
+	// Front telemeter
+	choose_ADC_input(AIN0);
+	dd_packet->measure = dd_start_conversion();
+
 	if(dd_packet->measure <= MAX_DISTANCE)
 	{
 		val_obs_buffer[0] = (int)(10 * dd_packet->measure);
 		val_obs_buffer[1] = servo_angle_H;
-		dd_packet->obs_detected = 1;
+		dd_packet->obs_detected_front = 1;
 	}
 	else
 	{
-		dd_packet->obs_detected = 0;
+		dd_packet->obs_detected_front = 0;
+	}
+	
+	// Back telemeter
+	choose_ADC_input(AIN1);
+	dd_packet->measure = dd_start_conversion();
+
+	if(dd_packet->measure <= MAX_DISTANCE)
+	{
+		val_obs_buffer[2] = (int)(10 * dd_packet->measure);
+		val_obs_buffer[3] = servo_angle_H;
+		dd_packet->obs_detected_back = 1;
+	}
+	else
+	{
+		dd_packet->obs_detected_back = 0;
 	}
 	
 	dd_packet->informations->Tab_Val_Obst = val_obs_buffer;
@@ -280,6 +297,18 @@ void clear_val_obs_buffer()
 		val_obs_buffer[i] = 0;
 	}
 	val_obs_buffer_size = 0;
+}
+
+void choose_ADC_input(ADC_INPUT adc_input)
+{
+	if(adc_input == AIN0)
+	{
+		AMX0SL = 0x00;
+	}
+	else
+	{
+		AMX0SL = 0x01;
+	}
 }
 
 float dd_mesure(){

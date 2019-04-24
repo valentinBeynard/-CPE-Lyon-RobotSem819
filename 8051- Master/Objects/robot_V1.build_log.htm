@@ -30,6 +30,7 @@ assembling STARTUP.A51...
 compiling commands.c...
 compiling commands_parser.c...
 src\commands_parser.c(114): warning C182: pointer to different objects
+src\commands_parser.c(411): warning C182: pointer to different objects
 compiling main.c...
 src\main.c(127): warning C280: 'mes': unreferenced local variable
 compiling serializer.c...
@@ -37,7 +38,7 @@ compiling motion.c...
 compiling distance_detector.c...
 src\distance_detector.c(212): warning C280: 'smallest_measure': unreferenced local variable
 src\distance_detector.c(213): warning C280: 'angle_obs': unreferenced local variable
-src\distance_detector.c(257): warning C182: pointer to different objects
+src\distance_detector.c(274): warning C182: pointer to different objects
 compiling spi_master.c...
 src\spi_master.c(121): warning C182: pointer to different objects
 src\spi_master.c(186): warning C280: 'cmd': unreferenced local variable
@@ -57,10 +58,10 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  _DD_OBS_DETECTION
     MODULE:  .\Objects\distance_detector.obj (DISTANCE_DETECTOR)
-    ADDRESS: 3584H
-Program Size: data=33.7 xdata=753 code=23170
-".\Objects\robot_V1" - 0 Error(s), 12 Warning(s).
-Build Time Elapsed:  00:00:01
+    ADDRESS: 38E8H
+Program Size: data=33.7 xdata=786 code=23549
+".\Objects\robot_V1" - 0 Error(s), 13 Warning(s).
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

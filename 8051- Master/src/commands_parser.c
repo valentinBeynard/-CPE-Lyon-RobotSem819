@@ -385,9 +385,29 @@ void send_informations(PARSER_RESULT* parser_result)
 
 void send_KOB_MOU(PARSER_RESULT* parser_result)
 {
-	byte msg[32];
+	static byte msg[32];
+		
+	int angle_front = 0, angle_back = 0;
+	int distance_front = 0, distance_back = 0;
 	
-	sprintf(msg, "\nKOB %d:%f", &parser_result->informations->Tab_Val_Obst[0], &parser_result->informations->Tab_Val_Obst[1]);
+	memset(msg, 0 , 32);
 
-	strcpy(parser_result->informations->MSG_Invit, msg);
+	if(parser_result->informations->Nbre_Val_obst > 2)
+	{
+		angle_front = parser_result->informations->Tab_Val_Obst[0];
+		distance_front = parser_result->informations->Tab_Val_Obst[1];
+		sprintf(msg, "\nKOB %d:%d\n", angle_front, distance_front);
+	}
+	else
+	{
+		angle_front = parser_result->informations->Tab_Val_Obst[0];
+		distance_front = parser_result->informations->Tab_Val_Obst[1];
+		angle_back = parser_result->informations->Tab_Val_Obst[2];
+		distance_back = parser_result->informations->Tab_Val_Obst[3];
+		sprintf(msg, "\nKOB %d:%d %d:%d\n", angle_front, distance_front, angle_back, distance_back);
+	}
+
+	
+	parser_result->informations->MSG_Invit = msg;
+	//strcpy(parser_result->informations->MSG_Invit, msg);
 }

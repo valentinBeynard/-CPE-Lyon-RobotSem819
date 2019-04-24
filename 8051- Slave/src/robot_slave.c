@@ -1,5 +1,6 @@
 #include "spi_slave.h"
 #include "light_beam.h"
+//#include "img_handler.h"
 //#include "pointeur_lumineux.h"
 #include "c8051F020.h"
 
@@ -86,13 +87,16 @@ int main (void)
 	Init_SPI();
 	
 	Init_light_beam();
-	//init();
+	
+	//Init_timer4();
 	
 	Enable_Crossbar();
 
 	Enable_general_Int();
 	
 	LED = 0;
+	
+	//prendre_photo(5, 1);
 	
 	while(1)
 	{

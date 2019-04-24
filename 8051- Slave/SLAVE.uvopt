@@ -125,43 +125,10 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>SiC8051F</Key>
-          <Name>-S1 -B115200 -O1793 -J0 -K0 -L0 -M0 -A3 -P1 -T0 -UEC3004BAEBD</Name>
+          <Name>-S1 -B115200 -O1793 -J0 -K0 -L0 -M0 -A3 -P1 -T0 -UEC3004BA59F</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>173</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16774245</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>POINTEUR_LUMINEUX.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\POINTEUR_LUMINEUX\173</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>171</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16774246</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>POINTEUR_LUMINEUX.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\POINTEUR_LUMINEUX\171</Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -345,8 +312,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\pointeur_lumineux.c</PathWithFileName>
-      <FilenameWithoutPath>pointeur_lumineux.c</FilenameWithoutPath>
+      <PathWithFileName>.\src\img_handler.c</PathWithFileName>
+      <FilenameWithoutPath>img_handler.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -357,8 +324,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\pointeur_lumineux.h</PathWithFileName>
-      <FilenameWithoutPath>pointeur_lumineux.h</FilenameWithoutPath>
+      <PathWithFileName>.\src\img_handler.h</PathWithFileName>
+      <FilenameWithoutPath>img_handler.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

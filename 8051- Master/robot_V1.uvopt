@@ -137,7 +137,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>SiC8051F</Key>
-          <Name>-S1 -B115200 -O1793 -J0 -K0 -L0 -M0 -A3 -P1 -T0 -UEC3004BAEBD</Name>
+          <Name>-S1 -B115200 -O1793 -J0 -K0 -L0 -M0 -A3 -P1 -T0 -UEC3004BA59F</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -150,24 +150,7 @@
           <Name>200,50,700</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>375</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16764064</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>src\COMMANDS_PARSER.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -230,6 +213,21 @@
           <count>3</count>
           <WinNumber>2</WinNumber>
           <ItemText>cmd_packet-&gt;commands-&gt;Lumiere_Nbre,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>angle,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>val_obs_buffer[0],0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>angle</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>
@@ -323,7 +321,7 @@
       <GroupNumber>1</GroupNumber>
       <FileNumber>2</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>.\src\commands.c</PathWithFileName>
@@ -479,7 +477,7 @@
       <GroupNumber>1</GroupNumber>
       <FileNumber>15</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>.\src\spi_master.c</PathWithFileName>

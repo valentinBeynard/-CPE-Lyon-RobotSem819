@@ -22,19 +22,18 @@ Dialog DLL:      TCYG.DLL V2.70
  
 <h2>Project:</h2>
 C:\Users\BEYNARD\Documents\GitHub\-CPE-Lyon-RobotSem819\8051- Slave\SLAVE.uvproj
-Project File Date:  04/23/2019
+Project File Date:  04/24/2019
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
 compiling spi_slave.c...
 compiling robot_slave.c...
-src\robot_slave.c(84): warning C206: 'Init_uart0': missing function-prototype
+src\robot_slave.c(85): warning C206: 'Init_uart0': missing function-prototype
 assembling STARTUP.A51...
 compiling light_beam.c...
+src\light_beam.c(276): warning C280: 'cmd': unreferenced local variable
 compiling sound_handler.c...
-compiling pointeur_lumineux.c...
-pointeur_lumineux.h(13): warning C323: newline expected, extra characters found
-pointeur_lumineux.c(182): warning C291: not every exit path returns a value
+compiling img_handler.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_UART0_PRINT?SOUND_HANDLER
@@ -43,10 +42,12 @@ linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_SD_GEN_PARSE?SOUND_HANDLER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?INIT?POINTEUR_LUMINEUX
+    SEGMENT: ?PR?WATCHDOG?IMG_HANDLER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_CHANGE_LUMIERE?POINTEUR_LUMINEUX
-Program Size: data=9.0 xdata=165 code=5655
+    SEGMENT: ?PR?INIT_TIMER4?IMG_HANDLER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_PRENDRE_PHOTO?IMG_HANDLER
+Program Size: data=9.0 xdata=131 code=4012
 "SLAVE" - 0 Error(s), 8 Warning(s).
 Build Time Elapsed:  00:00:01
 </pre>

@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   LIGHT_BEAM                                                            04/23/2019 12:03:30 PAGE 1   
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/24/2019 11:32:39 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE LIGHT_BEAM
@@ -62,7 +62,7 @@ line level    source
   52   1        TH0= reload_value >> 8; //on décale pour obtenir les bits de poids fort
   53   1        
   54   1        
-C51 COMPILER V9.55   LIGHT_BEAM                                                            04/23/2019 12:03:30 PAGE 2   
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/24/2019 11:32:39 PAGE 2   
 
   55   1        if(nbr_interrupt >= 500)
   56   1        {
@@ -126,181 +126,201 @@ line level    source
  114          {
  115   1        static byte nbr_seq = 0;
  116   1      
-C51 COMPILER V9.55   LIGHT_BEAM                                                            04/23/2019 12:03:30 PAGE 3   
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/24/2019 11:32:39 PAGE 3   
 
- 117   1        
- 118   1        if(light == LIGHT_ON)
- 119   1        {
- 120   2          if(prescaler_counter >= 10 * duree_flash)
- 121   2          {
- 122   3            prescaler_counter = 0;
- 123   3            light = LIGHT_OFF;
- 124   3          }
- 125   2        }
- 126   1        else
- 127   1        {
- 128   2          if(prescaler_counter >= 10 * duree_no_flash)
- 129   2          {
- 130   3            light = LIGHT_ON;
- 131   3            prescaler_counter = 0;
- 132   3            nbr_seq++;
- 133   3            if(nbr_seq >= nbr_flash)
- 134   3            {
- 135   4              nbr_seq = 0;
- 136   4              light_genrator_state = FINISH;
- 137   4            }
- 138   3          }
- 139   2        }
- 140   1        
- 141   1      }
- 142          /*
- 143          #############################################################################
- 144                  End of Interrupt Routine For Timer 1
- 145          #############################################################################
- 146          */
- 147          
- 148          /*
+ 117   1        if(light_genrator_state == FINISH)
+ 118   1        {
+ 119   2          nbr_seq = 0;
+ 120   2        }
+ 121   1        
+ 122   1        if(light == LIGHT_ON)
+ 123   1        {
+ 124   2          if(prescaler_counter >= 10 * duree_flash)
+ 125   2          {
+ 126   3            prescaler_counter = 0;
+ 127   3            light = LIGHT_OFF;
+ 128   3          }
+ 129   2        }
+ 130   1        else
+ 131   1        {
+ 132   2          if(prescaler_counter >= 10 * duree_no_flash)
+ 133   2          {
+ 134   3            light = LIGHT_ON;
+ 135   3            prescaler_counter = 0;
+ 136   3            nbr_seq++;
+ 137   3            if(nbr_seq >= nbr_flash)
+ 138   3            {
+ 139   4              nbr_seq = 0;
+ 140   4              light_genrator_state = FINISH;
+ 141   4            }
+ 142   3          }
+ 143   2        }
+ 144   1        
+ 145   1      }
+ 146          /*
+ 147          #############################################################################
+ 148                  End of Interrupt Routine For Timer 1
  149          #############################################################################
- 150                  Peripheric initialize
- 151          #############################################################################
- 152          */
- 153          
- 154          
- 155          void Init_light_beam()
- 156          {
- 157   1        
- 158   1        // Push-Pull mode for P0.0 and P0.1
- 159   1        P1MDOUT |= 0x0F;
- 160   1        PWN_pin = 0;
- 161   1        FLASH_pin = 0;
- 162   1        
- 163   1        lb_init_timer0();
- 164   1        
- 165   1        lb_init_timer1();
+ 150          */
+ 151          
+ 152          /*
+ 153          #############################################################################
+ 154                  Peripheric initialize
+ 155          #############################################################################
+ 156          */
+ 157          
+ 158          
+ 159          void Init_light_beam()
+ 160          {
+ 161   1        
+ 162   1        // Push-Pull mode for P0.0 and P0.1
+ 163   1        P1MDOUT |= 0x0F;
+ 164   1        PWN_pin = 0;
+ 165   1        FLASH_pin = 0;
  166   1        
- 167   1        ET0 = 0;  // Diseable timer0 interuption
- 168   1        ET1 = 0;  // Diseable timer1 interuption
- 169   1      
- 170   1      }
- 171          
- 172          
- 173          void lb_init_timer0()
- 174          { 
- 175   1        //Reglages Timer 0 (a SYSCLK/12 selon CKCON, soit un incrément tous les 0.545us)
- 176   1        TMOD |=0x01; //mode 1
- 177   1        TCON |= 0x11; // Enable Timer0 (bit4) and enable interupt on edge (bit0)
- 178   1        TL0=0xA8;
-C51 COMPILER V9.55   LIGHT_BEAM                                                            04/23/2019 12:03:30 PAGE 4   
+ 167   1        lb_init_timer0();
+ 168   1        
+ 169   1        lb_init_timer1();
+ 170   1        
+ 171   1        ET0 = 0;  // Diseable timer0 interuption
+ 172   1        ET1 = 0;  // Diseable timer1 interuption
+ 173   1      
+ 174   1      }
+ 175          
+ 176          
+ 177          void lb_init_timer0()
+ 178          { 
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/24/2019 11:32:39 PAGE 4   
 
- 179   1        TH0=0xFB;
- 180   1        
- 181   1      }
- 182          
- 183          void lb_init_timer1()
- 184          { 
- 185   1        int init_reload_value = 0;
- 186   1        
- 187   1        //Reglages Timer 0 (a SYSCLK/12 selon CKCON, soit un incrément tous les 0.545us)
- 188   1        TMOD |= 0x10; // Timer 1 Mode 1
- 189   1        TCON |= 0x44; // Enable Timer1 (bit6) and enable interupt on edge (bit2)
+ 179   1        //Reglages Timer 0 (a SYSCLK/12 selon CKCON, soit un incrément tous les 0.545us)
+ 180   1        TMOD |=0x01; //mode 1
+ 181   1        TCON |= 0x11; // Enable Timer0 (bit4) and enable interupt on edge (bit0)
+ 182   1        TL0=0xA8;
+ 183   1        TH0=0xFB;
+ 184   1        
+ 185   1      }
+ 186          
+ 187          void lb_init_timer1()
+ 188          { 
+ 189   1        int init_reload_value = 0;
  190   1        
- 191   1        init_reload_value = 0xFFFF - pwn_duty * LIGHT_PWN_DUTY_1;
- 192   1        
- 193   1        TL1= init_reload_value;
- 194   1        TH1= init_reload_value >> 8;
- 195   1        
- 196   1      }
- 197          
- 198          
- 199          /*
- 200          #############################################################################
- 201                  Light Beam Emetter Core
- 202          #############################################################################
- 203          */
- 204          
- 205          void light_beam_process(OUT_M2 * cmd)
- 206          {
- 207   1        
- 208   1        
- 209   1        if(cmd->Etat_Servo == Servo_oui)
- 210   1        {
- 211   2          light_beam_move(cmd);
- 212   2        }
- 213   1        
- 214   1        if(cmd->Etat_Lumiere == Allumer)
- 215   1        {
- 216   2          switch(light_genrator_state)
- 217   2          {
- 218   3            case STOP:
- 219   3              light_beam_switch_ON(cmd);
- 220   3              break;
- 221   3            case FINISH:
- 222   3              cmd->Etat_Lumiere = Lumiere_non;
- 223   3              break;
- 224   3            default:
- 225   3              break;    
- 226   3          } 
- 227   2        }
- 228   1        else if(cmd->Etat_Lumiere == Eteindre)
- 229   1        {
- 230   2          // TODO
- 231   2        }
- 232   1        
- 233   1      }
- 234          
- 235          void light_beam_move(OUT_M2 * cmd)
- 236          {
- 237   1        // Set angle
- 238   1        lb_set_angle(cmd->Servo_Angle);
+ 191   1        //Reglages Timer 0 (a SYSCLK/12 selon CKCON, soit un incrément tous les 0.545us)
+ 192   1        TMOD |= 0x10; // Timer 1 Mode 1
+ 193   1        TCON |= 0x44; // Enable Timer1 (bit6) and enable interupt on edge (bit2)
+ 194   1        
+ 195   1        init_reload_value = 0xFFFF - pwn_duty * LIGHT_PWN_DUTY_1;
+ 196   1        
+ 197   1        TL1= init_reload_value;
+ 198   1        TH1= init_reload_value >> 8;
+ 199   1        
+ 200   1      }
+ 201          
+ 202          
+ 203          /*
+ 204          #############################################################################
+ 205                  Light Beam Emetter Core
+ 206          #############################################################################
+ 207          */
+ 208          
+ 209          void light_beam_process(OUT_M2 * cmd)
+ 210          {
+ 211   1        
+ 212   1        
+ 213   1        if(cmd->Etat_Servo == Servo_oui)
+ 214   1        {
+ 215   2          light_beam_move(cmd);
+ 216   2        }
+ 217   1        
+ 218   1        if(cmd->Etat_Lumiere == Allumer)
+ 219   1        {
+ 220   2          switch(light_genrator_state)
+ 221   2          {
+ 222   3            case STOP:
+ 223   3              light_beam_switch_ON(cmd);
+ 224   3              break;
+ 225   3            case FINISH:
+ 226   3              cmd->Etat_Lumiere = Lumiere_non;
+ 227   3              light_genrator_state = STOP;
+ 228   3              break;
+ 229   3            default:
+ 230   3              break;    
+ 231   3          } 
+ 232   2        }
+ 233   1        else if(cmd->Etat_Lumiere == Eteindre)
+ 234   1        {
+ 235   2          // TODO
+ 236   2          light_genrator_state = FINISH;
+ 237   2          light_beam_switch_OFF(cmd);
+ 238   2        }
  239   1        
- 240   1        // Re-launch PWN
-C51 COMPILER V9.55   LIGHT_BEAM                                                            04/23/2019 12:03:30 PAGE 5   
+ 240   1      }
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/24/2019 11:32:39 PAGE 5   
 
- 241   1        //pwn_over = 0;
- 242   1        ET0 = 1;
- 243   1        
- 244   1        // Clear CMD Flag
- 245   1        cmd->Etat_Servo = Servo_non;
+ 241          
+ 242          void light_beam_move(OUT_M2 * cmd)
+ 243          {
+ 244   1        // Set angle
+ 245   1        lb_set_angle(cmd->Servo_Angle);
  246   1        
- 247   1        LED = 1;
- 248   1        
- 249   1      }
- 250          
- 251          void light_beam_switch_ON(OUT_M2 * cmd)
- 252          {
- 253   1        pwn_duty = cmd->Lumiere_Intensite;
- 254   1        duree_flash = cmd->Lumiere_Duree;
- 255   1        duree_no_flash = cmd->Lumire_Extinction;
- 256   1        nbr_flash = cmd->Lumiere_Nbre;
- 257   1        
- 258   1        light_genrator_state = GENERATE;
- 259   1        
- 260   1        FLASH_pin = 1;
- 261   1        
- 262   1        // Re-launch PWN
- 263   1        ET1 = 1;
+ 247   1        // Re-launch PWN
+ 248   1        //pwn_over = 0;
+ 249   1        ET0 = 1;
+ 250   1        
+ 251   1        // Clear CMD Flag
+ 252   1        cmd->Etat_Servo = Servo_non;
+ 253   1        
+ 254   1        LED = 1;
+ 255   1        
+ 256   1      }
+ 257          
+ 258          void light_beam_switch_ON(OUT_M2 * cmd)
+ 259          {
+ 260   1        pwn_duty = cmd->Lumiere_Intensite;
+ 261   1        duree_flash = cmd->Lumiere_Duree;
+ 262   1        duree_no_flash = cmd->Lumire_Extinction;
+ 263   1        nbr_flash = cmd->Lumiere_Nbre;
  264   1        
- 265   1        LED = 1;
- 266   1      
- 267   1      }
- 268          
- 269          
- 270          
- 271          void lb_set_angle(int angle)
- 272          {
- 273   1        servo_angle_V = angle;
+ 265   1        light_genrator_state = GENERATE;
+ 266   1        
+ 267   1        FLASH_pin = 1;
+ 268   1        
+ 269   1        // Re-launch PWN
+ 270   1        ET1 = 1;
+ 271   1        
+ 272   1        LED = 1;
+ 273   1      
  274   1      }
+ 275          
+ 276          void light_beam_switch_OFF(OUT_M2 * cmd)
+ 277          {
+ 278   1        FLASH_pin = 0;
+ 279   1        
+ 280   1        ET1 = 0;
+ 281   1        
+ 282   1        LED = 0;
+ 283   1      }
+*** WARNING C280 IN LINE 276 OF src\light_beam.c: 'cmd': unreferenced local variable
+ 284          
+ 285          
+ 286          
+ 287          
+ 288          void lb_set_angle(int angle)
+ 289          {
+ 290   1        servo_angle_V = angle;
+ 291   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1084    ----
+   CODE SIZE        =   1169    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =     36    ----
+   XDATA SIZE       =     39    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/24/2019 11:32:39 PAGE 6   
+
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

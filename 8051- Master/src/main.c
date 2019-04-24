@@ -93,7 +93,7 @@ IN_M1 informations = { Invite_non,	// Identifieur de l'etat d'Invite
 			
 											
 PARSER_RESULT parser_result = {1 , &commands, &informations};
-DD_PACKET dd_packet = {&commands, &informations, 0.0, 0, 0};
+DD_PACKET dd_packet = {&commands, &informations, 0.0, 0, 0, 0};
 SPI_PACKET spi_packet = { 0, {0xA5,0x00,0x64,'F','G'}, 0};
 
 byte epreuve_start = 0;

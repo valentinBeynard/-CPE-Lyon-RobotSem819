@@ -3,6 +3,6 @@
 "STARTUP.obj",
 "light_beam.obj",
 "sound_handler.obj",
-"pointeur_lumineux.obj" 
+"img_handler.obj" 
 TO "SLAVE" 
 RAMSIZE(256) 

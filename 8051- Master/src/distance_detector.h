@@ -26,7 +26,8 @@ typedef struct
 	IN_M1 * informations;
 	float measure;
 	int angle;
-	byte obs_detected;
+	byte obs_detected_front;
+	byte obs_detected_back;
 	// Info sur l'obstacle ?
 }DD_PACKET;
 
@@ -38,6 +39,12 @@ typedef enum
 	SLEW_DETECTION,
 	OBS_DETECTION
 }DD_STATE;
+
+typedef enum
+{
+	AIN0 = 0,
+	AIN1
+}ADC_INPUT;
 
 typedef enum
 {
@@ -106,6 +113,8 @@ void dd_slew_detection(DD_PACKET * dd_packet);
 void dd_obs_detection(DD_PACKET * dd_packet);
 
 void clear_val_obs_buffer();
+
+void choose_ADC_input(ADC_INPUT adc_input);
 
 #endif
 

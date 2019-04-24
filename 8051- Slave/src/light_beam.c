@@ -114,6 +114,10 @@ void light_beam_flash_sequence()
 {
 	static byte nbr_seq = 0;
 
+	if(light_genrator_state == FINISH)
+	{
+		nbr_seq = 0;
+	}
 	
 	if(light == LIGHT_ON)
 	{
@@ -220,6 +224,7 @@ void light_beam_process(OUT_M2 * cmd)
 				break;
 			case FINISH:
 				cmd->Etat_Lumiere = Lumiere_non;
+				light_genrator_state = STOP;
 				break;
 			default:
 				break;		
@@ -228,6 +233,8 @@ void light_beam_process(OUT_M2 * cmd)
 	else if(cmd->Etat_Lumiere == Eteindre)
 	{
 		// TODO
+		light_genrator_state = FINISH;
+		light_beam_switch_OFF(cmd);
 	}
 	
 }
@@ -265,6 +272,16 @@ void light_beam_switch_ON(OUT_M2 * cmd)
 	LED = 1;
 
 }
+
+void light_beam_switch_OFF(OUT_M2 * cmd)
+{
+	FLASH_pin = 0;
+	
+	ET1 = 0;
+	
+	LED = 0;
+}
+
 
 
 

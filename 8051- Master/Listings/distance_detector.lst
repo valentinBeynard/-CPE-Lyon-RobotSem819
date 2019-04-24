@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 1   
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/24/2019 10:24:43 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE DISTANCE_DETECTOR
@@ -62,7 +62,7 @@ line level    source
   52   1        duree_imp = 10*(servo_angle_H+90) + 600 ;// 600us pour 90°  (cf doc technique)
   53   1        
   54   1        P1_2 = !P1_2;
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 2   
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/24/2019 10:24:43 PAGE 2   
 
   55   1        
   56   1        if (high == 0)
@@ -126,7 +126,7 @@ line level    source
  114          { 
  115   1        //Reglages Timer 0
  116   1        TMOD=0x01; //mode 1
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 3   
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/24/2019 10:24:43 PAGE 3   
 
  117   1        TCON= 0x11; // Enable Timer0 (bit4) and enable interupt on edge (bit0)
  118   1        TL0=0xA8;
@@ -190,7 +190,7 @@ line level    source
  176   2          {
  177   3            dd_current_state = MOVE_SERVO_H;
  178   3            dd_packet->commands->Etat_Servo = Servo_non;
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 4   
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/24/2019 10:24:43 PAGE 4   
 
  179   3          }
  180   2        
@@ -254,99 +254,128 @@ line level    source
  238   1      }
 *** WARNING C280 IN LINE 212 OF src\distance_detector.c: 'smallest_measure': unreferenced local variable
 *** WARNING C280 IN LINE 213 OF src\distance_detector.c: 'angle_obs': unreferenced local variable
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 5   
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/24/2019 10:24:43 PAGE 5   
 
  239          
  240          void dd_single_measure(DD_PACKET * dd_packet)
  241          {
- 242   1        dd_packet->measure = dd_start_conversion();
+ 242   1        clear_val_obs_buffer();
  243   1        
- 244   1        clear_val_obs_buffer();
- 245   1        
- 246   1        if(dd_packet->measure <= MAX_DISTANCE)
- 247   1        {
- 248   2          val_obs_buffer[0] = (int)(10 * dd_packet->measure);
- 249   2          val_obs_buffer[1] = servo_angle_H;
- 250   2          dd_packet->obs_detected = 1;
- 251   2        }
- 252   1        else
- 253   1        {
- 254   2          dd_packet->obs_detected = 0;
- 255   2        }
- 256   1        
- 257   1        dd_packet->informations->Tab_Val_Obst = val_obs_buffer;
-*** WARNING C182 IN LINE 257 OF src\distance_detector.c: pointer to different objects
- 258   1        dd_packet->informations->Nbre_Val_obst = val_obs_buffer_size;
- 259   1        
- 260   1        // Switch ON "KOB" info return
- 261   1        dd_packet->informations->Etat_DCT_Obst = DCT_Obst_single_oui;
- 262   1        dd_packet->informations->Etat_Invite = Invite_oui;
- 263   1        
- 264   1        dd_packet->commands->Etat_DCT_Obst = DCT_non;
- 265   1        
- 266   1        dd_current_state = DD_IDLE;
- 267   1      }
- 268          
- 269          void dd_set_angle(int angle)
- 270          {
- 271   1        servo_angle_H = angle;
- 272   1      }
- 273          
- 274          void clear_val_obs_buffer()
- 275          {
- 276   1        byte i = 0;
- 277   1        
- 278   1        for(i = 0 ; i < VAL_OBS_BUFFER_SIZE ; i++)
- 279   1        {
- 280   2          val_obs_buffer[i] = 0;
- 281   2        }
- 282   1        val_obs_buffer_size = 0;
- 283   1      }
- 284          
- 285          float dd_mesure(){
- 286   1        
- 287   1        float d;
- 288   1        float V_mes;
- 289   1        
- 290   1        //lecture de la tension mesurée sur AIN2
- 291   1        AMX0SL&=0x00;
- 292   1        AMX0SL|=0x01;
- 293   1        
- 294   1        V_mes=ADC0/(POW*5.6);
- 295   1        
- 296   1        //Calcul des distances
- 297   1        d=-16.669*V_mes+MAX_DISTANCE; 
- 298   1        
- 299   1        return d;
-C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/23/2019 12:16:32 PAGE 6   
+ 244   1        // Front telemeter
+ 245   1        choose_ADC_input(AIN0);
+ 246   1        dd_packet->measure = dd_start_conversion();
+ 247   1      
+ 248   1        if(dd_packet->measure <= MAX_DISTANCE)
+ 249   1        {
+ 250   2          val_obs_buffer[0] = (int)(10 * dd_packet->measure);
+ 251   2          val_obs_buffer[1] = servo_angle_H;
+ 252   2          dd_packet->obs_detected_front = 1;
+ 253   2        }
+ 254   1        else
+ 255   1        {
+ 256   2          dd_packet->obs_detected_front = 0;
+ 257   2        }
+ 258   1        
+ 259   1        // Back telemeter
+ 260   1        choose_ADC_input(AIN1);
+ 261   1        dd_packet->measure = dd_start_conversion();
+ 262   1      
+ 263   1        if(dd_packet->measure <= MAX_DISTANCE)
+ 264   1        {
+ 265   2          val_obs_buffer[2] = (int)(10 * dd_packet->measure);
+ 266   2          val_obs_buffer[3] = servo_angle_H;
+ 267   2          dd_packet->obs_detected_back = 1;
+ 268   2        }
+ 269   1        else
+ 270   1        {
+ 271   2          dd_packet->obs_detected_back = 0;
+ 272   2        }
+ 273   1        
+ 274   1        dd_packet->informations->Tab_Val_Obst = val_obs_buffer;
+*** WARNING C182 IN LINE 274 OF src\distance_detector.c: pointer to different objects
+ 275   1        dd_packet->informations->Nbre_Val_obst = val_obs_buffer_size;
+ 276   1        
+ 277   1        // Switch ON "KOB" info return
+ 278   1        dd_packet->informations->Etat_DCT_Obst = DCT_Obst_single_oui;
+ 279   1        dd_packet->informations->Etat_Invite = Invite_oui;
+ 280   1        
+ 281   1        dd_packet->commands->Etat_DCT_Obst = DCT_non;
+ 282   1        
+ 283   1        dd_current_state = DD_IDLE;
+ 284   1      }
+ 285          
+ 286          void dd_set_angle(int angle)
+ 287          {
+ 288   1        servo_angle_H = angle;
+ 289   1      }
+ 290          
+ 291          void clear_val_obs_buffer()
+ 292          {
+ 293   1        byte i = 0;
+ 294   1        
+ 295   1        for(i = 0 ; i < VAL_OBS_BUFFER_SIZE ; i++)
+ 296   1        {
+ 297   2          val_obs_buffer[i] = 0;
+ 298   2        }
+ 299   1        val_obs_buffer_size = 0;
+C51 COMPILER V9.55   DISTANCE_DETECTOR                                                     04/24/2019 10:24:43 PAGE 6   
 
- 300   1        
- 301   1      } 
- 302          
- 303          
- 304          float dd_start_conversion(){
- 305   1        float conv;
- 306   1        unsigned int j;
- 307   1        AD0INT=0;
- 308   1        AD0BUSY=1;
- 309   1        dd_mesure();
- 310   1        AD0BUSY=0;
- 311   1        
- 312   1        for(j=0;j<1000;j++); //On temporise pour atteindre la stabilité
- 313   1        
- 314   1        AD0INT=0;
- 315   1        AD0BUSY=1;
- 316   1        conv =dd_mesure();
- 317   1        AD0BUSY=0;
+ 300   1      }
+ 301          
+ 302          void choose_ADC_input(ADC_INPUT adc_input)
+ 303          {
+ 304   1        if(adc_input == AIN0)
+ 305   1        {
+ 306   2          AMX0SL = 0x00;
+ 307   2        }
+ 308   1        else
+ 309   1        {
+ 310   2          AMX0SL = 0x01;
+ 311   2        }
+ 312   1      }
+ 313          
+ 314          float dd_mesure(){
+ 315   1        
+ 316   1        float d;
+ 317   1        float V_mes;
  318   1        
- 319   1        return conv;
- 320   1      }
+ 319   1        //lecture de la tension mesurée sur AIN2
+ 320   1        AMX0SL&=0x00;
+ 321   1        AMX0SL|=0x01;
+ 322   1        
+ 323   1        V_mes=ADC0/(POW*5.6);
+ 324   1        
+ 325   1        //Calcul des distances
+ 326   1        d=-16.669*V_mes+MAX_DISTANCE; 
+ 327   1        
+ 328   1        return d;
+ 329   1        
+ 330   1      } 
+ 331          
+ 332          
+ 333          float dd_start_conversion(){
+ 334   1        float conv;
+ 335   1        unsigned int j;
+ 336   1        AD0INT=0;
+ 337   1        AD0BUSY=1;
+ 338   1        dd_mesure();
+ 339   1        AD0BUSY=0;
+ 340   1        
+ 341   1        for(j=0;j<1000;j++); //On temporise pour atteindre la stabilité
+ 342   1        
+ 343   1        AD0INT=0;
+ 344   1        AD0BUSY=1;
+ 345   1        conv =dd_mesure();
+ 346   1        AD0BUSY=0;
+ 347   1        
+ 348   1        return conv;
+ 349   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1352    ----
+   CODE SIZE        =   1542    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =     54      36
+   XDATA SIZE       =     54      37
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

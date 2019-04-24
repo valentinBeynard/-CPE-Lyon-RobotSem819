@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   MAIN                                                                  04/23/2019 12:16:32 PAGE 1   
+C51 COMPILER V9.55   MAIN                                                                  04/24/2019 10:24:43 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   52                                0,  // Duree silence
   53                                0,  // Nombre de bip
   54                                DCT_non,  // Commande de détection d'obstacle
-C51 COMPILER V9.55   MAIN                                                                  04/23/2019 12:16:32 PAGE 2   
+C51 COMPILER V9.55   MAIN                                                                  04/24/2019 10:24:43 PAGE 2   
 
   55                                0,  // Résolution angulaire de la détection d'obstacle
   56                                Lumiere_non,  // Commande d'allumage du pointeur lumineux
@@ -105,7 +105,7 @@ line level    source
   93                
   94                                
   95          PARSER_RESULT parser_result = {1 , &commands, &informations};
-  96          DD_PACKET dd_packet = {&commands, &informations, 0.0, 0, 0};
+  96          DD_PACKET dd_packet = {&commands, &informations, 0.0, 0, 0, 0};
   97          SPI_PACKET spi_packet = { 0, {0xA5,0x00,0x64,'F','G'}, 0};
   98          
   99          byte epreuve_start = 0;
@@ -126,7 +126,7 @@ line level    source
  114          {
  115   1        // Enable Crossbar
  116   1        XBR2 |= 0x40;
-C51 COMPILER V9.55   MAIN                                                                  04/23/2019 12:16:32 PAGE 3   
+C51 COMPILER V9.55   MAIN                                                                  04/24/2019 10:24:43 PAGE 3   
 
  117   1      }
  118          
@@ -190,7 +190,7 @@ line level    source
  176   2          if( parser_result.commands->Etat_Epreuve == epreuve1)
  177   2          {
  178   3            // Start epreuve message
-C51 COMPILER V9.55   MAIN                                                                  04/23/2019 12:16:32 PAGE 4   
+C51 COMPILER V9.55   MAIN                                                                  04/24/2019 10:24:43 PAGE 4   
 
  179   3            if(epreuve_start == 0)
  180   3            {
@@ -234,7 +234,7 @@ line level    source
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    271    ----
    CONSTANT SIZE    =    128    ----
-   XDATA SIZE       =     88      18
+   XDATA SIZE       =     89      18
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
