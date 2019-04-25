@@ -1,6 +1,6 @@
 #include "spi_slave.h"
 #include "light_beam.h"
-//#include "img_handler.h"
+#include "img_handler.h"
 //#include "pointeur_lumineux.h"
 #include "c8051F020.h"
 
@@ -88,21 +88,21 @@ int main (void)
 	
 	Init_light_beam();
 	
-	//Init_timer4();
+	Init_Img_Handler();
 	
 	Enable_Crossbar();
 
 	Enable_general_Int();
 	
-	LED = 0;
+	//LED = 0;
 	
-	//prendre_photo(5, 1);
+	prendre_photo(5, 10);
 	
 	while(1)
 	{
-		spi_process(&commands);
+		/*spi_process(&commands);
 		
-		light_beam_process(&commands);
+		light_beam_process(&commands);*/
 		
 		//change_lumiere(1, 2, 10, 10, &commands.Etat_Lumiere);
 		

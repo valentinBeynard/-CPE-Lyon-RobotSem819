@@ -1,10 +1,10 @@
-C51 COMPILER V9.55   IMG_HANDLER                                                           04/24/2019 11:32:39 PAGE 1   
+C51 COMPILER V9.52.0.0   IMG_HANDLER                                                       04/25/2019 17:37:33 PAGE 1   
 
 
-C51 COMPILER V9.55, COMPILATION OF MODULE IMG_HANDLER
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE IMG_HANDLER
 OBJECT MODULE PLACED IN img_handler.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\img_handler.c LARGE OPTIMIZE(0,SPEED) BROWSE DEBUG OBJECTEXTEND PRIN
-                    -T(.\img_handler.lst) TABS(2) OBJECT(img_handler.obj)
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\img_handler.c LARGE OPTIMIZE(0,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.
+                    -\img_handler.lst) TABS(2) OBJECT(img_handler.obj)
 
 line level    source
 
@@ -20,12 +20,12 @@ line level    source
   10          #include "c8051F020.h"
   11          
   12          sbit sig = P1^1;
-  13          int IH_Nombre_photos = 1;
-  14          int IH_duree_photos = 1;
-  15          int IH_Compt_Nombre_photos = 0;
-  16          int IH_Compt_duree_photos = 0;
-  17          int IH_Compt_nombre_iterations_timer = 0;
-  18          int IH_reload = 0xFFFF - 0xB330;
+  13          volatile int IH_Nombre_photos = 1;
+  14          volatile int IH_duree_photos = 1;
+  15          volatile int IH_Compt_Nombre_photos = 0;
+  16          volatile int IH_Compt_duree_photos = 0;
+  17          volatile int IH_Compt_nombre_iterations_timer = 0;
+  18          volatile int IH_reload = 0xFFFF - 0xB330;
   19          
   20          void WatchDog()
   21          {
@@ -34,7 +34,7 @@ line level    source
   24   1      }
   25          
   26          //initialisation du timer0
-  27          void Init_timer4()
+  27          void Init_Img_Handler()
   28          { 
   29   1        /*// Config External Osci
   30   1        OSCXCN = 0x67;
@@ -48,86 +48,89 @@ line level    source
   38   1        
   39   1        
   40   1      //paramétrage timer 4 
-  41   1        /*RCAP4L = 0x00; //valeur de recharge lowbite
+  41   1        RCAP4L = 0x00; //valeur de recharge lowbite
   42   1        RCAP4H = 0x00; //valeur de recharge highbite
-  43   1        TH4=0x00;
-  44   1        TL4=0x00;
+  43   1        //TH4=0x00;
+  44   1        //TL4=0x00;
   45   1      
   46   1        // Enable Crossbar
   47   1        //XBR2 = 0x40;
   48   1          
   49   1        // Push Pull mode
-  50   1        P1MDOUT |= 0x40;
-  51   1        P3MDOUT |= 0x02;
+  50   1        P1MDOUT |= 0xFF;
+  51   1        //P3MDOUT |= 0x02;
   52   1        
-  53   1        // 
-  54   1        EIE2 = 0x04;  // Enable timer4 interuption
-C51 COMPILER V9.55   IMG_HANDLER                                                           04/24/2019 11:32:39 PAGE 2   
+  53   1        /// Enable Timer 4 
+  54   1        //T4CON |= 0x08;
+C51 COMPILER V9.52.0.0   IMG_HANDLER                                                       04/25/2019 17:37:33 PAGE 2   
 
   55   1        
-  56   1        /// Enable Timer 4 
-  57   1        T4CON |= 0x0C;*/
-  58   1      }
+  56   1        EIE2 = 0x04;  // Enable timer4 interuption
+  57   1      }
+  58          
   59          
-  60          
-  61          void timer_4_init() interrupt 16 {
-  62   1        
-  63   1        IH_Compt_nombre_iterations_timer = IH_Compt_nombre_iterations_timer + 1;
-  64   1        if (IH_Compt_nombre_iterations_timer == 4) {
+  60          void timer_4_init() interrupt 16 {
+  61   1        
+  62   1        IH_Compt_nombre_iterations_timer++;
+  63   1        if(IH_Compt_nombre_iterations_timer == 4)
+  64   1        {
   65   2          IH_Compt_nombre_iterations_timer = 0;
   66   2          IH_Compt_duree_photos++;
-  67   2          if (IH_Compt_duree_photos == IH_duree_photos) {
-  68   3            IH_Compt_duree_photos = 0;
-  69   3            sig = !sig;
-  70   3            IH_Compt_Nombre_photos = IH_Compt_Nombre_photos + 1;
-  71   3            if (IH_Compt_Nombre_photos == IH_Nombre_photos) {
-  72   4              T4CON &= 0x48;
-  73   4          
-  74   4        RCAP4L = IH_reload; //valeur de recharge lowbite
-  75   4        RCAP4H = IH_reload >> 8;
-  76   4        T4CON  &= 0x7f;
+  67   2          if (IH_Compt_duree_photos == IH_duree_photos)
+  68   2          {
+  69   3            IH_Compt_Nombre_photos++;
+  70   3            if (IH_Compt_Nombre_photos == IH_Nombre_photos)
+  71   3            {
+  72   4              T4CON  &= ~0x04;
+  73   4            }
+  74   3            else{
+  75   4              IH_Compt_duree_photos = 0;
+  76   4              sig = !sig;
   77   4            }
   78   3          }
   79   2        }
-  80   1      }
-  81          
-  82          void prendre_photo(n, e) {
-  83   1        IH_Nombre_photos = n;
-  84   1        IH_duree_photos = e;
-  85   1        T4CON |= 0x04;
-  86   1      }
-  87          
-  88          /*
-  89          void main(void) {
-  90            init_timer4();
-  91            init_interrupt();
-  92            WatchDog();
-  93            prendre_photo(2,2);
-  94          }*/
-  95          /*
-  96          nt photo(char etat)
-  97          { 
-  98            switch(etat)
-  99            {
- 100            case 'O':
- 101              photo_O(E, 1)
- 102            case 'C':
- 103              photo_C(E, 10000000)
- 104            case 'S':
- 105              photo_S(E,N)
- 106              
- 107            } 
- 108            return 0;
- 109          }*/
+  80   1        T4CON  &= ~0x80;
+  81   1      }
+  82          
+  83          void prendre_photo(n, e) {
+  84   1        IH_Nombre_photos = n;
+  85   1        IH_duree_photos = e;
+  86   1        RCAP4L = 0xCF; //valeur de recharge lowbite
+  87   1        RCAP4H = 0x4C; //valeur de recharge highbite
+  88   1        T4CON = 0x04;
+  89   1      }
+  90          
+  91          /*
+  92          void main(void) {
+  93            init_timer4();
+  94            init_interrupt();
+  95            WatchDog();
+  96            prendre_photo(2,2);
+  97          }*/
+  98          /*
+  99          nt photo(char etat)
+ 100          { 
+ 101            switch(etat)
+ 102            {
+ 103            case 'O':
+ 104              photo_O(E, 1)
+ 105            case 'C':
+ 106              photo_C(E, 10000000)
+ 107            case 'S':
+ 108              photo_S(E,N)
+ 109              
+ 110            } 
+ 111            return 0;
+ 112          }*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    253    ----
+   CODE SIZE        =    244    ----
+C51 COMPILER V9.52.0.0   IMG_HANDLER                                                       04/25/2019 17:37:33 PAGE 3   
+
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     16    ----
    PDATA SIZE       =   ----    ----
-C51 COMPILER V9.55   IMG_HANDLER                                                           04/24/2019 11:32:39 PAGE 3   
-
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

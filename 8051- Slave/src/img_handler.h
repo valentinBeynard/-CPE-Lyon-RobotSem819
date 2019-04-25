@@ -2,6 +2,6 @@
 
 #define IMG_HANDLER_H
 
-void Init_timer4();
+void Init_Img_Handler();
 void prendre_photo(int, int);
 #endif
