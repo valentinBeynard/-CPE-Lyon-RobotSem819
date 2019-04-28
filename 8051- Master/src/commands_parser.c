@@ -48,7 +48,7 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     {"CS", servo_move_cmd},
     {"PPH", photo_cmd},
     {"SPH", photo_OFF_cmd},
-    {"AUX", default_process}
+    {"AUX", aux_cmd}
 };
 
 /*

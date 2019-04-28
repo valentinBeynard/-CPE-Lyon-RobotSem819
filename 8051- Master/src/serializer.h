@@ -38,6 +38,12 @@
 
 #define TURN_SPEED	20
 
+#define CALIBRATION_ANGLE_DELTA	5
+
+#define ANGLE_NBR	36
+
+#define CALIBRATION_BUFFER_SIZE	32
+
 /*
 #define ABS(X)	(X >= 0 ? X : (-1) * X)
 */
@@ -117,7 +123,7 @@ typedef struct COMMANDES_SERIALIZER  // Cette structure contient toutes les comm
 // Cette structure ne couvre pas toutes les informations transmissibles par la carte Serializer. 
 // Seules les informations potentiellement utiles au projet SEM815 sont trait?es 
 //*****************************************************************************************************************************************
-
+/*
 enum Reponse {Reponse_non, Rep_getenc, Rep_vpid, Rep_dpid, Rep_pids, Rep_vel};
 
 
@@ -139,7 +145,7 @@ typedef struct INFORMATIONS_SERIALIZER // Cette structure contient toutes les in
    int   Read_Vitesse_mot2;            //   information commande "velocity" moteur 2
    
 } OUT_M2;
-
+*/
 byte init_serializer_UART1();
 void serializer_receive(byte* read_byte);
 void serializer_send(byte ch);
@@ -172,6 +178,15 @@ void translate(PTS_2DA* pts);
 void rotate(PTS_2DA* pts);
 void navigate(PTS_2DA* pts);
 void stop(PTS_2DA* pts);
+
+/*
+#############################################################################
+        Robot Angle Rotation Calibration functions
+#############################################################################
+*/
+
+void angle_calibration_process(PARSER_RESULT* parser);
+void _print(char* str);
 
 #else
 

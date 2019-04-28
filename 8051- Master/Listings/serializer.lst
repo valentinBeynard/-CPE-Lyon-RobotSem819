@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 14:51:59 PAGE 1   
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE SERIALIZER
@@ -62,7 +62,7 @@ line level    source
   52   1        
   53   1        return 0;
   54   1      }
-C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 14:51:59 PAGE 2   
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 2   
 
   55          
   56          void serializer_receive(byte* read_byte)
@@ -126,7 +126,7 @@ line level    source
  114   1        //UART_send('\n');
  115   1      }
  116          
-C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 14:51:59 PAGE 3   
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 3   
 
  117          /*
  118          #############################################################################
@@ -190,7 +190,7 @@ line level    source
  176   4                robot_position.angle = 1 * parser->commands->Angle;
  177   4                robot_position.x = parser->commands->Coord_X;
  178   4                robot_position.y = parser->commands->Coord_Y;
-C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 14:51:59 PAGE 4   
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 4   
 
  179   4                robot_position.speed = parser->commands->Vitesse;
  180   4                serializer_state = IDLE;
@@ -254,7 +254,7 @@ line level    source
  238   2              pts->speed = 0;
  239   2              //serializer_print("mogo 1:0 2:0");
  240   2              break;
-C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 14:51:59 PAGE 5   
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 5   
 
  241   2      
  242   2            case Rot_90D:
@@ -318,7 +318,7 @@ line level    source
  300          
  301          
  302          void translate(PTS_2DA* pts)
-C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 14:51:59 PAGE 6   
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 6   
 
  303          {
  304   1        char speed = 10;
@@ -382,7 +382,7 @@ line level    source
  362   2            break;
  363   2          
  364   2          case 1:
-C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 14:51:59 PAGE 7   
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 7   
 
  365   2            /*
  366   2            temp_pts.x = (robot_position.x - pts->x);
@@ -446,7 +446,7 @@ line level    source
  424   2          is_processing = 1;
  425   2        } 
  426   1        else{
-C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 14:51:59 PAGE 8   
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 8   
 
  427   2          
  428   2          if(pids_timer >= 5000)
@@ -510,7 +510,7 @@ line level    source
  486            }while(c != END_RSLT_BYTE);
  487            
  488            sscanf(result, "%d", &enc_value);
-C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 14:51:59 PAGE 9   
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 9   
 
  489            
  490            return enc_value;
@@ -571,15 +571,75 @@ line level    source
  545   1        return (char)pid_state;
  546   1      }
  547          
+ 548          /*
+ 549          #############################################################################
+ 550                  Robot Angle Rotation Calibration functions
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 10  
+
+ 551          #############################################################################
+ 552          */
+ 553          
+ 554          void angle_calibration_process(PARSER_RESULT* parser)
+ 555          {
+ 556   1        static byte angle_step = 0;
+ 557   1        static int tick_value[ANGLE_NBR];
+ 558   1        byte cmd[CALIBRATION_BUFFER_SIZE];
+ 559   1        int i = 0;
+ 560   1        int l_ticks = 0, r_ticks = 0;
+ 561   1        
+ 562   1        if(parser->commands->Etat_Mouvement == Avancer)
+ 563   1        {
+ 564   2          parser->commands->Etat_Mouvement = Mouvement_non;
+ 565   2          l_ticks = parser->commands->Pos_Angle;
+ 566   2          r_ticks = (-1) * l_ticks;
+ 567   2          sprintf(cmd, "digo 1:%d:20 2:%d:20", l_ticks, r_ticks);
+ 568   2        }
+ 569   1        else if (parser->commands->Etat_Mouvement == Reculer)
+ 570   1        {
+ 571   2          parser->commands->Etat_Mouvement = Mouvement_non;
+ 572   2          r_ticks = parser->commands->Pos_Angle;
+ 573   2          l_ticks = (-1) * l_ticks;
+ 574   2          sprintf(cmd, "digo 1:%d:20 2:%d:20", l_ticks, r_ticks);
+ 575   2        }
+ 576   1        else if (parser->commands->Etat_Mouvement == Stopper)
+ 577   1        {
+ 578   2          parser->commands->Etat_Mouvement = Mouvement_non;
+ 579   2          tick_value[angle_step] = parser->commands->Pos_Angle;
+ 580   2          angle_step++;
+ 581   2        }
+ 582   1        else if (parser->commands->Etat_Mouvement == Depl_Coord)
+ 583   1        {
+ 584   2          parser->commands->Etat_Mouvement = Mouvement_non;
+ 585   2          _print("________________##Calibration##________________\n");
+ 586   2          for(i = 0; i < ANGLE_NBR ; i++)
+ 587   2          {
+ 588   3            sprintf(cmd, "Angle = %d\t|\tTicks = %d\n", i, tick_value[i]);
+ 589   3            _print(cmd);
+ 590   3            memset(cmd, 0, CALIBRATION_BUFFER_SIZE);
+ 591   3          }
+ 592   2          _print("________________## END ##________________\n");
+ 593   2        }
+ 594   1      }
+ 595          
+ 596          void _print(char* str)
+ 597          {
+ 598   1        byte i = 0;
+ 599   1        for(i = 0 ; i < strlen(str); i++)
+ 600   1        {
+ 601   2          SBUF0 = *(str+i);
+ 602   2          while(TI0 == 0){}
+ 603   2          TI0 = 0;
+ 604   2        }
+ 605   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 14:51:59 PAGE 10  
-
-   CODE SIZE        =   3128    ----
-   CONSTANT SIZE    =     80    ----
-   XDATA SIZE       =     37     186
+   CODE SIZE        =   4033    ----
+   CONSTANT SIZE    =    197    ----
+   XDATA SIZE       =    110     231
    PDATA SIZE       =   ----    ----
+C51 COMPILER V9.55   SERIALIZER                                                            04/28/2019 16:27:10 PAGE 11  
+
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

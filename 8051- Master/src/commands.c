@@ -712,3 +712,47 @@ byte photo_OFF_cmd(CMD_PACKET* cmd_packet)
 
 	return 1;
 }
+
+byte aux_cmd(CMD_PACKET* cmd_packet)
+{
+	byte * str = 0;
+	char params[4][3] = {"A", "B", "S", "L"};
+	int ticks_value = 0;
+	
+	str = (cmd_packet->commands_data + ( 1 * ARGS_BUFFER_SIZE));
+	
+	// Command A [Tick] to rotate from [Tick] number of ticks 
+	if( strcmp(str, params[0]) == 0 )
+	{
+		if(sscanf((cmd_packet->commands_data + ( 2 * ARGS_BUFFER_SIZE)), "%d", &ticks_value) == 0)
+		{
+			return 0;
+		}
+		cmd_packet->commands->Etat_Mouvement = Avancer;
+		cmd_packet->commands->Pos_Angle = ticks_value;
+		return 1;
+	}
+	
+	// Command B to get back from last calibration position
+	else if( strcmp(str, params[1]) == 0 )
+	{
+		cmd_packet->commands->Etat_Mouvement = Reculer;
+		return 1;
+	}
+	
+	// Command S to save last tick value and start new one
+	else if( strcmp(str, params[2]) == 0 )
+	{
+		cmd_packet->commands->Etat_Mouvement = Stopper;
+		return 1;
+	}
+	
+	// Command to plot ALL ticks _data
+	else if (strcmp(str, params[3]) == 0)
+	{
+		cmd_packet->commands->Etat_Mouvement = Depl_Coord;
+		return 1;
+	}
+	
+	return 0;
+}

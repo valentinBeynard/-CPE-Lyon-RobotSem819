@@ -203,6 +203,12 @@ int main (void)
 		
     }
 		
+		else if(parser_result.commands->Etat_Epreuve == epreuve2)
+		{
+			angle_calibration_process(&parser_result);
+			
+		}
+		
 	}
 	
 	USART_print("Fin Soft");

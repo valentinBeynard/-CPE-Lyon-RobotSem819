@@ -545,3 +545,61 @@ char is_PID_processing()
 	return (char)pid_state;
 }
 
+/*
+#############################################################################
+        Robot Angle Rotation Calibration functions
+#############################################################################
+*/
+
+void angle_calibration_process(PARSER_RESULT* parser)
+{
+	static byte angle_step = 0;
+	static int tick_value[ANGLE_NBR];
+	byte cmd[CALIBRATION_BUFFER_SIZE];
+	int i = 0;
+	int l_ticks = 0, r_ticks = 0;
+	
+	if(parser->commands->Etat_Mouvement == Avancer)
+	{
+		parser->commands->Etat_Mouvement = Mouvement_non;
+		l_ticks = parser->commands->Pos_Angle;
+		r_ticks = (-1) * l_ticks;
+		sprintf(cmd, "digo 1:%d:20 2:%d:20", l_ticks, r_ticks);
+	}
+	else if (parser->commands->Etat_Mouvement == Reculer)
+	{
+		parser->commands->Etat_Mouvement = Mouvement_non;
+		r_ticks = parser->commands->Pos_Angle;
+		l_ticks = (-1) * l_ticks;
+		sprintf(cmd, "digo 1:%d:20 2:%d:20", l_ticks, r_ticks);
+	}
+	else if (parser->commands->Etat_Mouvement == Stopper)
+	{
+		parser->commands->Etat_Mouvement = Mouvement_non;
+		tick_value[angle_step] = parser->commands->Pos_Angle;
+		angle_step++;
+	}
+	else if (parser->commands->Etat_Mouvement == Depl_Coord)
+	{
+		parser->commands->Etat_Mouvement = Mouvement_non;
+		_print("________________##Calibration##________________\n");
+		for(i = 0; i < ANGLE_NBR ; i++)
+		{
+			sprintf(cmd, "Angle = %d\t|\tTicks = %d\n", i, tick_value[i]);
+			_print(cmd);
+			memset(cmd, 0, CALIBRATION_BUFFER_SIZE);
+		}
+		_print("________________## END ##________________\n");
+	}
+}
+
+void _print(char* str)
+{
+  byte i = 0;
+	for(i = 0 ; i < strlen(str); i++)
+  {
+		SBUF0 = *(str+i);
+		while(TI0 == 0){}
+		TI0 = 0;
+  }
+}
