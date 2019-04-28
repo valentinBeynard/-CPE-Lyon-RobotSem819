@@ -46,7 +46,7 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     {"L", light_beam_ON_cmd},
     {"LS", light_beam_OFF_cmd},
     {"CS", servo_move_cmd},
-    {"PPH", default_process},
+    {"PPH", photo_cmd},
     {"SPH", default_process},
     {"AUX", default_process}
 };

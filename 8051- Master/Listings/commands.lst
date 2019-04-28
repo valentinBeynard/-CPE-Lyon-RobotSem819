@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 1   
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS
@@ -62,7 +62,7 @@ line level    source
   52          byte epreuve_stop(CMD_PACKET* cmd_packet)
   53          {
   54   1        //printf("Non-implemented command !!");
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 2   
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 2   
 
   55   1        cmd_packet->commands->Etat_Epreuve = Epreuve_non;
   56   1        
@@ -126,7 +126,7 @@ line level    source
  114   2          // Si valeur non numérique
  115   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
  116   2          {
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 3   
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 3   
 
  117   3            return 0;
  118   3          }
@@ -190,7 +190,7 @@ line level    source
  176   2        }
  177   1        cmd_packet->commands->Etat_Mouvement = Stopper;
  178   1        return 1;
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 4   
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 4   
 
  179   1      }
  180          
@@ -254,7 +254,7 @@ line level    source
  238   1        
  239   1        if(cmd_packet->cmd_size != 2)
  240   1        {
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 5   
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 5   
 
  241   2          return 0;
  242   2        }
@@ -318,7 +318,7 @@ line level    source
  300   3            if( strcmp(str, params[j]) == 0 )
  301   3            {
  302   4              switch(j)
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 6   
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 6   
 
  303   4              {
  304   5                case 0:
@@ -382,7 +382,7 @@ line level    source
  362   1        if(cmd_packet->cmd_size > 3)
  363   1        {
  364   2          return 0;
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 7   
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 7   
 
  365   2        }
  366   1        
@@ -446,7 +446,7 @@ line level    source
  424   6                    return 0;
  425   6                  }
  426   5                  else
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 8   
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 8   
 
  427   5                  {
  428   6                    // Si pas dans l'intervalle de valeur acceptées
@@ -510,7 +510,7 @@ line level    source
  486   2          if(param_find == 0)
  487   2          {
  488   3            return 0;
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 9   
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 9   
 
  489   3          }else{
  490   3            param_find = 0;
@@ -574,7 +574,7 @@ line level    source
  547   6                  }
  548   5                  else
  549   5                  {
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 10  
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 10  
 
  550   6                    // Si pas dans l'intervalle de valeur acceptées
  551   6                    if(frequency_code < 1 || frequency_code > 99)
@@ -638,7 +638,7 @@ line level    source
  608   2          if(param_find == 0)
  609   2          {
  610   3            return 0;
-C51 COMPILER V9.55   COMMANDS                                                              04/25/2019 16:36:55 PAGE 11  
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 11  
 
  611   3          }else{
  612   3            param_find = 0;
@@ -655,12 +655,91 @@ line level    source
  623   1        return 1;
  624   1        
  625   1      }
+ 626          
+ 627          byte photo_cmd(CMD_PACKET* cmd_packet)
+ 628          {
+ 629   1        byte i = 1, j = 0;
+ 630   1        char params[5][3] = {"E", "N", "O", "C", "S"};
+ 631   1        int duree_photo = 1, nbr_photo = 1, mode = 1;
+ 632   1        byte param_find = 0;
+ 633   1        char * str = 0;
+ 634   1        
+ 635   1        
+ 636   1        // To much args
+ 637   1        if(cmd_packet->cmd_size > 5)
+ 638   1        {
+ 639   2          return 0;
+ 640   2        }
+ 641   1          
+ 642   1        
+ 643   1        // Analyse each param:value couple
+ 644   1        while(i <= cmd_packet->cmd_size)
+ 645   1        {
+ 646   2          str = (cmd_packet->commands_data + ( i * ARGS_BUFFER_SIZE));
+ 647   2          
+ 648   2          // For one couple, identify the param
+ 649   2          for(j = 0 ; j < 5 ; j++)
+ 650   2          {
+ 651   3            if( strcmp(str, params[j]) == 0 )
+ 652   3            {
+ 653   4              switch(j)
+ 654   4              {
+ 655   5                case 0:
+ 656   5                  if(sscanf((cmd_packet->commands_data + ( (i+1) * ARGS_BUFFER_SIZE) ), "%d", &duree_photo) == 0)
+ 657   5                  {
+ 658   6                    return 0;
+ 659   6                  }   
+ 660   5                  i += 2;
+ 661   5                  break;
+ 662   5                
+ 663   5                case 1:
+ 664   5                  if(sscanf((cmd_packet->commands_data + ( (i+1) * ARGS_BUFFER_SIZE) ), "%d", &nbr_photo) == 0)
+ 665   5                  {
+ 666   6                    return 0;
+ 667   6                  }
+ 668   5                  i += 2;
+ 669   5                  break;
+ 670   5                case 2:
+ 671   5                  mode = 1;
+ 672   5                  i++;
+C51 COMPILER V9.55   COMMANDS                                                              04/28/2019 12:55:29 PAGE 12  
+
+ 673   5                  break;
+ 674   5                case 3:
+ 675   5                  mode = 2;
+ 676   5                  i++;
+ 677   5                  break;
+ 678   5                case 4:
+ 679   5                  mode = 3;
+ 680   5                  i++;
+ 681   5                  break;
+ 682   5              }
+ 683   4              param_find = 1;
+ 684   4              break;
+ 685   4            }
+ 686   3          }
+ 687   2          
+ 688   2          if(param_find == 0)
+ 689   2          {
+ 690   3            return 0;
+ 691   3          }else{
+ 692   3            param_find = 0;
+ 693   3          }
+ 694   2          
+ 695   2        }
+ 696   1        
+ 697   1        cmd_packet->commands->Photo_Duree = (byte)duree_photo;
+ 698   1        cmd_packet->commands->Photo_Nbre = (byte)nbr_photo;
+ 699   1        ( cmd_packet->commands->Etat_Photo =  (mode == 1) ? Photo_1 : ( (mode == 2) ? Photo_Multiple : Photo_cont
+             -inue) );
+ 700   1        return 1;
+ 701   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   5997    ----
-   CONSTANT SIZE    =     71    ----
-   XDATA SIZE       =   ----     161
+   CODE SIZE        =   6770    ----
+   CONSTANT SIZE    =     86    ----
+   XDATA SIZE       =   ----     191
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

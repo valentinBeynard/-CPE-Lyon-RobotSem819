@@ -626,9 +626,9 @@ byte generate_sound_cmd(CMD_PACKET* cmd_packet)
 
 byte photo_cmd(CMD_PACKET* cmd_packet)
 {
-	byte i = 0, j = 0;
-	char params[3][3] = {"0", "E", "N"};
-	int duree_photo = 0, nbr_photo = 0;
+	byte i = 1, j = 0;
+	char params[5][3] = {"E", "N", "O", "C", "S"};
+	int duree_photo = 1, nbr_photo = 1, mode = 1;
 	byte param_find = 0;
 	char * str = 0;
 	
@@ -638,42 +638,47 @@ byte photo_cmd(CMD_PACKET* cmd_packet)
 	{
 		return 0;
 	}
+		
 	
 	// Analyse each param:value couple
-	for(i = 0 ; i < 3 ; ++i)
+	while(i <= cmd_packet->cmd_size)
 	{
-		str = (cmd_packet->commands_data + ( ((2*i) + 1) * ARGS_BUFFER_SIZE));
+		str = (cmd_packet->commands_data + ( i * ARGS_BUFFER_SIZE));
 		
 		// For one couple, identify the param
-		for(j = 0 ; j < 3 ; j++)
+		for(j = 0 ; j < 5 ; j++)
 		{
 			if( strcmp(str, params[j]) == 0 )
 			{
 				switch(j)
 				{
 					case 0:
-						/*
-						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &x) == 0)
-						{
-							return 0;
-						}				
-						break;
-						*/
-					
-					case 1:
-						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &y) == 0)
+						if(sscanf((cmd_packet->commands_data + ( (i+1) * ARGS_BUFFER_SIZE) ), "%d", &duree_photo) == 0)
 						{
 							return 0;
 						}		
+						i += 2;
 						break;
 					
-					case 2:
-						if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
+					case 1:
+						if(sscanf((cmd_packet->commands_data + ( (i+1) * ARGS_BUFFER_SIZE) ), "%d", &nbr_photo) == 0)
 						{
 							return 0;
-						}	
+						}
+						i += 2;
 						break;
-					
+					case 2:
+						mode = 1;
+						i++;
+						break;
+					case 3:
+						mode = 2;
+						i++;
+						break;
+					case 4:
+						mode = 3;
+						i++;
+						break;
 				}
 				param_find = 1;
 				break;
@@ -689,9 +694,8 @@ byte photo_cmd(CMD_PACKET* cmd_packet)
 		
 	}
 	
-	cmd_packet->commands->Angle = angle;
-	cmd_packet->commands->Coord_X = (byte)x;
-	cmd_packet->commands->Coord_Y = (byte)y;
-	cmd_packet->commands->Etat_Mouvement = Depl_Coord;
+	cmd_packet->commands->Photo_Duree = (byte)duree_photo;
+	cmd_packet->commands->Photo_Nbre = (byte)nbr_photo;
+	( cmd_packet->commands->Etat_Photo =  (mode == 1) ? Photo_1 : ( (mode == 2) ? Photo_Multiple : Photo_continue) );
 	return 1;
 }
