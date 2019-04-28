@@ -19,7 +19,8 @@
 #define SPI_LIGHT_ON_CMD	0xA3
 #define SPI_LIGHT_OFF_CMD	0xA4
 #define SPI_SERVO_CMD	0xA5
-
+#define SPI_PHOTO_ON_CMD	0xA6
+#define SPI_PHOTO_OFF_CMD	0xA7
 
 #define byte unsigned char
 
@@ -45,6 +46,8 @@ void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 void spi_cmd_light_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 void spi_cmd_light_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 void spi_cmd_generate_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet);
+void spi_cmd_photo_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet);
+void spi_cmd_photo_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 
 byte spi_validate();
 void spi_error();

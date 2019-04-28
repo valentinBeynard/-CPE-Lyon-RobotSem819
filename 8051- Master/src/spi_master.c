@@ -159,12 +159,17 @@ void spi_process(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 	}
 	else if(cmd->Etat_Photo != Photo_non)
 	{
-		
+		spi_cmd_photo_ON(cmd, spi_packet);
+		cmd->Etat_Photo = Photo_non;
+		spi_packet->ready = 1;
 	}
 	else
 	{
-		
+		spi_cmd_photo_OFF(cmd, spi_packet);
+		cmd->Etat_Photo = Photo_non;
+		spi_packet->ready = 1;
 	}
+	
 	
 	if(spi_packet->ready == 1)
 	{
@@ -185,17 +190,11 @@ void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 
 void spi_cmd_light_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 {
-	/*spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
+	spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
 	spi_packet->send_data[1] = (cmd->Lumiere_Intensite);
 	spi_packet->send_data[2] = (cmd->Lumiere_Duree);
 	spi_packet->send_data[3] = (cmd->Lumire_Extinction);
-	spi_packet->send_data[4] = (cmd->Lumiere_Nbre);*/
-	
-	spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
-	spi_packet->send_data[1] = 10;//(cmd->Lumiere_Intensite);
-	spi_packet->send_data[2] = 10;//(cmd->Lumiere_Duree);
-	spi_packet->send_data[3] = 20;//(cmd->Lumire_Extinction);
-	spi_packet->send_data[4] = 10;//(cmd->Lumiere_Nbre)
+	spi_packet->send_data[4] = (cmd->Lumiere_Nbre);
 	
 }
 
@@ -216,6 +215,26 @@ void spi_cmd_generate_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 	spi_packet->send_data[2] = (cmd->GEN_son_Duree);
 	spi_packet->send_data[3] = (cmd->GEN_silence_Duree);
 	spi_packet->send_data[4] = (cmd->GEN_nbr_bip);
+}
+
+void spi_cmd_photo_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+{
+	
+	spi_packet->send_data[0] = SPI_PHOTO_ON_CMD;
+	spi_packet->send_data[1] = cmd->Etat_Photo;
+	spi_packet->send_data[2] = cmd->Photo_Duree;
+	spi_packet->send_data[3] = cmd->Photo_Nbre;
+	spi_packet->send_data[4] = 0;
+	
+}
+
+void spi_cmd_photo_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+{
+	spi_packet->send_data[0] = SPI_PHOTO_OFF_CMD;
+	spi_packet->send_data[1] = 0;
+	spi_packet->send_data[2] = 0;
+	spi_packet->send_data[3] = 0;
+	spi_packet->send_data[4] = 0;
 }
 
 byte spi_validate()

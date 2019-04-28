@@ -699,3 +699,16 @@ byte photo_cmd(CMD_PACKET* cmd_packet)
 	( cmd_packet->commands->Etat_Photo =  (mode == 1) ? Photo_1 : ( (mode == 2) ? Photo_Multiple : Photo_continue) );
 	return 1;
 }
+
+byte photo_OFF_cmd(CMD_PACKET* cmd_packet)
+{
+	// To much args
+	if(cmd_packet->cmd_size != 0)
+	{
+		return 0;
+	}
+
+	cmd_packet->commands->Etat_Photo = Photo_stop;
+
+	return 1;
+}
