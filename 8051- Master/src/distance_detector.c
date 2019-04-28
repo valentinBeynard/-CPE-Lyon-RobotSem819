@@ -18,6 +18,7 @@ volatile int servo_angle_H = 0;
 PWN_STATE pwn_state = PWN_IDDLE;
 
 DD_STATE dd_current_state = DD_IDLE;
+int nbr_interrupt = 0;
 
 int val_obs_buffer[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 byte val_obs_buffer_size = 0;
@@ -43,7 +44,6 @@ const DD_FSM_PROCESS dd_full_state_machine[5] = {
 	
 void timer_0_int() interrupt 1
 {	
-	static byte nbr_interrupt = 0;
 	static char high = 0;
 	
 	int duree_imp = 0;
@@ -65,10 +65,10 @@ void timer_0_int() interrupt 1
 	TL0= reload_value;
 	TH0= reload_value >> 8; //on décale pour obtenir les bits de poids fort
 	
-	if(nbr_interrupt >= 150)
+	if(nbr_interrupt == 1000)
 	{
-		ET0 = 0;	// Enable timer0 interuption
-		nbr_interrupt = 0;
+		//ET0 = 0;	// Enable timer0 interuption
+		nbr_interrupt++;
 		pwn_state = PWN_FINISH;
 	}
 	else
@@ -186,7 +186,9 @@ void dd_move_servo_h(DD_PACKET * dd_packet)
 {
 	if(pwn_state == PWN_IDDLE)
 	{
+		ET0 = 0;  // Stop last PWN Interrupt routine
 		dd_set_angle(dd_packet->commands->Servo_Angle);
+		nbr_interrupt = 0; // Reset tempo flag
 		pwn_state = PWN_RUN;
 		ET0 = 1;	// Enable timer0 interuption
 		
