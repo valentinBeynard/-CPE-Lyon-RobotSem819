@@ -28,7 +28,11 @@
 *
 *	Pin Servo_H : P1.2
 *
-*	Pin ADC1 : AIN0
+*	Pin Télémètre AV : AIN0.0 -> J11.7
+*
+*	Pin Télémètre AR : AIN0.1 -> J11.8
+*
+*	Pin Mesure Courant : AIN0.6 AIN0.1 -> J11.11
 *
 *
 *

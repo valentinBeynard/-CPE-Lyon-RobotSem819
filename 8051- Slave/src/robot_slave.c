@@ -18,9 +18,11 @@
 *				NSS : Vcc
 *
 *	
-*
+*	Light Beam -> P1.0
 *	
+*	Photo Trigger -> P1.1
 *
+*	Servo_H -> P1.2
 *	
 *
 *	
@@ -96,7 +98,7 @@ int main (void)
 	
 	//LED = 0;
 	
-	prendre_photo(5, 10);
+	
 	
 	while(1)
 	{
@@ -105,7 +107,11 @@ int main (void)
 		light_beam_process(&commands);
 		
 		//change_lumiere(1, 2, 10, 10, &commands.Etat_Lumiere);
-		
+		if(commands.Etat_Photo == Photo_1)
+		{
+			prendre_photo(commands.Photo_Nbre, commands.Photo_Duree);
+			commands.Etat_Photo = Photo_non;
+		}
 		
 	}
 	

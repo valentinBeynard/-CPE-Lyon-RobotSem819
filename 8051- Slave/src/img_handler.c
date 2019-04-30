@@ -53,6 +53,8 @@ void Init_Img_Handler()
 	/// Enable Timer 4 
 	//T4CON |= 0x08;
 	
+	sig = 0;
+	
 	EIE2 = 0x04;	// Enable timer4 interuption
 }
 
@@ -72,6 +74,7 @@ void timer_4_init() interrupt 16 {
 			if (IH_Compt_Nombre_photos == IH_Nombre_photos)
 			{
 				T4CON  &= ~0x04;
+				IH_Compt_Nombre_photos = 0;
 			}
 		}
 	}

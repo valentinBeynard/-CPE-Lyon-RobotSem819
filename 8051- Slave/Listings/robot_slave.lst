@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/30/2019 10:31:02 PAGE 1   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/30/2019 12:10:23 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE ROBOT_SLAVE
@@ -28,107 +28,113 @@ line level    source
   18          *       NSS : Vcc
   19          *
   20          * 
-  21          *
+  21          * Light Beam -> P1.0
   22          * 
-  23          *
-  24          * 
-  25          *
+  23          * Photo Trigger -> P1.1
+  24          *
+  25          * Servo_H -> P1.2
   26          * 
   27          *
-  28          *
+  28          * 
   29          *
   30          *
-  31          */
-  32          
-  33          sfr Reg = 0xFF;
+  31          *
+  32          *
+  33          */
   34          
-  35          OUT_M2 commands = {ACQ_non,
-  36                              0,
-  37                              GEN_non,
+  35          sfr Reg = 0xFF;
+  36          
+  37          OUT_M2 commands = {ACQ_non,
   38                              0,
-  39                              0,
+  39                              GEN_non,
   40                              0,
   41                              0,
-  42                              Lumiere_non,
-  43                              10,
-  44                              10,
-  45                              20,
+  42                              0,
+  43                              0,
+  44                              Lumiere_non,
+  45                              10,
   46                              10,
-  47                              Servo_non,
-  48                              0,
-  49                              Photo_non,
+  47                              20,
+  48                              10,
+  49                              Servo_non,
   50                              0,
-  51                              0};
-  52          
-  53          void Init_External_clk()
-  54          {
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/30/2019 10:31:02 PAGE 2   
+  51                              Photo_non,
+  52                              0,
+  53                              0};
+  54          
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/30/2019 12:10:23 PAGE 2   
 
-  55   1        // Config External Osci
-  56   1        OSCXCN = 0x67;
-  57   1        while(OSCXCN != 0xE7) {}
-  58   1        
-  59   1        // Use Exern CLK
-  60   1        OSCICN = 0x08;
-  61   1          
-  62   1        CKCON = 0x00;
-  63   1      }
-  64          
-  65          void Enable_Crossbar()
-  66          {
-  67   1        // Enable Crossbar
-  68   1        XBR2 |= 0x40;
-  69   1        
-  70   1        
-  71   1      }
-  72          
-  73          void Enable_general_Int()
-  74          {
-  75   1        EA = 1; // Enable general interruption
-  76   1      }
-  77          
-  78          int main (void)
-  79          {
-  80   1        Reg = 0xDE;   // Dévalidation du watchdog 
-  81   1        Reg = 0xAD;
-  82   1        
-  83   1        Init_External_clk();
+  55          void Init_External_clk()
+  56          {
+  57   1        // Config External Osci
+  58   1        OSCXCN = 0x67;
+  59   1        while(OSCXCN != 0xE7) {}
+  60   1        
+  61   1        // Use Exern CLK
+  62   1        OSCICN = 0x08;
+  63   1          
+  64   1        CKCON = 0x00;
+  65   1      }
+  66          
+  67          void Enable_Crossbar()
+  68          {
+  69   1        // Enable Crossbar
+  70   1        XBR2 |= 0x40;
+  71   1        
+  72   1        
+  73   1      }
+  74          
+  75          void Enable_general_Int()
+  76          {
+  77   1        EA = 1; // Enable general interruption
+  78   1      }
+  79          
+  80          int main (void)
+  81          {
+  82   1        Reg = 0xDE;   // Dévalidation du watchdog 
+  83   1        Reg = 0xAD;
   84   1        
-  85   1        Init_uart0();
-*** WARNING C206 IN LINE 85 OF src\robot_slave.c: 'Init_uart0': missing function-prototype
+  85   1        Init_External_clk();
   86   1        
-  87   1        Init_SPI();
+  87   1        Init_uart0();
+*** WARNING C206 IN LINE 87 OF src\robot_slave.c: 'Init_uart0': missing function-prototype
   88   1        
-  89   1        Init_light_beam();
+  89   1        Init_SPI();
   90   1        
-  91   1        Init_Img_Handler();
+  91   1        Init_light_beam();
   92   1        
-  93   1        Enable_Crossbar();
-  94   1      
-  95   1        Enable_general_Int();
-  96   1        
-  97   1        //LED = 0;
+  93   1        Init_Img_Handler();
+  94   1        
+  95   1        Enable_Crossbar();
+  96   1      
+  97   1        Enable_general_Int();
   98   1        
-  99   1        prendre_photo(5, 10);
+  99   1        //LED = 0;
  100   1        
- 101   1        while(1)
- 102   1        {
- 103   2          spi_process(&commands);
- 104   2          
- 105   2          light_beam_process(&commands);
+ 101   1        
+ 102   1        
+ 103   1        while(1)
+ 104   1        {
+ 105   2          spi_process(&commands);
  106   2          
- 107   2          //change_lumiere(1, 2, 10, 10, &commands.Etat_Lumiere);
+ 107   2          light_beam_process(&commands);
  108   2          
- 109   2          
- 110   2        }
- 111   1        
- 112   1      }
+ 109   2          //change_lumiere(1, 2, 10, 10, &commands.Etat_Lumiere);
+ 110   2          if(commands.Etat_Photo == Photo_1)
+ 111   2          {
+ 112   3            prendre_photo(commands.Photo_Nbre, commands.Photo_Duree);
+ 113   3            commands.Etat_Photo = Photo_non;
+ 114   3          }
+ 115   2          
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/30/2019 12:10:23 PAGE 3   
+
+ 116   2        }
+ 117   1        
+ 118   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/30/2019 10:31:02 PAGE 3   
-
-   CODE SIZE        =     80    ----
+   CODE SIZE        =     98    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     17    ----
    PDATA SIZE       =   ----    ----

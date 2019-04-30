@@ -451,6 +451,16 @@
               <FileType>1</FileType>
               <FilePath>.\src\spi_master.c</FilePath>
             </File>
+            <File>
+              <FileName>power_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\power_sensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>power_sensor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\power_sensor.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
