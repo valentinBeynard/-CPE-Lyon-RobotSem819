@@ -12,6 +12,7 @@ byte nbr_flash = 10;
 byte pwn_duty = 10;
 
 int prescaler_counter = -1;
+byte nbr_seq = 0;
 LIGHT_STATE light = LIGHT_ON;
 LIGHT_GENERATOR light_genrator_state = STOP;
 
@@ -112,7 +113,6 @@ void timer_1_int() interrupt 3
 
 void light_beam_flash_sequence()
 {
-	static byte nbr_seq = 0;
 
 	if(light_genrator_state == FINISH)
 	{
@@ -233,7 +233,9 @@ void light_beam_process(OUT_M2 * cmd)
 	else if(cmd->Etat_Lumiere == Eteindre)
 	{
 		// TODO
-		light_genrator_state = FINISH;
+		cmd->Etat_Lumiere = Lumiere_non;
+		light_genrator_state = STOP;
+		nbr_seq = 0;
 		light_beam_switch_OFF(cmd);
 	}
 	
