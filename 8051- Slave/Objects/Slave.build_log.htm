@@ -21,31 +21,31 @@ Target DLL:      SiC8051F.dll V4.3.0.0
 Dialog DLL:      TCYG.DLL V2.70
  
 <h2>Project:</h2>
-C:\Users\BEYNARD\Documents\GitHub\-CPE-Lyon-RobotSem819\8051- Slave\SLAVE.uvproj
-Project File Date:  04/24/2019
+C:\Users\BEYNARD\Documents\GitHub\-CPE-Lyon-RobotSem819\8051- Slave\Slave.uvproj
+Project File Date:  04/30/2019
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
-compiling spi_slave.c...
+assembling STARTUP.A51...
+compiling img_handler.c...
+compiling light_beam.c...
+src\light_beam.c(278): warning C280: 'cmd': unreferenced local variable
 compiling robot_slave.c...
 src\robot_slave.c(85): warning C206: 'Init_uart0': missing function-prototype
-assembling STARTUP.A51...
-compiling light_beam.c...
-src\light_beam.c(276): warning C280: 'cmd': unreferenced local variable
 compiling sound_handler.c...
-compiling img_handler.c...
+compiling spi_slave.c...
 linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?WATCHDOG?IMG_HANDLER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_UART0_PRINT?SOUND_HANDLER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_SOUND_HANDLER_PROCESS?SOUND_HANDLER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_SD_GEN_PARSE?SOUND_HANDLER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?WATCHDOG?IMG_HANDLER
-Program Size: data=9.0 xdata=131 code=4052
-"SLAVE" - 0 Error(s), 6 Warning(s).
-Build Time Elapsed:  00:00:02
+Program Size: data=9.0 xdata=92 code=2795
+".\Objects\Slave" - 0 Error(s), 6 Warning(s).
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

@@ -1,8 +1,0 @@
-"spi_slave.obj",
-"robot_slave.obj",
-"STARTUP.obj",
-"light_beam.obj",
-"sound_handler.obj",
-"img_handler.obj" 
-TO "SLAVE" 
-RAMSIZE(256) 

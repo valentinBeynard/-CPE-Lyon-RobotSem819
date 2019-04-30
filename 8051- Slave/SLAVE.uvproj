@@ -10,10 +10,11 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x0</ToolsetNumber>
       <ToolsetName>MCS-51</ToolsetName>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>C8051F020</Device>
-          <Vendor>Silicon Laboratories, Inc.</Vendor>
+          <Vendor>Silicon Labs</Vendor>
           <Cpu>IRAM(0-0xFF) XRAM(0-0xFFF) IROM(0-0xFFFF) CLOCK(25000000)</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>"LIB\STARTUP.A51" ("Standard 8051 Startup Code")</StartupFile>
@@ -30,6 +31,7 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile></SFDFile>
+          <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -43,14 +45,14 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\</OutputDirectory>
-          <OutputName>SLAVE</OutputName>
+          <OutputDirectory>.\Objects\</OutputDirectory>
+          <OutputName>Slave</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
-          <ListingPath>.\</ListingPath>
+          <ListingPath>.\Listings\</ListingPath>
           <HexFormatSelection>0</HexFormatSelection>
           <Merge32K>0</Merge32K>
           <CreateBatchFile>0</CreateBatchFile>
@@ -71,6 +73,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopB1X>0</nStopB1X>
+            <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
             <RunUserProg1>0</RunUserProg1>
@@ -79,6 +83,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopA1X>0</nStopA1X>
+            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -97,6 +103,7 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
+          <ComprImg>1</ComprImg>
           <BankNo>65535</BankNo>
         </CommonProperty>
         <DllOption>
@@ -127,20 +134,22 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
+            <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
-            <RunToMain>1</RunToMain>
+            <RunToMain>0</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
             <RestoreWatchpoints>1</RestoreWatchpoints>
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>1</RestoreTracepoints>
+            <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>9</TargetSelection>
+          <TargetSelection>10</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -159,17 +168,21 @@
         </DebugOption>
         <Utilities>
           <Flash1>
-            <UseTargetDll>1</UseTargetDll>
+            <UseTargetDll>0</UseTargetDll>
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>0</UpdateFlashBeforeDebugging>
-            <Capability>1</Capability>
+            <Capability>0</Capability>
             <DriverSelection>-1</DriverSelection>
           </Flash1>
           <bUseTDR>0</bUseTDR>
           <Flash2></Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
+          <pFcarmOut></pFcarmOut>
+          <pFcarmGrp></pFcarmGrp>
+          <pFcArmRoot></pFcArmRoot>
+          <FcArmLst>0</FcArmLst>
         </Utilities>
         <Target51>
           <Target51Misc>
@@ -205,12 +218,14 @@
             <Mx51P>0</Mx51P>
             <hadXRAM2>0</hadXRAM2>
             <uocXram2>0</uocXram2>
+            <hadXRAM3>0</hadXRAM3>
             <ModC2>0</ModC2>
             <ModH2>0</ModH2>
             <Mdu_R515>0</Mdu_R515>
             <Mdu_F120>0</Mdu_F120>
             <Psoc>0</Psoc>
             <hadIROM2>0</hadIROM2>
+            <hadIROM3>0</hadIROM3>
             <ModSmx2>0</ModSmx2>
             <cBanks>0</cBanks>
             <xBanks>0</xBanks>
@@ -280,6 +295,16 @@
                 <StartAddress>0x0</StartAddress>
                 <Size>0x0</Size>
               </IROM512>
+              <XRA513>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </XRA513>
+              <IROM513>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </IROM513>
             </OnChipMemories>
           </Target51Misc>
           <C51>
@@ -289,7 +314,7 @@
             <uAregs>0</uAregs>
             <UseInterruptVector>1</UseInterruptVector>
             <Fuzzy>3</Fuzzy>
-            <Optimize>0</Optimize>
+            <Optimize>8</Optimize>
             <WarningLevel>2</WarningLevel>
             <SizeSpeed>1</SizeSpeed>
             <ObjectExtend>1</ObjectExtend>
@@ -352,49 +377,9 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>spi_slave.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\spi_slave.c</FilePath>
-            </File>
-            <File>
-              <FileName>spi_slave.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\spi_slave.h</FilePath>
-            </File>
-            <File>
-              <FileName>c8051F020.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\c8051F020.h</FilePath>
-            </File>
-            <File>
-              <FileName>robot_slave.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\robot_slave.c</FilePath>
-            </File>
-            <File>
               <FileName>STARTUP.A51</FileName>
               <FileType>2</FileType>
               <FilePath>.\STARTUP.A51</FilePath>
-            </File>
-            <File>
-              <FileName>slave_cmd.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\slave_cmd.h</FilePath>
-            </File>
-            <File>
-              <FileName>light_beam.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\light_beam.c</FilePath>
-            </File>
-            <File>
-              <FileName>light_beam.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\light_beam.h</FilePath>
-            </File>
-            <File>
-              <FileName>sound_handler.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\sound_handler.c</FilePath>
             </File>
             <File>
               <FileName>img_handler.c</FileName>
@@ -402,9 +387,54 @@
               <FilePath>.\src\img_handler.c</FilePath>
             </File>
             <File>
+              <FileName>light_beam.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\light_beam.c</FilePath>
+            </File>
+            <File>
+              <FileName>robot_slave.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\robot_slave.c</FilePath>
+            </File>
+            <File>
+              <FileName>sound_handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\sound_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_slave.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\spi_slave.c</FilePath>
+            </File>
+            <File>
+              <FileName>c8051F020.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\c8051F020.h</FilePath>
+            </File>
+            <File>
               <FileName>img_handler.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\img_handler.h</FilePath>
+            </File>
+            <File>
+              <FileName>light_beam.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\light_beam.h</FilePath>
+            </File>
+            <File>
+              <FileName>slave_cmd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\slave_cmd.h</FilePath>
+            </File>
+            <File>
+              <FileName>sound_handler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\sound_handler.h</FilePath>
+            </File>
+            <File>
+              <FileName>spi_slave.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\spi_slave.h</FilePath>
             </File>
           </Files>
         </Group>

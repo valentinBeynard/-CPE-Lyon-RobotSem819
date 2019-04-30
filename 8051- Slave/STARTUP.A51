@@ -137,8 +137,7 @@ IDATALOOP:      MOV     @R0,A
 ENDIF
 
 IF XDATALEN <> 0
-                MOV     DPTR,#XD
-				DATASTART
+                MOV     DPTR,#XDATASTART
                 MOV     R7,#LOW (XDATALEN)
   IF (LOW (XDATALEN)) <> 0
                 MOV     R6,#(HIGH (XDATALEN)) +1

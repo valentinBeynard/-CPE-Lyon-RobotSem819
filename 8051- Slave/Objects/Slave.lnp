@@ -1,0 +1,8 @@
+".\Objects\STARTUP.obj",
+".\Objects\img_handler.obj",
+".\Objects\light_beam.obj",
+".\Objects\robot_slave.obj",
+".\Objects\sound_handler.obj",
+".\Objects\spi_slave.obj" 
+TO ".\Objects\Slave" 
+PRINT(".\Listings\Slave.m51") RAMSIZE(256) 

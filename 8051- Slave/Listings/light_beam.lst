@@ -1,10 +1,10 @@
-C51 COMPILER V9.52.0.0   LIGHT_BEAM                                                        04/25/2019 17:37:33 PAGE 1   
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/30/2019 09:34:27 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE LIGHT_BEAM
-OBJECT MODULE PLACED IN light_beam.obj
-COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\light_beam.c LARGE OPTIMIZE(0,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\
-                    -light_beam.lst) TABS(2) OBJECT(light_beam.obj)
+C51 COMPILER V9.55, COMPILATION OF MODULE LIGHT_BEAM
+OBJECT MODULE PLACED IN .\Objects\light_beam.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\light_beam.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
+                    -(.\Listings\light_beam.lst) TABS(2) OBJECT(.\Objects\light_beam.obj)
 
 line level    source
 
@@ -35,13 +35,13 @@ line level    source
   25          
   26          void timer_0_int() interrupt 1
   27          { 
-  28   1        static int nbr_interrupt = 0;
+  28   1        //static int nbr_interrupt = 0;
   29   1        static char high = 0;
   30   1        
   31   1        int duree_imp = 0;
   32   1        int reload_value = 0;
   33   1        
-  34   1        duree_imp = 13 * servo_angle_V + 2768;// (cf excel table 3)
+  34   1        duree_imp = 18 * servo_angle_V + 2768;// (cf excel table 3)
   35   1        
   36   1        //duree_imp = 13*(servo_angle_V+90) + 1800 ;// 900us pour 90°  (cf doc technique)
   37   1        
@@ -61,20 +61,20 @@ line level    source
   51   1        TL0= reload_value;
   52   1        TH0= reload_value >> 8; //on décale pour obtenir les bits de poids fort
   53   1        
-  54   1        
-C51 COMPILER V9.52.0.0   LIGHT_BEAM                                                        04/25/2019 17:37:33 PAGE 2   
+  54   1        /*
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/30/2019 09:34:27 PAGE 2   
 
   55   1        if(nbr_interrupt >= 500)
   56   1        {
-  57   2          ET0 = 0;  // Diseable timer0 interuption
-  58   2          PWN_pin = 0;
-  59   2          high = 0;
-  60   2          nbr_interrupt = 0;
-  61   2        }
+  57   1          ET0 = 0;  // Diseable timer0 interuption
+  58   1          PWN_pin = 0;
+  59   1          high = 0;
+  60   1          nbr_interrupt = 0;
+  61   1        }
   62   1        else
   63   1        {
-  64   2          nbr_interrupt++;
-  65   2        }
+  64   1          nbr_interrupt++;
+  65   1        }*/
   66   1      }
   67          
   68          /*
@@ -126,7 +126,7 @@ line level    source
  114          {
  115   1        static byte nbr_seq = 0;
  116   1      
-C51 COMPILER V9.52.0.0   LIGHT_BEAM                                                        04/25/2019 17:37:33 PAGE 3   
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/30/2019 09:34:27 PAGE 3   
 
  117   1        if(light_genrator_state == FINISH)
  118   1        {
@@ -190,7 +190,7 @@ line level    source
  176          
  177          void lb_init_timer0()
  178          { 
-C51 COMPILER V9.52.0.0   LIGHT_BEAM                                                        04/25/2019 17:37:33 PAGE 4   
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/30/2019 09:34:27 PAGE 4   
 
  179   1        //Reglages Timer 0 (a SYSCLK/12 selon CKCON, soit un incrément tous les 0.545us)
  180   1        TMOD |=0x01; //mode 1
@@ -254,72 +254,74 @@ line level    source
  238   2        }
  239   1        
  240   1      }
-C51 COMPILER V9.52.0.0   LIGHT_BEAM                                                        04/25/2019 17:37:33 PAGE 5   
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/30/2019 09:34:27 PAGE 5   
 
  241          
  242          void light_beam_move(OUT_M2 * cmd)
  243          {
- 244   1        // Set angle
- 245   1        lb_set_angle(cmd->Servo_Angle);
- 246   1        
- 247   1        // Re-launch PWN
- 248   1        //pwn_over = 0;
- 249   1        ET0 = 1;
- 250   1        
- 251   1        // Clear CMD Flag
- 252   1        cmd->Etat_Servo = Servo_non;
- 253   1        
- 254   1        LED = 1;
+ 244   1        ET0 = 0;
+ 245   1        
+ 246   1        // Set angle
+ 247   1        lb_set_angle(cmd->Servo_Angle);
+ 248   1        
+ 249   1        // Re-launch PWN
+ 250   1        //pwn_over = 0;
+ 251   1        ET0 = 1;
+ 252   1        
+ 253   1        // Clear CMD Flag
+ 254   1        cmd->Etat_Servo = Servo_non;
  255   1        
- 256   1      }
- 257          
- 258          void light_beam_switch_ON(OUT_M2 * cmd)
- 259          {
- 260   1        pwn_duty = cmd->Lumiere_Intensite;
- 261   1        duree_flash = cmd->Lumiere_Duree;
- 262   1        duree_no_flash = cmd->Lumire_Extinction;
- 263   1        nbr_flash = cmd->Lumiere_Nbre;
- 264   1        
- 265   1        light_genrator_state = GENERATE;
+ 256   1        LED = 1;
+ 257   1        
+ 258   1      }
+ 259          
+ 260          void light_beam_switch_ON(OUT_M2 * cmd)
+ 261          {
+ 262   1        pwn_duty = cmd->Lumiere_Intensite;
+ 263   1        duree_flash = cmd->Lumiere_Duree;
+ 264   1        duree_no_flash = cmd->Lumire_Extinction;
+ 265   1        nbr_flash = cmd->Lumiere_Nbre;
  266   1        
- 267   1        FLASH_pin = 1;
+ 267   1        light_genrator_state = GENERATE;
  268   1        
- 269   1        // Re-launch PWN
- 270   1        ET1 = 1;
- 271   1        
- 272   1        LED = 1;
- 273   1      
- 274   1      }
- 275          
- 276          void light_beam_switch_OFF(OUT_M2 * cmd)
- 277          {
- 278   1        FLASH_pin = 0;
- 279   1        
- 280   1        ET1 = 0;
+ 269   1        FLASH_pin = 1;
+ 270   1        
+ 271   1        // Re-launch PWN
+ 272   1        ET1 = 1;
+ 273   1        
+ 274   1        LED = 1;
+ 275   1      
+ 276   1      }
+ 277          
+ 278          void light_beam_switch_OFF(OUT_M2 * cmd)
+ 279          {
+ 280   1        FLASH_pin = 0;
  281   1        
- 282   1        LED = 0;
- 283   1      }
-*** WARNING C280 IN LINE 276 OF src\light_beam.c: 'cmd': unreferenced local variable
- 284          
- 285          
+ 282   1        ET1 = 0;
+ 283   1        
+ 284   1        LED = 0;
+ 285   1      }
+*** WARNING C280 IN LINE 278 OF src\light_beam.c: 'cmd': unreferenced local variable
  286          
  287          
- 288          void lb_set_angle(int angle)
- 289          {
- 290   1        servo_angle_V = angle;
- 291   1      }
+ 288          
+ 289          
+ 290          void lb_set_angle(int angle)
+ 291          {
+ 292   1        servo_angle_V = angle;
+ 293   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1169    ----
+   CODE SIZE        =    757    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =     39    ----
+   XDATA SIZE       =     15       9
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
+C51 COMPILER V9.55   LIGHT_BEAM                                                            04/30/2019 09:34:27 PAGE 6   
+
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
-C51 COMPILER V9.52.0.0   LIGHT_BEAM                                                        04/25/2019 17:37:33 PAGE 6   
-
 END OF MODULE INFORMATION.
 
 

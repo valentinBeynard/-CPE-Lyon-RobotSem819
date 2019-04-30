@@ -1,10 +1,10 @@
-C51 COMPILER V9.52.0.0   ROBOT_SLAVE                                                       04/25/2019 17:37:32 PAGE 1   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/30/2019 09:34:27 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE ROBOT_SLAVE
-OBJECT MODULE PLACED IN robot_slave.obj
-COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\robot_slave.c LARGE OPTIMIZE(0,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.
-                    -\robot_slave.lst) TABS(2) OBJECT(robot_slave.obj)
+C51 COMPILER V9.55, COMPILATION OF MODULE ROBOT_SLAVE
+OBJECT MODULE PLACED IN .\Objects\robot_slave.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\robot_slave.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRIN
+                    -T(.\Listings\robot_slave.lst) TABS(2) OBJECT(.\Objects\robot_slave.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52          
   53          void Init_External_clk()
   54          {
-C51 COMPILER V9.52.0.0   ROBOT_SLAVE                                                       04/25/2019 17:37:32 PAGE 2   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/30/2019 09:34:27 PAGE 2   
 
   55   1        // Config External Osci
   56   1        OSCXCN = 0x67;
@@ -113,9 +113,9 @@ line level    source
  100   1        
  101   1        while(1)
  102   1        {
- 103   2          /*spi_process(&commands);
+ 103   2          spi_process(&commands);
  104   2          
- 105   2          light_beam_process(&commands);*/
+ 105   2          light_beam_process(&commands);
  106   2          
  107   2          //change_lumiere(1, 2, 10, 10, &commands.Etat_Lumiere);
  108   2          
@@ -126,9 +126,9 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-C51 COMPILER V9.52.0.0   ROBOT_SLAVE                                                       04/25/2019 17:37:32 PAGE 3   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           04/30/2019 09:34:27 PAGE 3   
 
-   CODE SIZE        =     63    ----
+   CODE SIZE        =     80    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     17    ----
    PDATA SIZE       =   ----    ----

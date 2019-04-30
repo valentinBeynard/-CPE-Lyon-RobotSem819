@@ -25,13 +25,13 @@ LIGHT_GENERATOR light_genrator_state = STOP;
 
 void timer_0_int() interrupt 1
 {	
-	static int nbr_interrupt = 0;
+	//static int nbr_interrupt = 0;
 	static char high = 0;
 	
 	int duree_imp = 0;
 	int reload_value = 0;
 	
-	duree_imp = 13 * servo_angle_V + 2768;// (cf excel table 3)
+	duree_imp = 18 * servo_angle_V + 2768;// (cf excel table 3)
 	
 	//duree_imp = 13*(servo_angle_V+90) + 1800 ;// 900us pour 90°  (cf doc technique)
 	
@@ -51,7 +51,7 @@ void timer_0_int() interrupt 1
 	TL0= reload_value;
 	TH0= reload_value >> 8; //on décale pour obtenir les bits de poids fort
 	
-	
+	/*
 	if(nbr_interrupt >= 500)
 	{
 		ET0 = 0;	// Diseable timer0 interuption
@@ -62,7 +62,7 @@ void timer_0_int() interrupt 1
 	else
 	{
 		nbr_interrupt++;
-	}
+	}*/
 }
 
 /*
@@ -241,6 +241,8 @@ void light_beam_process(OUT_M2 * cmd)
 
 void light_beam_move(OUT_M2 * cmd)
 {
+	ET0 = 0;
+	
 	// Set angle
 	lb_set_angle(cmd->Servo_Angle);
 	

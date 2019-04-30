@@ -159,15 +159,22 @@ void spi_process(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 	}
 	else if(cmd->Etat_Photo != Photo_non)
 	{
-		spi_cmd_photo_ON(cmd, spi_packet);
-		cmd->Etat_Photo = Photo_non;
-		spi_packet->ready = 1;
+		if(cmd->Etat_Photo != Photo_stop)
+		{
+			spi_cmd_photo_ON(cmd, spi_packet);
+			cmd->Etat_Photo = Photo_non;
+			spi_packet->ready = 1;
+		}
+		else
+		{
+			spi_cmd_photo_OFF(cmd, spi_packet);
+			cmd->Etat_Photo = Photo_non;
+			spi_packet->ready = 1;
+		}
 	}
 	else
 	{
-		spi_cmd_photo_OFF(cmd, spi_packet);
-		cmd->Etat_Photo = Photo_non;
-		spi_packet->ready = 1;
+
 	}
 	
 	

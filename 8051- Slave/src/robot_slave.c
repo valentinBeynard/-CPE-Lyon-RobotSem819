@@ -100,9 +100,9 @@ int main (void)
 	
 	while(1)
 	{
-		/*spi_process(&commands);
+		spi_process(&commands);
 		
-		light_beam_process(&commands);*/
+		light_beam_process(&commands);
 		
 		//change_lumiere(1, 2, 10, 10, &commands.Etat_Lumiere);
 		

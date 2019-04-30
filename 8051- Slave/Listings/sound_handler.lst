@@ -1,10 +1,10 @@
-C51 COMPILER V9.52.0.0   SOUND_HANDLER                                                     04/25/2019 17:37:33 PAGE 1   
+C51 COMPILER V9.55   SOUND_HANDLER                                                         04/30/2019 09:34:27 PAGE 1   
 
 
-C51 COMPILER V9.52.0.0, COMPILATION OF MODULE SOUND_HANDLER
-OBJECT MODULE PLACED IN sound_handler.obj
-COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE src\sound_handler.c LARGE OPTIMIZE(0,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
-                    -(.\sound_handler.lst) TABS(2) OBJECT(sound_handler.obj)
+C51 COMPILER V9.55, COMPILATION OF MODULE SOUND_HANDLER
+OBJECT MODULE PLACED IN .\Objects\sound_handler.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\sound_handler.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PR
+                    -INT(.\Listings\sound_handler.lst) TABS(2) OBJECT(.\Objects\sound_handler.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52   2        }
   53   1      }
   54          
-C51 COMPILER V9.52.0.0   SOUND_HANDLER                                                     04/25/2019 17:37:33 PAGE 2   
+C51 COMPILER V9.55   SOUND_HANDLER                                                         04/30/2019 09:34:27 PAGE 2   
 
   55          void UART0_send(byte ch)
   56          {
@@ -126,7 +126,7 @@ line level    source
  114   4                sd_gen_buffer_index++;
  115   4                // Tjrs ajouter un '\0' à la fin du buffer, sinon strlen ne marche pas...
  116   4                raw_data[sd_gen_buffer_index] = '\0';
-C51 COMPILER V9.52.0.0   SOUND_HANDLER                                                     04/25/2019 17:37:33 PAGE 3   
+C51 COMPILER V9.55   SOUND_HANDLER                                                         04/30/2019 09:34:27 PAGE 3   
 
  117   4                sd_gen_current_state = SD_GEN_PARSE_CMD;
  118   4              }else{
@@ -190,14 +190,14 @@ line level    source
  176   1        sd_gen_buffer_index = 0;
  177   1        sd_gen_current_state = SD_GEN_IDLE;
  178   1      }
-C51 COMPILER V9.52.0.0   SOUND_HANDLER                                                     04/25/2019 17:37:33 PAGE 4   
+C51 COMPILER V9.55   SOUND_HANDLER                                                         04/30/2019 09:34:27 PAGE 4   
 
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    759    ----
+   CODE SIZE        =    471    ----
    CONSTANT SIZE    =     11    ----
-   XDATA SIZE       =     39    ----
+   XDATA SIZE       =     18      11
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
