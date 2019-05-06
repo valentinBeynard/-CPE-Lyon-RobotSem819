@@ -147,6 +147,8 @@ int main (void)
 	// Initialise l'UART1 utilisé pour communiquer avec le sérializer
 	init_serializer_UART1();
 							
+	Init_ADC0();
+	
 	Init_distance_detector();
 	
 	Init_SPI();
@@ -194,16 +196,6 @@ int main (void)
 			
 			// Master-Slave communication
 			spi_process(&commands, &spi_packet);
-		
-			/*
-			if(parser_result.commands->Etat_DCT_Obst == oui_180)
-			{
-				dd_packet.measure = dd_start_conversion();
-				sprintf(mes, "%f", dd_packet.measure);
-				USART_print(mes);
-				memset(mes, 0, 10);
-				parser_result.commands->Etat_DCT_Obst = DCT_non;
-			}*/
 		
     }
 		

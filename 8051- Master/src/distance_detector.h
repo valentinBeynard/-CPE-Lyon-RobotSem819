@@ -11,6 +11,8 @@
 #include "pc_cmd.h"
 
 
+
+
 #define byte unsigned char
 
 
@@ -40,11 +42,7 @@ typedef enum
 	OBS_DETECTION
 }DD_STATE;
 
-typedef enum
-{
-	AIN0 = 0,
-	AIN1
-}ADC_INPUT;
+
 
 typedef enum
 {
@@ -98,7 +96,6 @@ void Init_distance_detector();
 
 */
 
-
 float dd_mesure();
 float dd_start_conversion();
 
@@ -114,7 +111,7 @@ void dd_obs_detection(DD_PACKET * dd_packet);
 
 void clear_val_obs_buffer();
 
-void choose_ADC_input(ADC_INPUT adc_input);
+
 
 #endif
 

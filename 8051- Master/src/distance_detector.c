@@ -7,11 +7,11 @@
 //
 //------------------------------------------------------------------------------------
 #include "distance_detector.h"
+#include "adc.h"
 
 //port de sortie
 sbit P1_2 = P1^2;
 
-sfr16 ADC0 = 0xbe;
 
 volatile int servo_angle_H = 0;
 
@@ -92,7 +92,7 @@ void timer_0_int() interrupt 1
 
 void Init_distance_detector()
 {
-	dd_config_DAC_ADC();
+	//dd_config_DAC_ADC();
 	
 	
 	// XBAR for servomoteur H
@@ -121,20 +121,7 @@ void dd_init_timer0()
 	TR0 = 1;
 }
 
-void dd_config_DAC_ADC() {
 
-	ADC0CN |=0x81;
-	ADC0CN &= ~0x4C;
-	ADC0CF &= 0x00;
-	//AMX0SL&=0xF0;
-	//AMX0CF&=0xF0;
-
-	REF0CN&=0xEB;
-	REF0CN|=0x03;
-	
-	DAC0CN |=0x80;
-	DAC0CN &=0xE0;
-}
 
 /*
 #############################################################################
@@ -301,28 +288,12 @@ void clear_val_obs_buffer()
 	val_obs_buffer_size = 0;
 }
 
-void choose_ADC_input(ADC_INPUT adc_input)
-{
-	if(adc_input == AIN0)
-	{
-		AMX0SL = 0x00;
-	}
-	else
-	{
-		AMX0SL = 0x01;
-	}
-}
-
 float dd_mesure(){
 	
 	float d;
 	float V_mes;
 	
-	//lecture de la tension mesurée sur AIN2
-	AMX0SL&=0x00;
-	AMX0SL|=0x01;
-	
-	V_mes=ADC0/(POW*5.6);
+	V_mes=read_ADC0()/(POW*5.6);
 	
 	//Calcul des distances
 	d=-16.669*V_mes+MAX_DISTANCE; 
