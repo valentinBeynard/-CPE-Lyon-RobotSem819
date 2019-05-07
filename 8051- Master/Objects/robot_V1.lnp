@@ -5,7 +5,9 @@
 ".\Objects\serializer.obj",
 ".\Objects\motion.obj",
 ".\Objects\distance_detector.obj",
-".\Objects\spi_master.obj" 
+".\Objects\spi_master.obj",
+".\Objects\power_sensor.obj",
+".\Objects\adc.obj" 
 TO ".\Objects\robot_V1"
 
 PRINT(".\Listings\robot_V1.m51") RAMSIZE(256) 

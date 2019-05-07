@@ -15,7 +15,7 @@
 *				SCK : OUT
 *				MISO : IN
 *				MOSI : OUT
-*				NSS : Vcc
+*				NSS : Master PIN_NSS P1.0
 *
 *	
 *	Light Beam -> P1.0
