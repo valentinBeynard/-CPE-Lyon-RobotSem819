@@ -58,6 +58,9 @@ byte complete_rotation_cmd(CMD_PACKET* cmd_packet);
 byte angle_rotation_cmd(CMD_PACKET* cmd_packet);
 byte move_to_cmd(CMD_PACKET* cmd_packet);
 
+byte current_measure(CMD_PACKET* cmd_packet);
+byte energy_measure(CMD_PACKET* cmd_packet);
+
 
 byte detecte_obstacle(CMD_PACKET* cmd_packet);
 byte servo_move_cmd(CMD_PACKET* cmd_packet);

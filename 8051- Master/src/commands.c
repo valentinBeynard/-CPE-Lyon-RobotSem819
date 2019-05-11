@@ -344,6 +344,31 @@ byte move_to_cmd(CMD_PACKET* cmd_packet)
 	return 1;
 }
 
+byte current_measure(CMD_PACKET* cmd_packet)
+{
+	if(cmd_packet->cmd_size != 0)
+	{
+		return 0;
+	}
+	
+	cmd_packet->commands->Etat_Energie = Mesure_I;
+	
+	return 1;
+}
+
+byte energy_measure(CMD_PACKET* cmd_packet)
+{
+	if(cmd_packet->cmd_size != 0)
+	{
+		return 0;
+	}
+	
+	cmd_packet->commands->Etat_Energie = Mesure_E;
+	
+	return 1;
+}
+
+
 byte detecte_obstacle(CMD_PACKET* cmd_packet)
 {
 	if(cmd_packet->cmd_size != 0)

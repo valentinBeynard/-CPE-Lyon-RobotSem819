@@ -138,6 +138,8 @@ void Error_Handler(void);
 #define MEMS_INT1_GPIO_Port GPIOE
 #define MEMS_INT2_Pin GPIO_PIN_1
 #define MEMS_INT2_GPIO_Port GPIOE
+#define SD_CS_PIN GPIO_PIN_1
+#define SD_CS_GPIO_PORT GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
