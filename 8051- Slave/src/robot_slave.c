@@ -84,7 +84,7 @@ int main (void)
 	
 	Init_External_clk();
 	
-	Init_uart0();
+	//Init_uart0();
 	
 	Init_SPI();
 	
@@ -106,12 +106,8 @@ int main (void)
 		
 		light_beam_process(&commands);
 		
-		//change_lumiere(1, 2, 10, 10, &commands.Etat_Lumiere);
-		if(commands.Etat_Photo == Photo_1)
-		{
-			prendre_photo(commands.Photo_Nbre, commands.Photo_Duree);
-			commands.Etat_Photo = Photo_non;
-		}
+		img_handler_process(&commands);
+
 		
 	}
 	
