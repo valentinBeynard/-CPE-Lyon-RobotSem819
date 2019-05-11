@@ -143,10 +143,7 @@ void enable_general_Int()
 
 int main (void)
 {
-  char mes[10];
-	float f = 0.0;
-	int angle = 80;
-	int ij = 0;
+
   
 	
 	Reg = 0xDE;   // Dévalidation du watchdog 

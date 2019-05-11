@@ -36,7 +36,7 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     {"G", move_to_cmd},
     {"ASS", default_process},
     {"MI", current_measure},
-    {"ME", current_measure},
+    {"ME", energy_measure},
     {"IPO", default_process},
     {"POS", default_process},
     {"MOU", detecte_obstacle},
@@ -70,7 +70,7 @@ byte raw_data[COMMAND_BUFFER_SIZE];
 /* Pointer permettant de parcourir le Buffer Principal */
 byte buffer_index = 0;
 
-byte MSG_buffer[MSG_INFO_BUFFER_SIZE] = "Start Epreuve !\n";
+char MSG_buffer[MSG_INFO_BUFFER_SIZE] = "Start Epreuve !\n";
 
 /*
 #############################################################################
@@ -111,7 +111,7 @@ byte Init_parser(PARSER_RESULT* parser_result)
 	TR2 = 1;
 	
 	// Load MSG_invite ptr to MSG_buffer
-	parser_result->informations->MSG_Invit = &MSG_buffer;
+	parser_result->informations->MSG_Invit = (char*)&MSG_buffer;
 	
   return 0;
 }
@@ -392,7 +392,7 @@ void send_informations(PARSER_RESULT* parser_result)
 
 void send_KOB_MOU(PARSER_RESULT* parser_result)
 {
-	static byte msg[32];
+	static char msg[32];
 		
 	int angle_front = 0, angle_back = 0;
 	int distance_front = 0, distance_back = 0;
@@ -415,7 +415,7 @@ void send_KOB_MOU(PARSER_RESULT* parser_result)
 	}
 
 	
-	parser_result->informations->MSG_Invit = msg;
+	parser_result->informations->MSG_Invit = (char*)msg;
 	//strcpy(parser_result->informations->MSG_Invit, msg);
 }
 

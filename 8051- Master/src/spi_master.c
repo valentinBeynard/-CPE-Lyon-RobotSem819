@@ -207,6 +207,9 @@ void spi_cmd_light_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 
 void spi_cmd_light_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 {
+	/* For Warning Suppression */
+	cmd = cmd;
+	
 	spi_packet->send_data[0] = SPI_LIGHT_OFF_CMD;
 	spi_packet->send_data[1] = 0;
 	spi_packet->send_data[2] = 0;
@@ -226,6 +229,8 @@ void spi_cmd_generate_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 
 void spi_cmd_photo_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 {
+	/* For Warning Suppression */
+	cmd = cmd;
 	
 	spi_packet->send_data[0] = SPI_PHOTO_ON_CMD;
 	spi_packet->send_data[1] = cmd->Etat_Photo;
@@ -237,6 +242,9 @@ void spi_cmd_photo_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 
 void spi_cmd_photo_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 {
+	/* For Warning Suppression */
+	cmd = cmd;
+	
 	spi_packet->send_data[0] = SPI_PHOTO_OFF_CMD;
 	spi_packet->send_data[1] = 0;
 	spi_packet->send_data[2] = 0;
