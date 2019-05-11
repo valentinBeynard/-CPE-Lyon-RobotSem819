@@ -370,6 +370,13 @@ void send_informations(PARSER_RESULT* parser_result)
 			parser_result->informations->Etat_BUT_Servo = BUT_Servo_non;
 		}
 		
+		// "MI" return message : print instant current consumption
+		else if(parser_result->informations->Etat_RESULT_Courant == RESULT_Courant_oui)
+		{
+			send_KOB_MOU(parser_result);
+			parser_result->informations->Etat_RESULT_Energie = RESULT_Energie_non;
+		}
+		
 		else
 		{
 			parser_result->informations->MSG_Invit = "\nI \tStart Epreuve !\n";
@@ -410,4 +417,18 @@ void send_KOB_MOU(PARSER_RESULT* parser_result)
 	
 	parser_result->informations->MSG_Invit = msg;
 	//strcpy(parser_result->informations->MSG_Invit, msg);
+}
+
+void send_MI_Result(PARSER_RESULT* parser_result)
+{
+	static byte msg[16];
+	
+	sprintf(msg, "\n%ud mA\n", parser_result->informations->Mesure_Courant);
+}
+
+void send_ME_Result(PARSER_RESULT* parser_result)
+{
+	static byte msg[16];
+	
+	sprintf(msg, "\n%ud W\n", parser_result->informations->Mesure_Energie);
 }

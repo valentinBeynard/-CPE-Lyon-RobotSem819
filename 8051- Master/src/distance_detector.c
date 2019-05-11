@@ -293,7 +293,7 @@ float dd_mesure(){
 	float d;
 	float V_mes;
 	
-	V_mes=read_ADC0()/(POW*5.6);
+	V_mes=_read_ADC0()/(POW*5.6);
 	
 	//Calcul des distances
 	d=-16.669*V_mes+MAX_DISTANCE; 

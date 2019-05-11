@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 1   
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE COMMANDS
@@ -62,7 +62,7 @@ line level    source
   52          byte epreuve_stop(CMD_PACKET* cmd_packet)
   53          {
   54   1        //printf("Non-implemented command !!");
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 2   
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 2   
 
   55   1        cmd_packet->commands->Etat_Epreuve = Epreuve_non;
   56   1        
@@ -126,7 +126,7 @@ line level    source
  114   2          // Si valeur non numérique
  115   2          if(sscanf((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "%d", &motor_speed) == 0)
  116   2          {
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 3   
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 3   
 
  117   3            return 0;
  118   3          }
@@ -190,7 +190,7 @@ line level    source
  176   2        }
  177   1        cmd_packet->commands->Etat_Mouvement = Stopper;
  178   1        return 1;
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 4   
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 4   
 
  179   1      }
  180          
@@ -254,7 +254,7 @@ line level    source
  238   1        
  239   1        if(cmd_packet->cmd_size != 2)
  240   1        {
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 5   
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 5   
 
  241   2          return 0;
  242   2        }
@@ -318,7 +318,7 @@ line level    source
  300   3            if( strcmp(str, params[j]) == 0 )
  301   3            {
  302   4              switch(j)
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 6   
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 6   
 
  303   4              {
  304   5                case 0:
@@ -364,441 +364,466 @@ line level    source
  344   1        return 1;
  345   1      }
  346          
- 347          byte detecte_obstacle(CMD_PACKET* cmd_packet)
+ 347          byte current_measure(CMD_PACKET* cmd_packet)
  348          {
  349   1        if(cmd_packet->cmd_size != 0)
  350   1        {
  351   2          return 0;
  352   2        }
  353   1        
- 354   1        cmd_packet->commands->Etat_DCT_Obst = oui_single;
- 355   1        return 1;
- 356   1      }
- 357          
- 358          byte servo_move_cmd(CMD_PACKET* cmd_packet)
- 359          {
- 360   1        int angle = 45;
- 361   1        
- 362   1        if(cmd_packet->cmd_size > 3)
- 363   1        {
- 364   2          return 0;
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 7   
+ 354   1        cmd_packet->commands->Etat_Energie = Mesure_I;
+ 355   1        
+ 356   1        return 1;
+ 357   1      }
+ 358          
+ 359          byte energy_measure(CMD_PACKET* cmd_packet)
+ 360          {
+ 361   1        if(cmd_packet->cmd_size != 0)
+ 362   1        {
+ 363   2          return 0;
+ 364   2        }
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 7   
 
- 365   2        }
- 366   1        
- 367   1        if(strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "H") == 0 
- 368   1          || strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "V") == 0)
- 369   1        {
- 370   2          switch( (*(cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE))) )
- 371   2          {
- 372   3            case 'V':
- 373   3              cmd_packet->commands->Etat_Servo = Servo_V;
- 374   3              break;
- 375   3            default :
- 376   3              cmd_packet->commands->Etat_Servo = Servo_H;
- 377   3              break;
- 378   3          }
- 379   2          
- 380   2        }
- 381   1        
- 382   1        if(strcmp((cmd_packet->commands_data + (2 * ARGS_BUFFER_SIZE)), "A") == 0 )
- 383   1        {
- 384   2          if(sscanf((cmd_packet->commands_data + (3 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
- 385   2          {
- 386   3            return 0;
- 387   3          }
- 388   2        
- 389   2          cmd_packet->commands->Servo_Angle = (char)(angle);
+ 365   1        
+ 366   1        cmd_packet->commands->Etat_Energie = Mesure_E;
+ 367   1        
+ 368   1        return 1;
+ 369   1      }
+ 370          
+ 371          
+ 372          byte detecte_obstacle(CMD_PACKET* cmd_packet)
+ 373          {
+ 374   1        if(cmd_packet->cmd_size != 0)
+ 375   1        {
+ 376   2          return 0;
+ 377   2        }
+ 378   1        
+ 379   1        cmd_packet->commands->Etat_DCT_Obst = oui_single;
+ 380   1        return 1;
+ 381   1      }
+ 382          
+ 383          byte servo_move_cmd(CMD_PACKET* cmd_packet)
+ 384          {
+ 385   1        int angle = 45;
+ 386   1        
+ 387   1        if(cmd_packet->cmd_size > 3)
+ 388   1        {
+ 389   2          return 0;
  390   2        }
  391   1        
- 392   1        return 1;
- 393   1      }
- 394          
- 395          byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
- 396          {
- 397   1        byte i = 0, j = 0;
- 398   1        char params[4][5] = {"I", "D", "E", "N"};
- 399   1        int intensity = 100, delay_on = 99, delay_off = 0, nbr_flash = 1;
- 400   1        byte param_find = 0;
- 401   1        char * str = 0;
- 402   1        
- 403   1        // To much args
- 404   1        if(cmd_packet->cmd_size > 8 || (cmd_packet->cmd_size % 2) != 0)
- 405   1        {
- 406   2          return 0;
- 407   2        }
- 408   1        
- 409   1        // Analyse each param:value couple
- 410   1        for(i = 0 ; i < (cmd_packet->cmd_size/2) ; ++i)
- 411   1        {
- 412   2          str = (cmd_packet->commands_data + ( ((2*i) + 1) * ARGS_BUFFER_SIZE));
- 413   2          
- 414   2          // For one couple, identify the param
- 415   2          for(j = 0 ; j < 4 ; j++)
- 416   2          {
- 417   3            if( strcmp(str, params[j]) == 0 )
- 418   3            {
- 419   4              switch(j)
- 420   4              {
- 421   5                case 0:
- 422   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &intensity) == 0)
- 423   5                  {
- 424   6                    return 0;
- 425   6                  }
- 426   5                  else
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 8   
+ 392   1        if(strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "H") == 0 
+ 393   1          || strcmp((cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE)), "V") == 0)
+ 394   1        {
+ 395   2          switch( (*(cmd_packet->commands_data + (1 * ARGS_BUFFER_SIZE))) )
+ 396   2          {
+ 397   3            case 'V':
+ 398   3              cmd_packet->commands->Etat_Servo = Servo_V;
+ 399   3              break;
+ 400   3            default :
+ 401   3              cmd_packet->commands->Etat_Servo = Servo_H;
+ 402   3              break;
+ 403   3          }
+ 404   2          
+ 405   2        }
+ 406   1        
+ 407   1        if(strcmp((cmd_packet->commands_data + (2 * ARGS_BUFFER_SIZE)), "A") == 0 )
+ 408   1        {
+ 409   2          if(sscanf((cmd_packet->commands_data + (3 * ARGS_BUFFER_SIZE)), "%d", &angle) == 0)
+ 410   2          {
+ 411   3            return 0;
+ 412   3          }
+ 413   2        
+ 414   2          cmd_packet->commands->Servo_Angle = (char)(angle);
+ 415   2        }
+ 416   1        
+ 417   1        return 1;
+ 418   1      }
+ 419          
+ 420          byte light_beam_ON_cmd(CMD_PACKET* cmd_packet)
+ 421          {
+ 422   1        byte i = 0, j = 0;
+ 423   1        char params[4][5] = {"I", "D", "E", "N"};
+ 424   1        int intensity = 100, delay_on = 99, delay_off = 0, nbr_flash = 1;
+ 425   1        byte param_find = 0;
+ 426   1        char * str = 0;
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 8   
 
- 427   5                  {
- 428   6                    // Si pas dans l'intervalle de valeur acceptées
- 429   6                    if(intensity < 1 || intensity > 100)
- 430   6                    {
- 431   7                      return 0;
- 432   7                    }
- 433   6                  }
- 434   5                  break;
- 435   5                
- 436   5                case 1:
- 437   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_on) == 0)
- 438   5                  {
- 439   6                    return 0;
- 440   6                  } 
- 441   5                  else
- 442   5                  {
- 443   6                    // Si pas dans l'intervalle de valeur acceptées
- 444   6                    if(delay_on < 1 || delay_on > 99)
- 445   6                    {
- 446   7                      return 0;
- 447   7                    }
- 448   6                  }           
- 449   5                  break;
- 450   5                
- 451   5                case 2:
- 452   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_off) == 0)
- 453   5                  {
- 454   6                    return 0;
- 455   6                  } 
- 456   5                  else
- 457   5                  {
- 458   6                    // Si pas dans l'intervalle de valeur acceptées
- 459   6                    if(delay_off < 0 || delay_off > 99)
- 460   6                    {
- 461   7                      return 0;
- 462   7                    }
- 463   6                  }   
- 464   5                  break;
- 465   5                  
- 466   5                case 3:
- 467   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &nbr_flash) == 0)
- 468   5                  {
- 469   6                    return 0;
- 470   6                  } 
- 471   5                  else
- 472   5                  {
- 473   6                    // Si pas dans l'intervalle de valeur acceptées
- 474   6                    if(nbr_flash < 1 || nbr_flash > 99)
- 475   6                    {
- 476   7                      return 0;
- 477   7                    }
- 478   6                  } 
- 479   5                  break;
- 480   5              }
- 481   4              param_find = 1;
- 482   4              break;
- 483   4            }
- 484   3          }
- 485   2          
- 486   2          if(param_find == 0)
- 487   2          {
- 488   3            return 0;
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 9   
+ 427   1        
+ 428   1        // To much args
+ 429   1        if(cmd_packet->cmd_size > 8 || (cmd_packet->cmd_size % 2) != 0)
+ 430   1        {
+ 431   2          return 0;
+ 432   2        }
+ 433   1        
+ 434   1        // Analyse each param:value couple
+ 435   1        for(i = 0 ; i < (cmd_packet->cmd_size/2) ; ++i)
+ 436   1        {
+ 437   2          str = (cmd_packet->commands_data + ( ((2*i) + 1) * ARGS_BUFFER_SIZE));
+ 438   2          
+ 439   2          // For one couple, identify the param
+ 440   2          for(j = 0 ; j < 4 ; j++)
+ 441   2          {
+ 442   3            if( strcmp(str, params[j]) == 0 )
+ 443   3            {
+ 444   4              switch(j)
+ 445   4              {
+ 446   5                case 0:
+ 447   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &intensity) == 0)
+ 448   5                  {
+ 449   6                    return 0;
+ 450   6                  }
+ 451   5                  else
+ 452   5                  {
+ 453   6                    // Si pas dans l'intervalle de valeur acceptées
+ 454   6                    if(intensity < 1 || intensity > 100)
+ 455   6                    {
+ 456   7                      return 0;
+ 457   7                    }
+ 458   6                  }
+ 459   5                  break;
+ 460   5                
+ 461   5                case 1:
+ 462   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_on) == 0)
+ 463   5                  {
+ 464   6                    return 0;
+ 465   6                  } 
+ 466   5                  else
+ 467   5                  {
+ 468   6                    // Si pas dans l'intervalle de valeur acceptées
+ 469   6                    if(delay_on < 1 || delay_on > 99)
+ 470   6                    {
+ 471   7                      return 0;
+ 472   7                    }
+ 473   6                  }           
+ 474   5                  break;
+ 475   5                
+ 476   5                case 2:
+ 477   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_off) == 0)
+ 478   5                  {
+ 479   6                    return 0;
+ 480   6                  } 
+ 481   5                  else
+ 482   5                  {
+ 483   6                    // Si pas dans l'intervalle de valeur acceptées
+ 484   6                    if(delay_off < 0 || delay_off > 99)
+ 485   6                    {
+ 486   7                      return 0;
+ 487   7                    }
+ 488   6                  }   
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 9   
 
- 489   3          }else{
- 490   3            param_find = 0;
- 491   3          }
- 492   2          
- 493   2        }
- 494   1        
- 495   1        cmd_packet->commands->Etat_Lumiere = Allumer;
- 496   1        cmd_packet->commands->Lumiere_Intensite = intensity;
- 497   1        cmd_packet->commands->Lumiere_Duree = delay_on;
- 498   1        cmd_packet->commands->Lumire_Extinction = delay_off;
- 499   1        cmd_packet->commands->Lumiere_Nbre = nbr_flash;
- 500   1        
- 501   1        return 1;
- 502   1      }
- 503          
- 504          byte light_beam_OFF_cmd(CMD_PACKET* cmd_packet)
- 505          {
- 506   1        // To much args
- 507   1        if(cmd_packet->cmd_size != 0)
- 508   1        {
- 509   2          return 0;
- 510   2        }
- 511   1      
- 512   1        cmd_packet->commands->Etat_Lumiere = Eteindre;
- 513   1      
- 514   1        return 1;
- 515   1      }
- 516          
- 517          byte generate_sound_cmd(CMD_PACKET* cmd_packet)
- 518          {
- 519   1          byte i = 0, j = 0;
- 520   1        char params[4][5] = {"F", "P", "W", "B"};
- 521   1        int frequency_code = 100, delay_son = 25, delay_silence = 50, nbr_bip = 3;
- 522   1        byte param_find = 0;
- 523   1        char * str = 0;
- 524   1        
- 525   1        // To much args
- 526   1        if(cmd_packet->cmd_size > 8 || (cmd_packet->cmd_size % 2) != 0)
- 527   1        {
- 528   2          return 0;
- 529   2        }
- 530   1        
- 531   1        // Analyse each param:value couple
- 532   1        for(i = 0 ; i < (cmd_packet->cmd_size/2) ; ++i)
+ 489   5                  break;
+ 490   5                  
+ 491   5                case 3:
+ 492   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &nbr_flash) == 0)
+ 493   5                  {
+ 494   6                    return 0;
+ 495   6                  } 
+ 496   5                  else
+ 497   5                  {
+ 498   6                    // Si pas dans l'intervalle de valeur acceptées
+ 499   6                    if(nbr_flash < 1 || nbr_flash > 99)
+ 500   6                    {
+ 501   7                      return 0;
+ 502   7                    }
+ 503   6                  } 
+ 504   5                  break;
+ 505   5              }
+ 506   4              param_find = 1;
+ 507   4              break;
+ 508   4            }
+ 509   3          }
+ 510   2          
+ 511   2          if(param_find == 0)
+ 512   2          {
+ 513   3            return 0;
+ 514   3          }else{
+ 515   3            param_find = 0;
+ 516   3          }
+ 517   2          
+ 518   2        }
+ 519   1        
+ 520   1        cmd_packet->commands->Etat_Lumiere = Allumer;
+ 521   1        cmd_packet->commands->Lumiere_Intensite = intensity;
+ 522   1        cmd_packet->commands->Lumiere_Duree = delay_on;
+ 523   1        cmd_packet->commands->Lumire_Extinction = delay_off;
+ 524   1        cmd_packet->commands->Lumiere_Nbre = nbr_flash;
+ 525   1        
+ 526   1        return 1;
+ 527   1      }
+ 528          
+ 529          byte light_beam_OFF_cmd(CMD_PACKET* cmd_packet)
+ 530          {
+ 531   1        // To much args
+ 532   1        if(cmd_packet->cmd_size != 0)
  533   1        {
- 534   2          str = (cmd_packet->commands_data + ( ((2*i) + 1) * ARGS_BUFFER_SIZE));
- 535   2          
- 536   2          // For one couple, identify the param
- 537   2          for(j = 0 ; j < 4 ; j++)
- 538   2          {
- 539   3            if( strcmp(str, params[j]) == 0 )
- 540   3            {
- 541   4              switch(j)
- 542   4              {
- 543   5                case 0:
- 544   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &frequency_code) == 
+ 534   2          return 0;
+ 535   2        }
+ 536   1      
+ 537   1        cmd_packet->commands->Etat_Lumiere = Eteindre;
+ 538   1      
+ 539   1        return 1;
+ 540   1      }
+ 541          
+ 542          byte generate_sound_cmd(CMD_PACKET* cmd_packet)
+ 543          {
+ 544   1          byte i = 0, j = 0;
+ 545   1        char params[4][5] = {"F", "P", "W", "B"};
+ 546   1        int frequency_code = 100, delay_son = 25, delay_silence = 50, nbr_bip = 3;
+ 547   1        byte param_find = 0;
+ 548   1        char * str = 0;
+ 549   1        
+ 550   1        // To much args
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 10  
+
+ 551   1        if(cmd_packet->cmd_size > 8 || (cmd_packet->cmd_size % 2) != 0)
+ 552   1        {
+ 553   2          return 0;
+ 554   2        }
+ 555   1        
+ 556   1        // Analyse each param:value couple
+ 557   1        for(i = 0 ; i < (cmd_packet->cmd_size/2) ; ++i)
+ 558   1        {
+ 559   2          str = (cmd_packet->commands_data + ( ((2*i) + 1) * ARGS_BUFFER_SIZE));
+ 560   2          
+ 561   2          // For one couple, identify the param
+ 562   2          for(j = 0 ; j < 4 ; j++)
+ 563   2          {
+ 564   3            if( strcmp(str, params[j]) == 0 )
+ 565   3            {
+ 566   4              switch(j)
+ 567   4              {
+ 568   5                case 0:
+ 569   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &frequency_code) == 
              -0)
- 545   5                  {
- 546   6                    return 0;
- 547   6                  }
- 548   5                  else
- 549   5                  {
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 10  
-
- 550   6                    // Si pas dans l'intervalle de valeur acceptées
- 551   6                    if(frequency_code < 1 || frequency_code > 99)
- 552   6                    {
- 553   7                      return 0;
- 554   7                    }
- 555   6                  }
- 556   5                  break;
- 557   5                
- 558   5                case 1:
- 559   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_son) == 0)
- 560   5                  {
- 561   6                    return 0;
- 562   6                  } 
- 563   5                  else
- 564   5                  {
- 565   6                    // Si pas dans l'intervalle de valeur acceptées
- 566   6                    if(delay_son < 1 || delay_son > 99)
- 567   6                    {
- 568   7                      return 0;
- 569   7                    }
- 570   6                  }           
- 571   5                  break;
- 572   5                
- 573   5                case 2:
- 574   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_silence) == 0
+ 570   5                  {
+ 571   6                    return 0;
+ 572   6                  }
+ 573   5                  else
+ 574   5                  {
+ 575   6                    // Si pas dans l'intervalle de valeur acceptées
+ 576   6                    if(frequency_code < 1 || frequency_code > 99)
+ 577   6                    {
+ 578   7                      return 0;
+ 579   7                    }
+ 580   6                  }
+ 581   5                  break;
+ 582   5                
+ 583   5                case 1:
+ 584   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_son) == 0)
+ 585   5                  {
+ 586   6                    return 0;
+ 587   6                  } 
+ 588   5                  else
+ 589   5                  {
+ 590   6                    // Si pas dans l'intervalle de valeur acceptées
+ 591   6                    if(delay_son < 1 || delay_son > 99)
+ 592   6                    {
+ 593   7                      return 0;
+ 594   7                    }
+ 595   6                  }           
+ 596   5                  break;
+ 597   5                
+ 598   5                case 2:
+ 599   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &delay_silence) == 0
              -)
- 575   5                  {
- 576   6                    return 0;
- 577   6                  } 
- 578   5                  else
- 579   5                  {
- 580   6                    // Si pas dans l'intervalle de valeur acceptées
- 581   6                    if(delay_silence < 1 || delay_silence > 99)
- 582   6                    {
- 583   7                      return 0;
- 584   7                    }
- 585   6                  }   
- 586   5                  break;
- 587   5                  
- 588   5                case 3:
- 589   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &nbr_bip) == 0)
- 590   5                  {
- 591   6                    return 0;
- 592   6                  } 
- 593   5                  else
- 594   5                  {
- 595   6                    // Si pas dans l'intervalle de valeur acceptées
- 596   6                    if(nbr_bip < 1 || nbr_bip > 99)
- 597   6                    {
- 598   7                      return 0;
- 599   7                    }
- 600   6                  } 
- 601   5                  break;
- 602   5              }
- 603   4              param_find = 1;
- 604   4              break;
- 605   4            }
- 606   3          }
- 607   2          
- 608   2          if(param_find == 0)
- 609   2          {
- 610   3            return 0;
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 11  
+ 600   5                  {
+ 601   6                    return 0;
+ 602   6                  } 
+ 603   5                  else
+ 604   5                  {
+ 605   6                    // Si pas dans l'intervalle de valeur acceptées
+ 606   6                    if(delay_silence < 1 || delay_silence > 99)
+ 607   6                    {
+ 608   7                      return 0;
+ 609   7                    }
+ 610   6                  }   
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 11  
 
- 611   3          }else{
- 612   3            param_find = 0;
- 613   3          }
- 614   2          
- 615   2        }
- 616   1        
- 617   1        cmd_packet->commands->Etat_GEN_Son = GEN_oui;
- 618   1        cmd_packet->commands->GEN_freq_code = frequency_code;
- 619   1        cmd_packet->commands->GEN_son_Duree = delay_son;
- 620   1        cmd_packet->commands->GEN_silence_Duree = delay_silence;
- 621   1        cmd_packet->commands->GEN_nbr_bip = nbr_bip;
- 622   1        
- 623   1        return 1;
- 624   1        
- 625   1      }
- 626          
- 627          byte photo_cmd(CMD_PACKET* cmd_packet)
- 628          {
- 629   1        byte i = 1, j = 0;
- 630   1        char params[5][3] = {"E", "N", "O", "C", "S"};
- 631   1        int duree_photo = 1, nbr_photo = 1, mode = 1;
- 632   1        byte param_find = 0;
- 633   1        char * str = 0;
- 634   1        
- 635   1        
- 636   1        // To much args
- 637   1        if(cmd_packet->cmd_size > 5)
- 638   1        {
- 639   2          return 0;
+ 611   5                  break;
+ 612   5                  
+ 613   5                case 3:
+ 614   5                  if(sscanf((cmd_packet->commands_data + ((2 + i * 2) * ARGS_BUFFER_SIZE)), "%d", &nbr_bip) == 0)
+ 615   5                  {
+ 616   6                    return 0;
+ 617   6                  } 
+ 618   5                  else
+ 619   5                  {
+ 620   6                    // Si pas dans l'intervalle de valeur acceptées
+ 621   6                    if(nbr_bip < 1 || nbr_bip > 99)
+ 622   6                    {
+ 623   7                      return 0;
+ 624   7                    }
+ 625   6                  } 
+ 626   5                  break;
+ 627   5              }
+ 628   4              param_find = 1;
+ 629   4              break;
+ 630   4            }
+ 631   3          }
+ 632   2          
+ 633   2          if(param_find == 0)
+ 634   2          {
+ 635   3            return 0;
+ 636   3          }else{
+ 637   3            param_find = 0;
+ 638   3          }
+ 639   2          
  640   2        }
- 641   1          
- 642   1        
- 643   1        // Analyse each param:value couple
- 644   1        while(i <= cmd_packet->cmd_size)
- 645   1        {
- 646   2          str = (cmd_packet->commands_data + ( i * ARGS_BUFFER_SIZE));
- 647   2          
- 648   2          // For one couple, identify the param
- 649   2          for(j = 0 ; j < 5 ; j++)
- 650   2          {
- 651   3            if( strcmp(str, params[j]) == 0 )
- 652   3            {
- 653   4              switch(j)
- 654   4              {
- 655   5                case 0:
- 656   5                  if(sscanf((cmd_packet->commands_data + ( (i+1) * ARGS_BUFFER_SIZE) ), "%d", &duree_photo) == 0)
- 657   5                  {
- 658   6                    return 0;
- 659   6                  }   
- 660   5                  i += 2;
- 661   5                  break;
- 662   5                
- 663   5                case 1:
- 664   5                  if(sscanf((cmd_packet->commands_data + ( (i+1) * ARGS_BUFFER_SIZE) ), "%d", &nbr_photo) == 0)
- 665   5                  {
- 666   6                    return 0;
- 667   6                  }
- 668   5                  i += 2;
- 669   5                  break;
- 670   5                case 2:
- 671   5                  mode = 1;
- 672   5                  i++;
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 12  
+ 641   1        
+ 642   1        cmd_packet->commands->Etat_GEN_Son = GEN_oui;
+ 643   1        cmd_packet->commands->GEN_freq_code = frequency_code;
+ 644   1        cmd_packet->commands->GEN_son_Duree = delay_son;
+ 645   1        cmd_packet->commands->GEN_silence_Duree = delay_silence;
+ 646   1        cmd_packet->commands->GEN_nbr_bip = nbr_bip;
+ 647   1        
+ 648   1        return 1;
+ 649   1        
+ 650   1      }
+ 651          
+ 652          byte photo_cmd(CMD_PACKET* cmd_packet)
+ 653          {
+ 654   1        byte i = 1, j = 0;
+ 655   1        char params[5][3] = {"E", "N", "O", "C", "S"};
+ 656   1        int duree_photo = 1, nbr_photo = 1, mode = 1;
+ 657   1        byte param_find = 0;
+ 658   1        char * str = 0;
+ 659   1        
+ 660   1        
+ 661   1        // To much args
+ 662   1        if(cmd_packet->cmd_size > 5)
+ 663   1        {
+ 664   2          return 0;
+ 665   2        }
+ 666   1          
+ 667   1        
+ 668   1        // Analyse each param:value couple
+ 669   1        while(i <= cmd_packet->cmd_size)
+ 670   1        {
+ 671   2          str = (cmd_packet->commands_data + ( i * ARGS_BUFFER_SIZE));
+ 672   2          
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 12  
 
- 673   5                  break;
- 674   5                case 3:
- 675   5                  mode = 2;
- 676   5                  i++;
- 677   5                  break;
- 678   5                case 4:
- 679   5                  mode = 3;
- 680   5                  i++;
- 681   5                  break;
- 682   5              }
- 683   4              param_find = 1;
- 684   4              break;
- 685   4            }
- 686   3          }
- 687   2          
- 688   2          if(param_find == 0)
- 689   2          {
- 690   3            return 0;
- 691   3          }else{
- 692   3            param_find = 0;
- 693   3          }
- 694   2          
- 695   2        }
- 696   1        
- 697   1        cmd_packet->commands->Photo_Duree = (byte)duree_photo;
- 698   1        cmd_packet->commands->Photo_Nbre = (byte)nbr_photo;
- 699   1        ( cmd_packet->commands->Etat_Photo =  (mode == 1) ? Photo_1 : ( (mode == 2) ? Photo_Multiple : Photo_cont
-             -inue) );
- 700   1        return 1;
- 701   1      }
- 702          
- 703          byte photo_OFF_cmd(CMD_PACKET* cmd_packet)
- 704          {
- 705   1        // To much args
- 706   1        if(cmd_packet->cmd_size != 0)
- 707   1        {
- 708   2          return 0;
- 709   2        }
- 710   1      
- 711   1        cmd_packet->commands->Etat_Photo = Photo_stop;
- 712   1      
- 713   1        return 1;
- 714   1      }
- 715          
- 716          byte aux_cmd(CMD_PACKET* cmd_packet)
- 717          {
- 718   1        byte * str = 0;
- 719   1        char params[4][3] = {"A", "B", "S", "L"};
- 720   1        int ticks_value = 0;
+ 673   2          // For one couple, identify the param
+ 674   2          for(j = 0 ; j < 5 ; j++)
+ 675   2          {
+ 676   3            if( strcmp(str, params[j]) == 0 )
+ 677   3            {
+ 678   4              switch(j)
+ 679   4              {
+ 680   5                case 0:
+ 681   5                  if(sscanf((cmd_packet->commands_data + ( (i+1) * ARGS_BUFFER_SIZE) ), "%d", &duree_photo) == 0)
+ 682   5                  {
+ 683   6                    return 0;
+ 684   6                  }   
+ 685   5                  i += 2;
+ 686   5                  break;
+ 687   5                
+ 688   5                case 1:
+ 689   5                  if(sscanf((cmd_packet->commands_data + ( (i+1) * ARGS_BUFFER_SIZE) ), "%d", &nbr_photo) == 0)
+ 690   5                  {
+ 691   6                    return 0;
+ 692   6                  }
+ 693   5                  i += 2;
+ 694   5                  break;
+ 695   5                case 2:
+ 696   5                  mode = 1;
+ 697   5                  i++;
+ 698   5                  break;
+ 699   5                case 3:
+ 700   5                  mode = 2;
+ 701   5                  i++;
+ 702   5                  break;
+ 703   5                case 4:
+ 704   5                  mode = 3;
+ 705   5                  i++;
+ 706   5                  break;
+ 707   5              }
+ 708   4              param_find = 1;
+ 709   4              break;
+ 710   4            }
+ 711   3          }
+ 712   2          
+ 713   2          if(param_find == 0)
+ 714   2          {
+ 715   3            return 0;
+ 716   3          }else{
+ 717   3            param_find = 0;
+ 718   3          }
+ 719   2          
+ 720   2        }
  721   1        
- 722   1        str = (cmd_packet->commands_data + ( 1 * ARGS_BUFFER_SIZE));
- 723   1        
- 724   1        // Command A [Tick] to rotate from [Tick] number of ticks 
- 725   1        if( strcmp(str, params[0]) == 0 )
- 726   1        {
- 727   2          if(sscanf((cmd_packet->commands_data + ( 2 * ARGS_BUFFER_SIZE)), "%d", &ticks_value) == 0)
- 728   2          {
- 729   3            return 0;
- 730   3          }
- 731   2          cmd_packet->commands->Etat_Mouvement = Avancer;
- 732   2          cmd_packet->commands->Pos_Angle = ticks_value;
- 733   2          return 1;
-C51 COMPILER V9.55   COMMANDS                                                              05/07/2019 08:31:27 PAGE 13  
+ 722   1        cmd_packet->commands->Photo_Duree = (byte)duree_photo;
+ 723   1        cmd_packet->commands->Photo_Nbre = (byte)nbr_photo;
+ 724   1        ( cmd_packet->commands->Etat_Photo =  (mode == 1) ? Photo_1 : ( (mode == 2) ? Photo_Multiple : Photo_cont
+             -inue) );
+ 725   1        return 1;
+ 726   1      }
+ 727          
+ 728          byte photo_OFF_cmd(CMD_PACKET* cmd_packet)
+ 729          {
+ 730   1        // To much args
+ 731   1        if(cmd_packet->cmd_size != 0)
+ 732   1        {
+ 733   2          return 0;
+C51 COMPILER V9.55   COMMANDS                                                              05/11/2019 14:41:50 PAGE 13  
 
  734   2        }
- 735   1        
- 736   1        // Command B to get back from last calibration position
- 737   1        else if( strcmp(str, params[1]) == 0 )
- 738   1        {
- 739   2          cmd_packet->commands->Etat_Mouvement = Reculer;
- 740   2          return 1;
- 741   2        }
- 742   1        
- 743   1        // Command S to save last tick value and start new one
- 744   1        else if( strcmp(str, params[2]) == 0 )
- 745   1        {
- 746   2          cmd_packet->commands->Etat_Mouvement = Stopper;
- 747   2          return 1;
- 748   2        }
- 749   1        
- 750   1        // Command to plot ALL ticks _data
- 751   1        else if (strcmp(str, params[3]) == 0)
- 752   1        {
- 753   2          cmd_packet->commands->Etat_Mouvement = Depl_Coord;
- 754   2          return 1;
- 755   2        }
- 756   1        
- 757   1        return 0;
- 758   1      }
+ 735   1      
+ 736   1        cmd_packet->commands->Etat_Photo = Photo_stop;
+ 737   1      
+ 738   1        return 1;
+ 739   1      }
+ 740          
+ 741          byte aux_cmd(CMD_PACKET* cmd_packet)
+ 742          {
+ 743   1        byte * str = 0;
+ 744   1        char params[4][3] = {"A", "B", "S", "L"};
+ 745   1        int ticks_value = 0;
+ 746   1        
+ 747   1        str = (cmd_packet->commands_data + ( 1 * ARGS_BUFFER_SIZE));
+ 748   1        
+ 749   1        // Command A [Tick] to rotate from [Tick] number of ticks 
+ 750   1        if( strcmp(str, params[0]) == 0 )
+ 751   1        {
+ 752   2          if(sscanf((cmd_packet->commands_data + ( 2 * ARGS_BUFFER_SIZE)), "%d", &ticks_value) == 0)
+ 753   2          {
+ 754   3            return 0;
+ 755   3          }
+ 756   2          cmd_packet->commands->Etat_Mouvement = Avancer;
+ 757   2          cmd_packet->commands->Pos_Angle = ticks_value;
+ 758   2          return 1;
+ 759   2        }
+ 760   1        
+ 761   1        // Command B to get back from last calibration position
+ 762   1        else if( strcmp(str, params[1]) == 0 )
+ 763   1        {
+ 764   2          cmd_packet->commands->Etat_Mouvement = Reculer;
+ 765   2          return 1;
+ 766   2        }
+ 767   1        
+ 768   1        // Command S to save last tick value and start new one
+ 769   1        else if( strcmp(str, params[2]) == 0 )
+ 770   1        {
+ 771   2          cmd_packet->commands->Etat_Mouvement = Stopper;
+ 772   2          return 1;
+ 773   2        }
+ 774   1        
+ 775   1        // Command to plot ALL ticks _data
+ 776   1        else if (strcmp(str, params[3]) == 0)
+ 777   1        {
+ 778   2          cmd_packet->commands->Etat_Mouvement = Depl_Coord;
+ 779   2          return 1;
+ 780   2        }
+ 781   1        
+ 782   1        return 0;
+ 783   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   7372    ----
+   CODE SIZE        =   7516    ----
    CONSTANT SIZE    =     98    ----
-   XDATA SIZE       =   ----     214
+   XDATA SIZE       =   ----     220
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

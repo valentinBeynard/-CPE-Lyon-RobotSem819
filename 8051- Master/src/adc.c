@@ -18,9 +18,26 @@ void Init_ADC0()
 	DAC0CN &=0xE0;
 }
 
-int read_ADC0()
+int _read_ADC0()
 {
 	return ADC0;
+}
+
+int read_ADC0()
+{
+	byte adc0 = 0;
+	
+	AD0INT=0;
+	AD0BUSY=1;
+	
+	// Wait Until the END of Conversion
+	while (AD0INT ==0) {};
+	
+	adc0 = ADC0;
+	
+	AD0BUSY=0;
+	
+	return adc0;
 }
 
 void choose_ADC_input(ADC_INPUT adc_input)

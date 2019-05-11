@@ -129,4 +129,8 @@ void send_informations(PARSER_RESULT* parser_result);
 
 void send_KOB_MOU(PARSER_RESULT* parser_result);
 
+void send_MI_Result(PARSER_RESULT* parser_result);
+
+void send_ME_Result(PARSER_RESULT* parser_result);
+
 #endif

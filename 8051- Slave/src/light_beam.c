@@ -188,7 +188,7 @@ void lb_init_timer1()
 {	
 	int init_reload_value = 0;
 	
-	//Reglages Timer 0 (a SYSCLK/12 selon CKCON, soit un incrément tous les 0.545us)
+	//Reglages Timer 1 (a SYSCLK/12 selon CKCON, soit un incrément tous les 0.545us)
 	TMOD |= 0x10; // Timer 1 Mode 1
 	TCON |= 0x44;	// Enable Timer1 (bit6) and enable interupt on edge (bit2)
 	

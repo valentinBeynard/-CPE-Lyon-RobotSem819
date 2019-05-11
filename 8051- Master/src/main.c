@@ -2,6 +2,7 @@
 #include "commands_parser.h"
 #include "serializer.h"
 #include "distance_detector.h"
+#include "power_sensor.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -35,6 +36,20 @@
 *	Pin Mesure Courant : AIN0.6 AIN0.1 -> J11.11
 *
 *
+*
+*
+* #############################################################################
+					Module List
+* #############################################################################
+*
+*		UART0
+*		UART1
+*		SPI
+*		Timer0		(Servomoteur)
+*		Timer1		(Power Sensor)
+*		Timer2		(UART0)
+*		Timer4		(UART1)
+*		AIN0
 *
 *
 */
@@ -149,6 +164,8 @@ int main (void)
 							
 	Init_ADC0();
 	
+	Init_power_sensor();
+	
 	Init_distance_detector();
 	
 	Init_SPI();
@@ -196,6 +213,9 @@ int main (void)
 			
 			// Master-Slave communication
 			spi_process(&commands, &spi_packet);
+			
+			// Power sensor
+			power_sensor_process(&commands, &informations);
 		
     }
 		
