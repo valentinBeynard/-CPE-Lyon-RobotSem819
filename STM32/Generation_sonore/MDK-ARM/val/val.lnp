@@ -5,6 +5,7 @@
 "val\stm32f3xx_hal_msp.o"
 "val\uart.o"
 "val\sound_handler.o"
+"val\sd_handler.o"
 "val\stm32f3xx_hal_dac.o"
 "val\stm32f3xx_hal_dac_ex.o"
 "val\stm32f3xx_hal_i2c.o"

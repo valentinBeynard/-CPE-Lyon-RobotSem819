@@ -38,19 +38,26 @@ uint16_t signal_time_H = 2 * 250;
 
 uint16_t signal_time_L = 2 * 500;
 
+uint16_t signal_time_Acq = 1000;
+
 uint16_t signal_time_counter = 0;
 
 unsigned char inverse_signal = 1;
 
 unsigned char is_high = 0;
 
+uint32_t adc_buffer[ADC_BUFFER_SIZE];
+byte adc_buffer_ptr = 0;
+
+uint32_t time_step_cnt = 0;
+
 uint32_t adc1value;
-uint32_t i;
+uint32_t samples_counter = 0;
 
 uint32_t somme50 = 0;
 uint32_t adc2value;
-uint32_t seuil = 0x00F;
-uint32_t Vdetect = 0xF000;
+
+SH_STATE sh_current_state = SH_IDLE;
 
 /*
 *		####################################################
@@ -60,7 +67,25 @@ uint32_t Vdetect = 0xF000;
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc1){
 	
 	if (hadc1->Instance == ADC1){
-		adc1value = HAL_ADC_GetValue(hadc1);
+		if(sh_current_state == SH_GENE)
+		{
+			// For Simple recopy
+			adc1value = HAL_ADC_GetValue(hadc1);
+			
+			/* Sampling for bluetooth transmission purpose */
+			adc1value = HAL_ADC_GetValue(hadc1);
+			//HAL_UART_Transmit(huart, &Rx_byte, 1, 100);
+			/*
+			if(adc_buffer_ptr < ADC_BUFFER_SIZE)
+			{
+				adc_buffer[adc_buffer_ptr] = HAL_ADC_GetValue(hadc1);
+				time_step_cnt++;
+				adc_buffer_ptr++;
+			}*/
+		}
+		else{
+			HAL_ADC_Stop(hadc1);
+		}
 	}
 }
 
@@ -71,67 +96,87 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc1){
 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	
+	/* Interrupt each 1 ms */
 	if(htim->Instance == TIM3)
 	{
 		//HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_8);
 		
-		if(is_high == 1)
+		/* Sound Generator */
+		if(sh_current_state == SH_GENE)
 		{
-			if(signal_time_counter >= signal_time_H)
+			if(is_high == 1)
 			{
-				is_high = 0;
-				inverse_signal = 1;
-				signal_time_counter = 0;
+				if(signal_time_counter >= signal_time_H)
+				{
+					is_high = 0;
+					inverse_signal = 1;
+					signal_time_counter = 0;
+				}
+				else
+				{
+					signal_time_counter++;
+				}
 			}
 			else
 			{
-				signal_time_counter++;
-			}
+				if(signal_time_counter >= signal_time_L)
+				{
+					is_high = 1;
+					inverse_signal = 1;
+					signal_time_counter = 0;
+				}
+				else
+				{
+					signal_time_counter++;
+				}
+			}	
 		}
+		/* Sound Acquisition */
 		else
 		{
-			if(signal_time_counter >= signal_time_L)
-			{
-				is_high = 1;
-				inverse_signal = 1;
-				signal_time_counter = 0;
-			}
-			else
+			if(signal_time_counter < signal_time_Acq)
 			{
 				signal_time_counter++;
 			}
-		}	
+			else
+			{
+				sh_current_state = SH_IDLE;
+				signal_time_counter = 0;
+				HAL_TIM_Base_Stop_IT(htim);
+			}
+			
+		}
 	}
 	
+	/* Envelop detection : sampling 100 points and compare with a threshold */
 	else if(htim->Instance == TIM2)
 	{
 		HAL_ADC_Start((sound_pck->hadc2));
 		HAL_ADC_PollForConversion((sound_pck->hadc2),10);
 		adc2value = HAL_ADC_GetValue((sound_pck->hadc2));
 		
-		if(i<100){
-			if(adc2value<seuil){
-				somme50 += seuil-adc2value;
+		if(samples_counter < 100){
+			if(adc2value < THRESHOLD){
+				somme50 += THRESHOLD-adc2value;
 			}
 			else{
-				somme50 += adc2value -seuil;
+				somme50 += adc2value -THRESHOLD;
 			}
-			i++;
+			samples_counter++;
 		}
 		else{
 			if (adc2value == 0x000){
-				HAL_DAC_SetValue((sound_pck->hdac),DAC_CHANNEL_1,DAC_ALIGN_12B_R,0x000);
+				HAL_DAC_SetValue((sound_pck->hdac),DAC_CHANNEL_2,DAC_ALIGN_12B_R,0x000);
 			}
 			else{
-				if(somme50>Vdetect){
-					HAL_DAC_SetValue(sound_pck->hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,0xFFF);
+				if(somme50 > VDETECT){
+					HAL_DAC_SetValue(sound_pck->hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,0xFFF);
 				}
 				else{
-					HAL_DAC_SetValue(sound_pck->hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,0x000);
+					HAL_DAC_SetValue(sound_pck->hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,0x000);
 				}
-				HAL_DAC_Start(sound_pck->hdac,DAC_CHANNEL_1);
-				i=0;
+				HAL_DAC_Start(sound_pck->hdac,DAC_CHANNEL_2);
+				samples_counter=0;
 				somme50 = 0;
 			}
 		}
@@ -220,6 +265,9 @@ void freq_calculator(SOUND_PCK* pck)
 	//pck->htim6->Init.Period = 210;
 }
 
+/*
+		Get main SINUS_PCK packet in order to working with it 
+*/
 void init_sound_handler(SOUND_PCK* pck)
 {
 	sound_pck = pck;
@@ -310,38 +358,84 @@ unsigned char send_signal(SOUND_PCK* pck)
 	}
 }
 
-void sinus_generator_process(SOUND_PCK * pck) 
+void sound_handler_process(SOUND_PCK * pck)
+{
+	switch(sh_current_state)
+	{
+		case SH_IDLE:
+			if(pck->cmd_pck->Etat_GEN == GEN_oui)
+			{
+				sh_current_state = SH_GENE;
+				pck->cmd_pck->Etat_GEN = GEN_non;
+			}
+			else if(pck->cmd_pck->Etat_ACQ == ACQ_oui)
+			{
+				sh_current_state = SH_ACQ;
+				pck->cmd_pck->Etat_ACQ = ACQ_non;
+			}
+			else{
+				sh_current_state = SH_IDLE;
+			}
+			break;
+				
+		case SH_GENE:
+			sinus_generate(pck);
+			break;
+
+		case SH_ACQ:
+			sound_acquisition(pck);
+			break;
+	}
+}
+
+void sinus_generate(SOUND_PCK * pck) 
 {
 	static unsigned char init_flag = 2;
 	
-	if(pck->cmd_pck->Etat_GEN == GEN_oui)
-	{		
-		if(init_flag != 0)
-		{
-			init_sinus(pck);
-			init_flag = 0;
-		}
-		else
-		{
-			if(send_signal(pck) == 0)
-			{
-				pck->cmd_pck->Etat_GEN = GEN_non;
-				init_flag = 1;
-			}
-		}
-		//HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_9);
-
+	/* Init Sinus params */
+	if(init_flag != 0)
+	{
+		init_sinus(pck);
+		init_flag = 0;
 	}
+	else	/* End Condition to quit SH_GENE state */
+	{
+		/* All bips have been emitted */
+		if(send_signal(pck) == 0)
+		{
+			sh_current_state = SH_IDLE;
+			init_flag = 1;
+		}
+	}
+
+}
+
+void sound_acquisition(SOUND_PCK* pck)
+{
+	static unsigned char init_flag = 2;
+	static uint16_t last_time_step = 0;
+	
+	if(init_flag != 0)
+	{
+		HAL_ADC_Start(pck->hadc1);
+		// Enable interrupt on timer 2 for envelop detection
+		//HAL_TIM_Base_Start_IT(pck->htim2);
+		// Enable interrupt on timer 3 for timing purpose
+		HAL_TIM_Base_Start_IT(pck->htim3);
+	}
+	/* Constant check and periodic data send from bluetooth */
 	else
 	{
-		
 		
 	}
 	
 }
 
-void detector_process()
+/*
+		Recopy signal on ADC1 Input during all processing 
+*/
+void signal_recopieur()
 {
-		HAL_DAC_Start	(sound_pck->hdac, DAC_CHANNEL_2);
-		HAL_DAC_SetValue (sound_pck->hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, adc1value);
+		HAL_DAC_Start	(sound_pck->hdac, DAC_CHANNEL_1);
+		HAL_DAC_SetValue (sound_pck->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, adc1value);
 }

@@ -18,6 +18,8 @@ typedef struct
 	
 	enum ACQ_son Etat_ACQ;
 	
+	int delay_acq;
+	
 }CMD_PCK;
 
 #endif

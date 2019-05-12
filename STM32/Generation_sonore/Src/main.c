@@ -82,9 +82,10 @@ PCD_HandleTypeDef hpcd_USB_FS;
 *		####################################################
 */
 
-CMD_PCK cmd_packet ; //= {GEN_non,44,25,50,3,ACQ_non		};
+CMD_PCK cmd_packet = {GEN_non,44,25,50,3,ACQ_non, 10};
 
 SOUND_PCK sinus_info = {&htim3,
+												&htim2,
 												&htim6,
 												&hdac,
 												&hadc1,
@@ -170,27 +171,35 @@ int main(void)
 	MX_ADC2_Init();
 	MX_ADC1_Init();
 	
+	/* DAC Timer */
   MX_TIM6_Init();
+	/* Tempo Timers */
   MX_TIM3_Init();
 	MX_TIM2_Init();
 	
+	/* 8051 Slave communication */
   MX_USART1_UART_Init();
 
 	
 	//sinus_info.start = 1;
-	HAL_ADC_Start_IT(&hadc1);
-
+	//HAL_ADC_Start_IT(&hadc1);
+	
 	uart_init(&huart1);
 	
 	init_sound_handler(&sinus_info);
 	
   while (1)
   {
-		sinus_generator_process(&sinus_info);
+		//sinus_generator_process(&sinus_info);
 		
+		/* Looking for cmds provide by 8051 Slave */
 		uart_cmd_process(&cmd_packet);
 		
-		detector_process();
+		/* Sound Generation and Acquisition process */
+		sound_handler_process(&sinus_info);
+		
+		/* Recopy signal on ADC1 Input during all processing */
+		signal_recopieur();
   }
 
 }
@@ -233,10 +242,11 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB|RCC_PERIPHCLK_USART1
-                              |RCC_PERIPHCLK_I2C1;
+                              |RCC_PERIPHCLK_I2C1|RCC_PERIPHCLK_ADC12;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
   PeriphClkInit.USBClockSelection = RCC_USBCLKSOURCE_PLL;
+	PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV1;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
