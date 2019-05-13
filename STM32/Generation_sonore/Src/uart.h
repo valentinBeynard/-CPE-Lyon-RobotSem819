@@ -13,6 +13,8 @@
 #define STOP_BYTE 0x0D
 
 #define SD_GEN_GENERATE_CMD	'G'
+#define ASS_ACQUIRE_SOUND_CMD	'A'
+
 
 typedef unsigned char byte;
 

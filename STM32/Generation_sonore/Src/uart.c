@@ -1,7 +1,7 @@
 #include "uart.h"
 
 
-unsigned char raw_data[UART_BUFFER_SIZE];
+char raw_data[UART_BUFFER_SIZE];
 
 uint16_t raw_data_buffer_ptr = 0;
 
@@ -55,6 +55,11 @@ void uart_cmd_process(CMD_PCK * cmd)
 			case SD_GEN_GENERATE_CMD:
 				cmd->Etat_GEN = GEN_oui;
 				sscanf(raw_data,"G %d %d %d %d",&cmd->frequency_code,&cmd->delay_ON,&cmd->delay_OFF,&cmd->nbr_sound);
+				break;
+			
+			case ASS_ACQUIRE_SOUND_CMD:
+				cmd->Etat_ACQ = ACQ_oui;
+				sscanf(raw_data,"A %d",&cmd->delay_acq);
 				break;
 		}
 		

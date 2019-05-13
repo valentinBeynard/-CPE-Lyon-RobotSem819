@@ -442,6 +442,16 @@
               <FileType>5</FileType>
               <FilePath>..\Src\SD_handler.h</FilePath>
             </File>
+            <File>
+              <FileName>bluetooth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\bluetooth.c</FilePath>
+            </File>
+            <File>
+              <FileName>bluetooth.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\bluetooth.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -586,21 +596,6 @@
               <FileName>system_stm32f3xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/system_stm32f3xx.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>New Group</GroupName>
-          <Files>
-            <File>
-              <FileName>stm32f3xx_spi_sd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SD_Utilities\stm32f3xx_spi_sd.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f3xx_spi_sd.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\SD_Utilities\stm32f3xx_spi_sd.h</FilePath>
             </File>
           </Files>
         </Group>
