@@ -161,7 +161,7 @@ int main (void)
 							
 	Init_ADC0();
 	
-	Init_power_sensor();
+	//Init_power_sensor();
 	
 	Init_distance_detector();
 	
@@ -204,15 +204,15 @@ int main (void)
 			
 			// Robot movments handler
 			serializer_process(&parser_result);
-			
+			/*
 			// Robot obstacles detection handler
 			distance_detector_process(&dd_packet);
 			
 			// Master-Slave communication
 			spi_process(&commands, &spi_packet);
-			
+			*/
 			// Power sensor
-			power_sensor_process(&commands, &informations);
+			//power_sensor_process(&commands, &informations);
 		
     }
 		
