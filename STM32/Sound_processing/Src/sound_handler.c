@@ -99,7 +99,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	/* Interrupt each 1 ms */
 	if(htim->Instance == TIM3)
 	{
-		//HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_8);
 		
 		/* Sound Generator */
 		if(sh_current_state == SH_GENE)
@@ -147,41 +146,41 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			
 		}
 	}
-	
+	/*
 	/* Envelop detection : sampling 100 points and compare with a threshold */
-	else if(htim->Instance == TIM2)
-	{
-		HAL_ADC_Start((sound_pck->hadc2));
-		HAL_ADC_PollForConversion((sound_pck->hadc2),10);
-		adc2value = HAL_ADC_GetValue((sound_pck->hadc2));
-		
-		if(samples_counter < 100){
-			if(adc2value < THRESHOLD){
-				somme50 += THRESHOLD-adc2value;
-			}
-			else{
-				somme50 += adc2value -THRESHOLD;
-			}
-			samples_counter++;
-		}
-		else{
-			if (adc2value == 0x000){
-				HAL_DAC_SetValue((sound_pck->hdac),DAC_CHANNEL_2,DAC_ALIGN_12B_R,0x000);
-			}
-			else{
-				if(somme50 > VDETECT){
-					HAL_DAC_SetValue(sound_pck->hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,0xFFF);
-				}
-				else{
-					HAL_DAC_SetValue(sound_pck->hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,0x000);
-				}
-				HAL_DAC_Start(sound_pck->hdac,DAC_CHANNEL_2);
-				samples_counter=0;
-				somme50 = 0;
-			}
-		}
-		
-	}
+//	else if(htim->Instance == TIM2)
+//	{
+//		HAL_ADC_Start((sound_pck->hadc2));
+//		HAL_ADC_PollForConversion((sound_pck->hadc2),10);
+//		adc2value = HAL_ADC_GetValue((sound_pck->hadc2));
+//		
+//		if(samples_counter < 100){
+//			if(adc2value < THRESHOLD){
+//				somme50 += THRESHOLD-adc2value;
+//			}
+//			else{
+//				somme50 += adc2value -THRESHOLD;
+//			}
+//			samples_counter++;
+//		}
+//		else{
+//			if (adc2value == 0x000){
+//				HAL_DAC_SetValue((sound_pck->hdac),DAC_CHANNEL_2,DAC_ALIGN_12B_R,0x000);
+//			}
+//			else{
+//				if(somme50 > VDETECT){
+//					HAL_DAC_SetValue(sound_pck->hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,0xFFF);
+//				}
+//				else{
+//					HAL_DAC_SetValue(sound_pck->hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,0x000);
+//				}
+//				HAL_DAC_Start(sound_pck->hdac,DAC_CHANNEL_2);
+//				samples_counter=0;
+//				somme50 = 0;
+//			}
+//		}
+//		
+//	}
 	
 }
 /*
@@ -280,8 +279,8 @@ Initialise le generateur de sinus : temps son/silence et fréquence
 void init_sinus(SOUND_PCK* pck)
 {
 	// Initialise Temps son/silence
-	signal_time_H = 100 * pck->cmd_pck->delay_ON;
-	signal_time_L = 100 * pck->cmd_pck->delay_OFF;
+	signal_time_H = 2 * pck->cmd_pck->delay_ON;
+	signal_time_L = 2 * pck->cmd_pck->delay_OFF;
 	
 	// Initialise la nouvelle fréquence
 	pck->htim6->Init.Prescaler = 1;
@@ -322,6 +321,8 @@ void init_sinus(SOUND_PCK* pck)
 
 	// Enable interrupt on timer 3
 	HAL_TIM_Base_Start_IT(pck->htim3);
+	
+	HAL_DAC_Stop(pck->hdac,DAC_CHANNEL_1);
 }
 
 unsigned char send_signal(SOUND_PCK* pck)
@@ -352,8 +353,11 @@ unsigned char send_signal(SOUND_PCK* pck)
 	{
 		HAL_DAC_Stop(pck->hdac,DAC_CHANNEL_1);
 		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_TIM_Base_Stop_IT(pck->htim3);
 		bips_counter = 0;
 		inverse_signal = 0;
+		is_high = 0;
+		signal_time_counter = 0;
 		return 0;
 	}
 }

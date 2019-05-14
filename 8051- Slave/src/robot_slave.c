@@ -84,13 +84,13 @@ int main (void)
 	
 	Init_External_clk();
 	
-	//Init_uart0();
+	Init_uart0();
 	
 	Init_SPI();
 	
 	Init_light_beam();
 	
-	Init_Img_Handler();
+	//Init_Img_Handler();
 	
 	Enable_Crossbar();
 
@@ -106,7 +106,7 @@ int main (void)
 		
 		light_beam_process(&commands);
 		
-		img_handler_process(&commands);
+		//img_handler_process(&commands);
 
 		
 	}

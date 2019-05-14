@@ -22,13 +22,15 @@ Dialog DLL:      TCYG.DLL V2.70
  
 <h2>Project:</h2>
 C:\Users\BEYNARD\Documents\GitHub\-CPE-Lyon-RobotSem819\8051- Master\robot_V1.uvproj
-Project File Date:  05/07/2019
+Project File Date:  05/14/2019
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
 assembling STARTUP.A51...
 compiling commands.c...
 compiling commands_parser.c...
+src\commands_parser.c(114): warning C182: pointer to different objects
+src\commands_parser.c(292): warning C182: pointer to different objects
 compiling main.c...
 compiling serializer.c...
 compiling motion.c...
@@ -42,17 +44,11 @@ compiling power_sensor.c...
 compiling adc.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SEND_INFORMATIONS?COMMANDS_PARSER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_SEND_MI_RESULT?COMMANDS_PARSER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_SEND_ME_RESULT?COMMANDS_PARSER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_DISTANCE_DETECTOR_PROCESS?DISTANCE_DETECTOR
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SPI_PROCESS?SPI_MASTER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?INIT_POWER_SENSOR?POWER_SENSOR
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_POWER_SENSOR_PROCESS?POWER_SENSOR
 *** WARNING L15: MULTIPLE CALL TO SEGMENT
     SEGMENT: ?PR?SCANF?SCANF
     CALLER1: ?C_C51STARTUP
@@ -71,9 +67,9 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  _DD_OBS_DETECTION
     MODULE:  .\Objects\distance_detector.obj (DISTANCE_DETECTOR)
-    ADDRESS: 4081H
-Program Size: data=33.7 xdata=958 code=27557
-".\Objects\robot_V1" - 0 Error(s), 15 Warning(s).
+    ADDRESS: 4030H
+Program Size: data=33.7 xdata=911 code=27557
+".\Objects\robot_V1" - 0 Error(s), 14 Warning(s).
 Build Time Elapsed:  00:00:02
 </pre>
 </body>

@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/14/2019 08:40:28 PAGE 1   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/14/2019 09:24:45 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE ROBOT_SLAVE
@@ -62,7 +62,7 @@ line level    source
   52                              0,
   53                              0};
   54          
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/14/2019 08:40:28 PAGE 2   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/14/2019 09:24:45 PAGE 2   
 
   55          void Init_External_clk()
   56          {
@@ -96,13 +96,14 @@ line level    source
   84   1        
   85   1        Init_External_clk();
   86   1        
-  87   1        //Init_uart0();
+  87   1        Init_uart0();
+*** WARNING C206 IN LINE 87 OF src\robot_slave.c: 'Init_uart0': missing function-prototype
   88   1        
   89   1        Init_SPI();
   90   1        
   91   1        Init_light_beam();
   92   1        
-  93   1        Init_Img_Handler();
+  93   1        //Init_Img_Handler();
   94   1        
   95   1        Enable_Crossbar();
   96   1      
@@ -118,18 +119,18 @@ line level    source
  106   2          
  107   2          light_beam_process(&commands);
  108   2          
- 109   2          img_handler_process(&commands);
+ 109   2          //img_handler_process(&commands);
  110   2      
  111   2          
  112   2        }
  113   1        
  114   1      }
 
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/14/2019 09:24:45 PAGE 3   
 
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/14/2019 08:40:28 PAGE 3   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     75    ----
+   CODE SIZE        =     66    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     17    ----
    PDATA SIZE       =   ----    ----
@@ -139,4 +140,4 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

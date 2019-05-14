@@ -70,7 +70,7 @@ byte raw_data[COMMAND_BUFFER_SIZE];
 /* Pointer permettant de parcourir le Buffer Principal */
 byte buffer_index = 0;
 
-char MSG_buffer[MSG_INFO_BUFFER_SIZE] = "Start Epreuve !\n";
+byte MSG_buffer[MSG_INFO_BUFFER_SIZE] = "Start Epreuve !\n";
 
 /*
 #############################################################################
@@ -111,7 +111,7 @@ byte Init_parser(PARSER_RESULT* parser_result)
 	TR2 = 1;
 	
 	// Load MSG_invite ptr to MSG_buffer
-	parser_result->informations->MSG_Invit = (char*)&MSG_buffer;
+	parser_result->informations->MSG_Invit = &MSG_buffer;
 	
   return 0;
 }
@@ -182,7 +182,7 @@ void cmd_parser_process(PARSER_RESULT* result)
 		
 	}
 	
-	send_informations(result);
+	//send_informations(result);
 }
 
 void wait(PARSER_RESULT* parser_result)
@@ -289,7 +289,7 @@ byte parse(PARSER_RESULT* parser_result)
 	
 	// Préparation du packet
 	
-	cmd_packet.commands_data = (char*)commands_data;
+	cmd_packet.commands_data = commands_data;
 	cmd_packet.cmd_size = data_index;
 	cmd_packet.commands = (parser_result->commands);
 
@@ -369,13 +369,13 @@ void send_informations(PARSER_RESULT* parser_result)
 			send_KOB_MOU(parser_result);
 			parser_result->informations->Etat_BUT_Servo = BUT_Servo_non;
 		}
-		
+		/*
 		// "MI" return message : print instant current consumption
 		else if(parser_result->informations->Etat_RESULT_Courant == RESULT_Courant_oui)
 		{
 			send_KOB_MOU(parser_result);
 			parser_result->informations->Etat_RESULT_Energie = RESULT_Energie_non;
-		}
+		}*/
 		
 		else
 		{

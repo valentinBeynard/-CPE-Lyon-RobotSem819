@@ -5,7 +5,7 @@ char raw_data[UART_BUFFER_SIZE];
 
 uint16_t raw_data_buffer_ptr = 0;
 
-unsigned char cmd_received = 0;
+volatile unsigned char cmd_received = 0;
 
 uint8_t Rx_byte = 0;
 
@@ -28,6 +28,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			else
 			{
 				cmd_received = 1;
+				raw_data_buffer_ptr = 0;
 			}	
 			// Reactivate receive on Interrupt on 1 byte
 			HAL_UART_Receive_IT(huart, &Rx_byte, 1);

@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   MAIN                                                                  05/14/2019 08:56:50 PAGE 1   
+C51 COMPILER V9.55   MAIN                                                                  05/14/2019 09:17:25 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   52          *   AIN0
   53          *
   54          *
-C51 COMPILER V9.55   MAIN                                                                  05/14/2019 08:56:50 PAGE 2   
+C51 COMPILER V9.55   MAIN                                                                  05/14/2019 09:17:25 PAGE 2   
 
   55          */
   56          
@@ -126,7 +126,7 @@ line level    source
  114          PARSER_RESULT parser_result = {1 , &commands, &informations};
  115          DD_PACKET dd_packet = {&commands, &informations, 0.0, 0, 0, 0};
  116          SPI_PACKET spi_packet = { 0, {0xA5,0x00,0x64,'F','G'}, 0};
-C51 COMPILER V9.55   MAIN                                                                  05/14/2019 08:56:50 PAGE 3   
+C51 COMPILER V9.55   MAIN                                                                  05/14/2019 09:17:25 PAGE 3   
 
  117          
  118          byte epreuve_start = 0;
@@ -175,7 +175,7 @@ line level    source
  161   1                    
  162   1        Init_ADC0();
  163   1        
- 164   1        //Init_power_sensor();
+ 164   1        Init_power_sensor();
  165   1        
  166   1        Init_distance_detector();
  167   1        
@@ -190,7 +190,7 @@ line level    source
  176   1        
  177   1      
  178   1                
-C51 COMPILER V9.55   MAIN                                                                  05/14/2019 08:56:50 PAGE 4   
+C51 COMPILER V9.55   MAIN                                                                  05/14/2019 09:17:25 PAGE 4   
 
  179   1        serializer_init_serial();
  180   1                    
@@ -220,15 +220,15 @@ line level    source
  204   3            
  205   3            // Robot movments handler
  206   3            serializer_process(&parser_result);
- 207   3            /*
+ 207   3            
  208   3            // Robot obstacles detection handler
  209   3            distance_detector_process(&dd_packet);
  210   3            
  211   3            // Master-Slave communication
  212   3            spi_process(&commands, &spi_packet);
- 213   3            */
+ 213   3            
  214   3            // Power sensor
- 215   3            //power_sensor_process(&commands, &informations);
+ 215   3            power_sensor_process(&commands, &informations);
  216   3          
  217   3          }
  218   2          
@@ -250,11 +250,11 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    231    ----
+   CODE SIZE        =    328    ----
    CONSTANT SIZE    =    128    ----
    XDATA SIZE       =     89    ----
    PDATA SIZE       =   ----    ----
-C51 COMPILER V9.55   MAIN                                                                  05/14/2019 08:56:50 PAGE 5   
+C51 COMPILER V9.55   MAIN                                                                  05/14/2019 09:17:25 PAGE 5   
 
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

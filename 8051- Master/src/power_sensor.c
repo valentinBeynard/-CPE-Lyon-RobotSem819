@@ -1,8 +1,6 @@
 #include "power_sensor.h"
 #include <math.h>
 
-sbit sig = P1^1;
-
 float intensite=0;
 float Rshunt = 0.05; //50mOhms
 

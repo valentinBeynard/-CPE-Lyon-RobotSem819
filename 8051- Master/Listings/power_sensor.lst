@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   POWER_SENSOR                                                          05/14/2019 08:56:51 PAGE 1   
+C51 COMPILER V9.55   POWER_SENSOR                                                          05/14/2019 09:17:25 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE POWER_SENSOR
@@ -11,91 +11,89 @@ line level    source
    1          #include "power_sensor.h"
    2          #include <math.h>
    3          
-   4          sbit sig = P1^1;
-   5          
-   6          float intensite=0;
-   7          float Rshunt = 0.05; //50mOhms
-   8          
-   9          /* Total amount of energy consumption since Robot Initialisation */
-  10          unsigned int global_energy = 0;
+   4          float intensite=0;
+   5          float Rshunt = 0.05; //50mOhms
+   6          
+   7          /* Total amount of energy consumption since Robot Initialisation */
+   8          unsigned int global_energy = 0;
+   9              
+  10          int last_current_measure = 0;
   11              
-  12          int last_current_measure = 0;
-  13              
-  14          /*
+  12          /*
+  13          #############################################################################
+  14                  Interrupt Routine For Timer 1
   15          #############################################################################
-  16                  Interrupt Routine For Timer 1
-  17          #############################################################################
-  18          */
-  19            
-  20          void timer_1_int() interrupt 3
-  21          { 
-  22   1        // Set ADC Channel
-  23   1        choose_ADC_input(CURRENT_SHUNT);
-  24   1      
-  25   1        // Read Shunt Value on ADC Channel
-  26   1        last_current_measure = shunt_measure();
-  27   1        
-  28   1        /* Compute amount of energy consums by robot : E (W) = P * t = 0.001 * U(V) * I(mA) * (s) t */
-  29   1        global_energy += (int)(0.001 * ROBOT_BATTERY_VOLTAGE * last_current_measure * PS_TIME_STEP);
-  30   1        
-  31   1        // Reset Value for 10ms Interrupt
-  32   1        TL1= 0x62;
-  33   1        TH1= 0xB8;
-  34   1      }
-  35          
-  36          int shunt_measure()
-  37          {
-  38   1        float v_adc = 0;
-  39   1        
-  40   1        // Converte ADC0 to Voltage
-  41   1        v_adc = (read_ADC0() * CONVERSION_RATE);
-  42   1            
-  43   1        // Convert and return mA current throught shunt
-  44   1        return (int)(v_adc * VOLTAGE_2_CURRENT_RATE);
-  45   1            
-  46   1      }
-  47          
-  48          void Init_power_sensor()
-  49          {
-  50   1        ps_init_timer1();
-  51   1        
-  52   1        ET1 = 1;
-  53   1      }
-  54          
-C51 COMPILER V9.55   POWER_SENSOR                                                          05/14/2019 08:56:51 PAGE 2   
+  16          */
+  17            
+  18          void timer_1_int() interrupt 3
+  19          { 
+  20   1        // Set ADC Channel
+  21   1        choose_ADC_input(CURRENT_SHUNT);
+  22   1      
+  23   1        // Read Shunt Value on ADC Channel
+  24   1        last_current_measure = shunt_measure();
+  25   1        
+  26   1        /* Compute amount of energy consums by robot : E (W) = P * t = 0.001 * U(V) * I(mA) * (s) t */
+  27   1        global_energy += (int)(0.001 * ROBOT_BATTERY_VOLTAGE * last_current_measure * PS_TIME_STEP);
+  28   1        
+  29   1        // Reset Value for 10ms Interrupt
+  30   1        TL1= 0x62;
+  31   1        TH1= 0xB8;
+  32   1      }
+  33          
+  34          int shunt_measure()
+  35          {
+  36   1        float v_adc = 0;
+  37   1        
+  38   1        // Converte ADC0 to Voltage
+  39   1        v_adc = (read_ADC0() * CONVERSION_RATE);
+  40   1            
+  41   1        // Convert and return mA current throught shunt
+  42   1        return (int)(v_adc * VOLTAGE_2_CURRENT_RATE);
+  43   1            
+  44   1      }
+  45          
+  46          void Init_power_sensor()
+  47          {
+  48   1        ps_init_timer1();
+  49   1        
+  50   1        ET1 = 1;
+  51   1      }
+  52          
+  53          void ps_init_timer1()
+  54          { 
+C51 COMPILER V9.55   POWER_SENSOR                                                          05/14/2019 09:17:25 PAGE 2   
 
-  55          void ps_init_timer1()
-  56          { 
-  57   1        //Reglages Timer 1 (a SYSCLK/12 selon CKCON, soit un incrément tous les 0.545us)
-  58   1        TMOD |= 0x10; // Timer 1 Mode 1
-  59   1        TCON |= 0x44; // Enable Timer1 (bit6) and enable interupt on edge (bit2)
-  60   1        
-  61   1        // Reset Value for 10ms Interrupt
-  62   1        TL1= 0x62;
-  63   1        TH1= 0xB8;
-  64   1        
-  65   1        
-  66   1      }
-  67          
-  68          void power_sensor_process(OUT_M1 * cmd, IN_M1 * info)
-  69          {
-  70   1        
-  71   1        if(cmd->Etat_Energie == Mesure_I)
-  72   1        {
-  73   2          info->Mesure_Courant = last_current_measure;
-  74   2          cmd->Etat_Energie = Energie_non;
-  75   2          info->Etat_RESULT_Courant = RESULT_Courant_oui;
-  76   2        }
-  77   1        else if(cmd->Etat_Energie == Mesure_E)
-  78   1        {
-  79   2          info->Mesure_Energie = global_energy;
-  80   2          cmd->Etat_Energie = Energie_non;
-  81   2          info->Etat_RESULT_Energie = RESULT_Energie_oui;
-  82   2        }
-  83   1      
-  84   1        
-  85   1      }
-  86          
+  55   1        //Reglages Timer 1 (a SYSCLK/12 selon CKCON, soit un incrément tous les 0.545us)
+  56   1        TMOD |= 0x10; // Timer 1 Mode 1
+  57   1        TCON |= 0x44; // Enable Timer1 (bit6) and enable interupt on edge (bit2)
+  58   1        
+  59   1        // Reset Value for 10ms Interrupt
+  60   1        TL1= 0x62;
+  61   1        TH1= 0xB8;
+  62   1        
+  63   1        
+  64   1      }
+  65          
+  66          void power_sensor_process(OUT_M1 * cmd, IN_M1 * info)
+  67          {
+  68   1        
+  69   1        if(cmd->Etat_Energie == Mesure_I)
+  70   1        {
+  71   2          info->Mesure_Courant = last_current_measure;
+  72   2          cmd->Etat_Energie = Energie_non;
+  73   2          info->Etat_RESULT_Courant = RESULT_Courant_oui;
+  74   2        }
+  75   1        else if(cmd->Etat_Energie == Mesure_E)
+  76   1        {
+  77   2          info->Mesure_Energie = global_energy;
+  78   2          cmd->Etat_Energie = Energie_non;
+  79   2          info->Etat_RESULT_Energie = RESULT_Energie_oui;
+  80   2        }
+  81   1      
+  82   1        
+  83   1      }
+  84          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

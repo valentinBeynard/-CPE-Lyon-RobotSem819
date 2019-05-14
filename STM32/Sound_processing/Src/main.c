@@ -24,7 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "sound_handler.h"
+#include "uart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -61,7 +62,29 @@ UART_HandleTypeDef huart1;
 PCD_HandleTypeDef hpcd_USB_FS;
 
 /* USER CODE BEGIN PV */
+/*
+*		####################################################
+*					General variables
+*		####################################################
+*/
 
+CMD_PCK cmd_packet = {GEN_non,0x12,25,50,30,ACQ_non, 10};
+
+SOUND_PCK sinus_info = {&htim3,
+												&htim2,
+												&htim6,
+												&hdac,
+												&hadc1,
+												&hadc2,
+												&cmd_packet
+												};
+
+												
+/*
+*		####################################################
+*					General variables END
+*		####################################################
+*/
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -128,8 +151,12 @@ int main(void)
   MX_ADC2_Init();
   MX_SPI1_Init();
   MX_TIM2_Init();
+	
   /* USER CODE BEGIN 2 */
-
+	uart_init(&huart1);
+	
+	init_sound_handler(&sinus_info);
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -137,7 +164,20 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+		
+		
+		//sinus_generator_process(&sinus_info);
+		
+		/* Looking for cmds provide by 8051 Slave */
+		uart_cmd_process(&cmd_packet);
+		
+		/* Sound Generation and Acquisition process */
+		sound_handler_process(&sinus_info);
+		
+		/* Recopy signal on ADC1 Input during all processing */
+		//signal_recopieur();
+		
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -509,9 +549,9 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 0;
+  htim6.Init.Prescaler = 1;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 32768;
+  htim6.Init.Period = 210;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {

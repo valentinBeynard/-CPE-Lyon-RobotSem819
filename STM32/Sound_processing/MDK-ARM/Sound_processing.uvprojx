@@ -10,6 +10,7 @@
       <TargetName>Sound_processing</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -389,9 +390,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>::CMSIS</GroupName>
-        </Group>
-        <Group>
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
@@ -418,6 +416,41 @@
               <FileName>stm32f3xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/stm32f3xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>bluetooth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\bluetooth.c</FilePath>
+            </File>
+            <File>
+              <FileName>sound_handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\sound_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>bluetooth.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\bluetooth.h</FilePath>
+            </File>
+            <File>
+              <FileName>cmd_pck.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\cmd_pck.h</FilePath>
+            </File>
+            <File>
+              <FileName>sound_handler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\sound_handler.h</FilePath>
+            </File>
+            <File>
+              <FileName>uart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\uart.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -580,6 +613,9 @@
               <FilePath>../Middlewares/Third_Party/FatFs/src/option/syscall.c</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
     </Target>
