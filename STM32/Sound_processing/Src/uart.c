@@ -1,4 +1,5 @@
 #include "uart.h"
+#include "bluetooth.h"
 
 
 char raw_data[UART_BUFFER_SIZE];
@@ -13,10 +14,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 
 	
-	if(cmd_received == 0)
-	{
+
 		if(huart->Instance == USART1)
 		{
+			if(cmd_received == 0)
+			{
 			// Echo
 			HAL_UART_Transmit(huart, &Rx_byte, 1, 100);
 			
@@ -32,13 +34,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			}	
 			// Reactivate receive on Interrupt on 1 byte
 			HAL_UART_Receive_IT(huart, &Rx_byte, 1);
+			}
+			else
+			{
+				// Reactivate receive on Interrupt on 1 byte
+				HAL_UART_Receive_IT(huart, &Rx_byte, 1);
+			}	
 		}
-	}
-	else
-	{
-		// Reactivate receive on Interrupt on 1 byte
-		HAL_UART_Receive_IT(huart, &Rx_byte, 1);
-	}	
+
 }
 
 void uart_init(UART_HandleTypeDef *huart)

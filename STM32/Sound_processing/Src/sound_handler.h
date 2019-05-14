@@ -9,9 +9,9 @@
 
 #define VDETECT	0xF000
 
-#define ADC1_TIME_STEP	0.00001253125
+#define ADC1_TIME_STEP	50.125
 
-#define ADC_BUFFER_SIZE	64
+#define ADC_BUFFER_SIZE	20
 
 /*
 *		####################################################
@@ -34,6 +34,7 @@ typedef struct
 	DAC_HandleTypeDef * hdac;
 	ADC_HandleTypeDef * hadc1;
 	ADC_HandleTypeDef * hadc2;
+	UART_HandleTypeDef * huart4;
 	CMD_PCK * cmd_pck;
 }SOUND_PCK;
 

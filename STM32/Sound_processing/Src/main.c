@@ -61,6 +61,10 @@ UART_HandleTypeDef huart1;
 
 PCD_HandleTypeDef hpcd_USB_FS;
 
+uint8_t test[4] = "ABC\n";
+
+HAL_StatusTypeDef ret = 0;
+
 /* USER CODE BEGIN PV */
 /*
 *		####################################################
@@ -76,6 +80,7 @@ SOUND_PCK sinus_info = {&htim3,
 												&hdac,
 												&hadc1,
 												&hadc2,
+												&huart4,
 												&cmd_packet
 												};
 
@@ -157,6 +162,8 @@ int main(void)
 	
 	init_sound_handler(&sinus_info);
 	
+	HAL_ADC_Start_IT(&hadc1);
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -164,7 +171,11 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-		
+		/*ret = HAL_UART_Transmit(&huart4, test, 4, 10);
+		if(ret == HAL_TIMEOUT)
+		{
+			HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_8);
+		}*/
 		
 		//sinus_generator_process(&sinus_info);
 		
@@ -252,7 +263,7 @@ static void MX_ADC1_Init(void)
   /** Common config 
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
   hadc1.Init.ContinuousConvMode = ENABLE;
@@ -281,7 +292,7 @@ static void MX_ADC1_Init(void)
   sConfig.Channel = ADC_CHANNEL_2;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_601CYCLES_5;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -317,7 +328,7 @@ static void MX_ADC2_Init(void)
   hadc2.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
   hadc2.Init.Resolution = ADC_RESOLUTION_12B;
   hadc2.Init.ScanConvMode = ADC_SCAN_DISABLE;
-  hadc2.Init.ContinuousConvMode = DISABLE;
+  hadc2.Init.ContinuousConvMode = ENABLE;
   hadc2.Init.DiscontinuousConvMode = DISABLE;
   hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc2.Init.ExternalTrigConv = ADC_SOFTWARE_START;
@@ -585,7 +596,7 @@ static void MX_UART4_Init(void)
 
   /* USER CODE END UART4_Init 1 */
   huart4.Instance = UART4;
-  huart4.Init.BaudRate = 19200;
+  huart4.Init.BaudRate = 115200;
   huart4.Init.WordLength = UART_WORDLENGTH_8B;
   huart4.Init.StopBits = UART_STOPBITS_1;
   huart4.Init.Parity = UART_PARITY_NONE;

@@ -41,3 +41,4 @@ sound_processing\uart.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim_e
 sound_processing\uart.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h
 sound_processing\uart.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h
 sound_processing\uart.o: ..\Src\cmd_pck.h
+sound_processing\uart.o: ..\Src\bluetooth.h

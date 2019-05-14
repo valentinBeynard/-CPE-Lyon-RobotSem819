@@ -38,7 +38,7 @@ uint16_t signal_time_H = 2 * 250;
 
 uint16_t signal_time_L = 2 * 500;
 
-uint16_t signal_time_Acq = 1000;
+uint16_t signal_time_Acq = 100;
 
 uint16_t signal_time_counter = 0;
 
@@ -46,8 +46,13 @@ unsigned char inverse_signal = 1;
 
 unsigned char is_high = 0;
 
-uint32_t adc_buffer[ADC_BUFFER_SIZE];
+char adc_buffer[ADC_BUFFER_SIZE];
 byte adc_buffer_ptr = 0;
+
+uint8_t start_flag[6] = "START\n"; 
+uint8_t stop_flag[5] = "STOP\n"; 
+
+byte acq_busy = 0;
 
 uint32_t time_step_cnt = 0;
 
@@ -67,21 +72,17 @@ SH_STATE sh_current_state = SH_IDLE;
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc1){
 	
 	if (hadc1->Instance == ADC1){
-		if(sh_current_state == SH_GENE)
+		if(sh_current_state == SH_ACQ)
 		{
 			// For Simple recopy
 			adc1value = HAL_ADC_GetValue(hadc1);
 			
-			/* Sampling for bluetooth transmission purpose */
-			adc1value = HAL_ADC_GetValue(hadc1);
-			//HAL_UART_Transmit(huart, &Rx_byte, 1, 100);
-			/*
-			if(adc_buffer_ptr < ADC_BUFFER_SIZE)
-			{
-				adc_buffer[adc_buffer_ptr] = HAL_ADC_GetValue(hadc1);
-				time_step_cnt++;
-				adc_buffer_ptr++;
-			}*/
+			/* Sampling for bluetooth transmission purpose */	
+			sprintf(adc_buffer, "%d:%f\n", adc1value, (time_step_cnt * ADC1_TIME_STEP)); 
+			time_step_cnt++;
+			
+			HAL_UART_Transmit(sound_pck->huart4, (uint8_t *)adc_buffer, ADC_BUFFER_SIZE, 5);
+			
 		}
 		else{
 			HAL_ADC_Stop(hadc1);
@@ -96,7 +97,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc1){
 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	/* Interrupt each 1 ms */
+	/* Interrupt each 10 ms */
 	if(htim->Instance == TIM3)
 	{
 		
@@ -141,12 +142,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			{
 				sh_current_state = SH_IDLE;
 				signal_time_counter = 0;
+				acq_busy = 0;
 				HAL_TIM_Base_Stop_IT(htim);
+				HAL_UART_Transmit(sound_pck->huart4, stop_flag, 5, 10);
 			}
 			
 		}
 	}
-	/*
+
 	/* Envelop detection : sampling 100 points and compare with a threshold */
 //	else if(htim->Instance == TIM2)
 //	{
@@ -416,21 +419,23 @@ void sinus_generate(SOUND_PCK * pck)
 
 void sound_acquisition(SOUND_PCK* pck)
 {
-	static unsigned char init_flag = 2;
 	static uint16_t last_time_step = 0;
 	
-	if(init_flag != 0)
+	if(acq_busy == 0)
 	{
+		signal_time_Acq = 10 * pck->cmd_pck->delay_acq;
+		HAL_UART_Transmit(sound_pck->huart4, start_flag, 6, 10);
 		HAL_ADC_Start(pck->hadc1);
 		// Enable interrupt on timer 2 for envelop detection
 		//HAL_TIM_Base_Start_IT(pck->htim2);
 		// Enable interrupt on timer 3 for timing purpose
 		HAL_TIM_Base_Start_IT(pck->htim3);
+		acq_busy = 1;
 	}
 	/* Constant check and periodic data send from bluetooth */
 	else
 	{
-		
+		//time_step_cnt = 0;
 	}
 	
 }
