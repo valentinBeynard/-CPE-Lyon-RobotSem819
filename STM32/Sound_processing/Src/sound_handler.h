@@ -9,9 +9,11 @@
 
 #define VDETECT	0xF000
 
-#define ADC1_TIME_STEP	50.125
+#define ADC1_TIME_STEP	164
 
-#define ADC_BUFFER_SIZE	20
+#define ADC_BUFFER_SIZE	6
+
+#define ADC_STOP_BYTE 0x0D
 
 /*
 *		####################################################
