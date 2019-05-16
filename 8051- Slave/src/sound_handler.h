@@ -17,11 +17,15 @@
 #define SD_GEN_BUFFER_SIZE	16
 
 #define SD_GEN_GENERATE_CMD	'G'
+
+#define ACQ_GENERATE_CMD	'A'
+
 	
 typedef enum
 {
   SD_GEN_IDLE,
 	SD_GEN_PARSE_CMD,
+	SD_ACQ_SEND_CMD,
   SD_GEN_SEND_CMD
 }SOUND_HANDLER_STATE;
 
@@ -35,6 +39,7 @@ void sound_handler_process(OUT_M2* cmd);
 
 void sd_gen_idle(OUT_M2* cmd);
 void sd_gen_send(OUT_M2* cmd);
+void acq_send(OUT_M2* cmd);
 void sd_gen_parse(OUT_M2* cmd);
 
 #endif

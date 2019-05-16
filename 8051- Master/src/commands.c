@@ -543,7 +543,7 @@ byte generate_sound_cmd(CMD_PACKET* cmd_packet)
 {
 		byte i = 0, j = 0;
 	char params[4][5] = {"F", "P", "W", "B"};
-	int frequency_code = 100, delay_son = 25, delay_silence = 50, nbr_bip = 3;
+	int frequency_code = 8, delay_son = 5, delay_silence = 5, nbr_bip = 3;
 	byte param_find = 0;
 	char * str = 0;
 	
@@ -647,6 +647,20 @@ byte generate_sound_cmd(CMD_PACKET* cmd_packet)
 	
 	return 1;
 	
+}
+
+byte acquire_sound_cmd(CMD_PACKET* cmd_packet)
+{
+	// To much args
+	if(cmd_packet->cmd_size != 0)
+	{
+		return 0;
+	}
+	
+	cmd_packet->commands->Etat_ACQ_Son = ACQ_oui;
+	cmd_packet->commands->ACQ_Duree = 10;
+	
+	return 1;
 }
 
 byte photo_cmd(CMD_PACKET* cmd_packet)

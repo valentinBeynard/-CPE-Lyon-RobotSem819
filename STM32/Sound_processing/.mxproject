@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=F:/Mes Documents/GitHub/-CPE-Lyon-RobotSem819/STM32/Sound_processing/Inc
+HeaderPath=C:/Users/BEYNARD/Documents/GitHub/-CPE-Lyon-RobotSem819/STM32/Sound_processing/Inc
 HeaderFiles=ffconf.h;user_diskio.h;fatfs.h;stm32f3xx_it.h;stm32f3xx_hal_conf.h;main.h;
-SourcePath=F:/Mes Documents/GitHub/-CPE-Lyon-RobotSem819/STM32/Sound_processing/Src
+SourcePath=C:/Users/BEYNARD/Documents/GitHub/-CPE-Lyon-RobotSem819/STM32/Sound_processing/Src
 SourceFiles=user_diskio.c;fatfs.c;stm32f3xx_it.c;stm32f3xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

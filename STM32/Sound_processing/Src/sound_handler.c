@@ -46,11 +46,12 @@ unsigned char inverse_signal = 1;
 
 unsigned char is_high = 0;
 
-char adc_buffer[ADC_BUFFER_SIZE];
-byte adc_buffer_ptr = 0;
+uint8_t adc_buffer[ADC_BUFFER_SIZE];
+uint16_t adc_buffer_ptr = 0;
 
-uint8_t start_flag[6] = "START\n"; 
-uint8_t stop_flag[5] = "STOP\n"; 
+uint8_t start_flag[6] = "START\n";
+uint8_t high_flag[5] = "HIGH\n";
+uint8_t stop_flag[5] = "STOP\n";
 
 byte acq_busy = 0;
 
@@ -82,7 +83,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc1){
 			// For Simple recopy
 			adc1value = HAL_ADC_GetValue(hadc1);
 			
-			adc1_H = (adc1value >> 8);
+			adc_buffer[adc_buffer_ptr] = (adc1value >> 8);
+			adc_buffer_ptr++;
+			
 			adc1_L = adc1value;
 			
 			/* Sampling for bluetooth transmission purpose */	
@@ -91,9 +94,23 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc1){
 
 			time_step_cnt++;
 			
-			HAL_UART_Transmit(sound_pck->huart4, &time_step_cnt, 1, 1);
+			HAL_UART_Transmit(sound_pck->huart4, &adc1_L, 1, 1);
 			//HAL_UART_Transmit(sound_pck->huart4, &adc1_L, 1, 1);
 			//HAL_UART_Transmit(sound_pck->huart4, &adc_end_flag, 1, 1);
+		}
+		else if(sh_current_state == SH_TX_HBYTE)
+		{
+			if(adc_buffer_ptr == 0)
+			{
+				sh_current_state = SH_IDLE;
+				HAL_UART_Transmit(sound_pck->huart4, stop_flag, 5, 10);
+			}
+			else
+			{
+				HAL_UART_Transmit(sound_pck->huart4, &adc_buffer[adc_buffer_ptr], 1, 1);
+				adc_buffer_ptr--;
+			}
+			
 		}
 		else{
 			HAL_ADC_Stop(hadc1);
@@ -151,11 +168,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 			else
 			{
-				sh_current_state = SH_IDLE;
+				sh_current_state = SH_TX_HBYTE;
 				signal_time_counter = 0;
 				acq_busy = 0;
 				HAL_TIM_Base_Stop_IT(htim);
-				HAL_UART_Transmit(sound_pck->huart4, stop_flag, 5, 10);
+				HAL_UART_Transmit(sound_pck->huart4, high_flag, 5, 10);
 			}
 			
 		}
@@ -402,6 +419,9 @@ void sound_handler_process(SOUND_PCK * pck)
 
 		case SH_ACQ:
 			sound_acquisition(pck);
+			break;
+		
+		case SH_TX_HBYTE:
 			break;
 	}
 }

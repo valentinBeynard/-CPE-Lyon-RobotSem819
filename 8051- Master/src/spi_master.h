@@ -15,6 +15,7 @@
 					Protocol SPI : Commands ID
 #############################################################################
 */
+#define SPI_ACQ_SOUND_CMD	0xA1
 #define SPI_GENERATE_SOUND_CMD	0xA2
 #define SPI_LIGHT_ON_CMD	0xA3
 #define SPI_LIGHT_OFF_CMD	0xA4
@@ -46,6 +47,7 @@ void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 void spi_cmd_light_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 void spi_cmd_light_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 void spi_cmd_generate_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet);
+void spi_cmd_acq_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 void spi_cmd_photo_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 void spi_cmd_photo_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet);
 

@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   SPI_MASTER                                                            05/14/2019 09:17:25 PAGE 1   
+C51 COMPILER V9.55   SPI_MASTER                                                            05/16/2019 17:21:30 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE SPI_MASTER
@@ -62,7 +62,7 @@ line level    source
   52   1        //EIE1 |= 0x01;
   53   1        
   54   1        // Active Crossbar
-C51 COMPILER V9.55   SPI_MASTER                                                            05/14/2019 09:17:25 PAGE 2   
+C51 COMPILER V9.55   SPI_MASTER                                                            05/16/2019 17:21:30 PAGE 2   
 
   55   1        XBR0 |= 0x02;  //Route les 4 ports de la SPI et les 2 de l'UART0;
   56   1        
@@ -126,7 +126,7 @@ line level    source
  113   1        {
  114   2          spi_error();
  115   2        }
-C51 COMPILER V9.55   SPI_MASTER                                                            05/14/2019 09:17:25 PAGE 3   
+C51 COMPILER V9.55   SPI_MASTER                                                            05/16/2019 17:21:30 PAGE 3   
 
  116   1        else{
  117   2          spi_packet->ready = 1;
@@ -144,169 +144,182 @@ line level    source
  128          {
  129   1        if(cmd->Etat_ACQ_Son == ACQ_oui)
  130   1        {
- 131   2          
- 132   2        }
- 133   1        else if(cmd->Etat_GEN_Son == GEN_oui)
- 134   1        {
- 135   2          spi_cmd_generate_sound(cmd, spi_packet);
- 136   2          cmd->Etat_GEN_Son = GEN_non;
- 137   2          spi_packet->ready = 1;
- 138   2        }
- 139   1        else if(cmd->Etat_Lumiere != Lumiere_non)
- 140   1        {
- 141   2          if(cmd->Etat_Lumiere == Allumer)
- 142   2          {
- 143   3            spi_cmd_light_ON(cmd, spi_packet);
- 144   3            cmd->Etat_Lumiere = Lumiere_non;
- 145   3            spi_packet->ready = 1;
- 146   3          }
- 147   2          else
- 148   2          {
- 149   3            spi_cmd_light_OFF(cmd, spi_packet);
- 150   3            cmd->Etat_Lumiere = Lumiere_non;
- 151   3            spi_packet->ready = 1;
- 152   3          }
- 153   2        }
- 154   1        else if(cmd->Etat_Servo == Servo_V)
- 155   1        {
- 156   2          spi_cmd_servo(cmd, spi_packet);
- 157   2          cmd->Etat_Servo = Servo_non;
- 158   2          spi_packet->ready = 1;
- 159   2        }
- 160   1        else if(cmd->Etat_Photo != Photo_non)
- 161   1        {
- 162   2          if(cmd->Etat_Photo != Photo_stop)
- 163   2          {
- 164   3            spi_cmd_photo_ON(cmd, spi_packet);
- 165   3            cmd->Etat_Photo = Photo_non;
- 166   3            spi_packet->ready = 1;
- 167   3          }
- 168   2          else
- 169   2          {
- 170   3            spi_cmd_photo_OFF(cmd, spi_packet);
- 171   3            cmd->Etat_Photo = Photo_non;
- 172   3            spi_packet->ready = 1;
- 173   3          }
- 174   2        }
- 175   1        else
- 176   1        {
-C51 COMPILER V9.55   SPI_MASTER                                                            05/14/2019 09:17:25 PAGE 4   
+ 131   2          spi_cmd_acq_sound(cmd, spi_packet);
+ 132   2          cmd->Etat_ACQ_Son = ACQ_non;
+ 133   2          spi_packet->ready = 1;
+ 134   2        }
+ 135   1        else if(cmd->Etat_GEN_Son == GEN_oui)
+ 136   1        {
+ 137   2          spi_cmd_generate_sound(cmd, spi_packet);
+ 138   2          cmd->Etat_GEN_Son = GEN_non;
+ 139   2          spi_packet->ready = 1;
+ 140   2        }
+ 141   1        else if(cmd->Etat_Lumiere != Lumiere_non)
+ 142   1        {
+ 143   2          if(cmd->Etat_Lumiere == Allumer)
+ 144   2          {
+ 145   3            spi_cmd_light_ON(cmd, spi_packet);
+ 146   3            cmd->Etat_Lumiere = Lumiere_non;
+ 147   3            spi_packet->ready = 1;
+ 148   3          }
+ 149   2          else
+ 150   2          {
+ 151   3            spi_cmd_light_OFF(cmd, spi_packet);
+ 152   3            cmd->Etat_Lumiere = Lumiere_non;
+ 153   3            spi_packet->ready = 1;
+ 154   3          }
+ 155   2        }
+ 156   1        else if(cmd->Etat_Servo == Servo_V)
+ 157   1        {
+ 158   2          spi_cmd_servo(cmd, spi_packet);
+ 159   2          cmd->Etat_Servo = Servo_non;
+ 160   2          spi_packet->ready = 1;
+ 161   2        }
+ 162   1        else if(cmd->Etat_Photo != Photo_non)
+ 163   1        {
+ 164   2          if(cmd->Etat_Photo != Photo_stop)
+ 165   2          {
+ 166   3            spi_cmd_photo_ON(cmd, spi_packet);
+ 167   3            cmd->Etat_Photo = Photo_non;
+ 168   3            spi_packet->ready = 1;
+ 169   3          }
+ 170   2          else
+ 171   2          {
+ 172   3            spi_cmd_photo_OFF(cmd, spi_packet);
+ 173   3            cmd->Etat_Photo = Photo_non;
+ 174   3            spi_packet->ready = 1;
+ 175   3          }
+ 176   2        }
+C51 COMPILER V9.55   SPI_MASTER                                                            05/16/2019 17:21:30 PAGE 4   
 
- 177   2      
- 178   2        }
- 179   1        
- 180   1        
- 181   1        if(spi_packet->ready == 1)
- 182   1        {
- 183   2          spi_transmit(spi_packet);
- 184   2          spi_packet->ready = 0;
- 185   2        }
- 186   1        
- 187   1      }
- 188          
- 189          void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet)
- 190          {
- 191   1        spi_packet->send_data[0] = SPI_SERVO_CMD;
- 192   1        spi_packet->send_data[1] = (cmd->Servo_Angle);
- 193   1        spi_packet->send_data[2] = (cmd->Servo_Angle) >> 8;
- 194   1        spi_packet->send_data[3] = 0;
- 195   1        spi_packet->send_data[4] = 0;
- 196   1      }
- 197          
- 198          void spi_cmd_light_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
- 199          {
- 200   1        spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
- 201   1        spi_packet->send_data[1] = (cmd->Lumiere_Intensite);
- 202   1        spi_packet->send_data[2] = (cmd->Lumiere_Duree);
- 203   1        spi_packet->send_data[3] = (cmd->Lumire_Extinction);
- 204   1        spi_packet->send_data[4] = (cmd->Lumiere_Nbre);
- 205   1        
- 206   1      }
- 207          
- 208          void spi_cmd_light_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
- 209          {
- 210   1        /* For Warning Suppression */
- 211   1        cmd = cmd;
- 212   1        
- 213   1        spi_packet->send_data[0] = SPI_LIGHT_OFF_CMD;
- 214   1        spi_packet->send_data[1] = 0;
- 215   1        spi_packet->send_data[2] = 0;
- 216   1        spi_packet->send_data[3] = 0;
- 217   1        spi_packet->send_data[4] = 0;
- 218   1        
- 219   1      }
- 220          
- 221          void spi_cmd_generate_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet)
- 222          {
- 223   1        spi_packet->send_data[0] = SPI_GENERATE_SOUND_CMD;
- 224   1        spi_packet->send_data[1] = (cmd->GEN_freq_code);
- 225   1        spi_packet->send_data[2] = (cmd->GEN_son_Duree);
- 226   1        spi_packet->send_data[3] = (cmd->GEN_silence_Duree);
- 227   1        spi_packet->send_data[4] = (cmd->GEN_nbr_bip);
- 228   1      }
- 229          
- 230          void spi_cmd_photo_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
- 231          {
- 232   1        /* For Warning Suppression */
- 233   1        cmd = cmd;
- 234   1        
- 235   1        spi_packet->send_data[0] = SPI_PHOTO_ON_CMD;
- 236   1        spi_packet->send_data[1] = cmd->Etat_Photo;
- 237   1        spi_packet->send_data[2] = cmd->Photo_Duree;
- 238   1        spi_packet->send_data[3] = cmd->Photo_Nbre;
-C51 COMPILER V9.55   SPI_MASTER                                                            05/14/2019 09:17:25 PAGE 5   
+ 177   1        else
+ 178   1        {
+ 179   2      
+ 180   2        }
+ 181   1        
+ 182   1        
+ 183   1        if(spi_packet->ready == 1)
+ 184   1        {
+ 185   2          spi_transmit(spi_packet);
+ 186   2          spi_packet->ready = 0;
+ 187   2        }
+ 188   1        
+ 189   1      }
+ 190          
+ 191          void spi_cmd_servo(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+ 192          {
+ 193   1        spi_packet->send_data[0] = SPI_SERVO_CMD;
+ 194   1        spi_packet->send_data[1] = (cmd->Servo_Angle);
+ 195   1        spi_packet->send_data[2] = (cmd->Servo_Angle) >> 8;
+ 196   1        spi_packet->send_data[3] = 0;
+ 197   1        spi_packet->send_data[4] = 0;
+ 198   1      }
+ 199          
+ 200          void spi_cmd_light_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+ 201          {
+ 202   1        spi_packet->send_data[0] = SPI_LIGHT_ON_CMD;
+ 203   1        spi_packet->send_data[1] = (cmd->Lumiere_Intensite);
+ 204   1        spi_packet->send_data[2] = (cmd->Lumiere_Duree);
+ 205   1        spi_packet->send_data[3] = (cmd->Lumire_Extinction);
+ 206   1        spi_packet->send_data[4] = (cmd->Lumiere_Nbre);
+ 207   1        
+ 208   1      }
+ 209          
+ 210          void spi_cmd_light_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+ 211          {
+ 212   1        /* For Warning Suppression */
+ 213   1        cmd = cmd;
+ 214   1        
+ 215   1        spi_packet->send_data[0] = SPI_LIGHT_OFF_CMD;
+ 216   1        spi_packet->send_data[1] = 0;
+ 217   1        spi_packet->send_data[2] = 0;
+ 218   1        spi_packet->send_data[3] = 0;
+ 219   1        spi_packet->send_data[4] = 0;
+ 220   1        
+ 221   1      }
+ 222          
+ 223          void spi_cmd_generate_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+ 224          {
+ 225   1        spi_packet->send_data[0] = SPI_GENERATE_SOUND_CMD;
+ 226   1        spi_packet->send_data[1] = (cmd->GEN_freq_code);
+ 227   1        spi_packet->send_data[2] = (cmd->GEN_son_Duree);
+ 228   1        spi_packet->send_data[3] = (cmd->GEN_silence_Duree);
+ 229   1        spi_packet->send_data[4] = (cmd->GEN_nbr_bip);
+ 230   1      }
+ 231          
+ 232          void spi_cmd_acq_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+ 233          {
+ 234   1        spi_packet->send_data[0] = SPI_ACQ_SOUND_CMD;
+ 235   1        spi_packet->send_data[1] = (cmd->ACQ_Duree);
+ 236   1        spi_packet->send_data[2] = 0;
+ 237   1        spi_packet->send_data[3] = 0;
+ 238   1        spi_packet->send_data[4] = 0;
+C51 COMPILER V9.55   SPI_MASTER                                                            05/16/2019 17:21:30 PAGE 5   
 
- 239   1        spi_packet->send_data[4] = 0;
- 240   1        
- 241   1      }
- 242          
- 243          void spi_cmd_photo_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
- 244          {
- 245   1        /* For Warning Suppression */
- 246   1        cmd = cmd;
- 247   1        
- 248   1        spi_packet->send_data[0] = SPI_PHOTO_OFF_CMD;
- 249   1        spi_packet->send_data[1] = 0;
- 250   1        spi_packet->send_data[2] = 0;
- 251   1        spi_packet->send_data[3] = 0;
- 252   1        spi_packet->send_data[4] = 0;
- 253   1      }
- 254          
- 255          byte spi_validate()
- 256          {
- 257   1        int hash = 0, i =0;
+ 239   1      }
+ 240          
+ 241          void spi_cmd_photo_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+ 242          {
+ 243   1        /* For Warning Suppression */
+ 244   1        cmd = cmd;
+ 245   1        
+ 246   1        spi_packet->send_data[0] = SPI_PHOTO_ON_CMD;
+ 247   1        spi_packet->send_data[1] = cmd->Etat_Photo;
+ 248   1        spi_packet->send_data[2] = cmd->Photo_Duree;
+ 249   1        spi_packet->send_data[3] = cmd->Photo_Nbre;
+ 250   1        spi_packet->send_data[4] = 0;
+ 251   1        
+ 252   1      }
+ 253          
+ 254          void spi_cmd_photo_OFF(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+ 255          {
+ 256   1        /* For Warning Suppression */
+ 257   1        cmd = cmd;
  258   1        
- 259   1        for(i = 0; i < 5 ; i++)
- 260   1        {
- 261   2          hash += spi_data_in[i];
- 262   2        }
- 263   1        
- 264   1        if(hash != 368)
- 265   1        {
- 266   2          return 0;
- 267   2        }
- 268   1        else 
- 269   1        {
- 270   2          return 1;
- 271   2        }
- 272   1      }
- 273          
- 274          void spi_error()
- 275          {
- 276   1        spi_data_in[0] = 'E';
- 277   1        spi_data_in[1] = 'R';
- 278   1        spi_data_in[2] = 'R';
- 279   1        spi_data_in[3] = 'O';
- 280   1        spi_data_in[4] = 'R';
- 281   1      }
- 282          
+ 259   1        spi_packet->send_data[0] = SPI_PHOTO_OFF_CMD;
+ 260   1        spi_packet->send_data[1] = 0;
+ 261   1        spi_packet->send_data[2] = 0;
+ 262   1        spi_packet->send_data[3] = 0;
+ 263   1        spi_packet->send_data[4] = 0;
+ 264   1      }
+ 265          
+ 266          byte spi_validate()
+ 267          {
+ 268   1        int hash = 0, i =0;
+ 269   1        
+ 270   1        for(i = 0; i < 5 ; i++)
+ 271   1        {
+ 272   2          hash += spi_data_in[i];
+ 273   2        }
+ 274   1        
+ 275   1        if(hash != 368)
+ 276   1        {
+ 277   2          return 0;
+ 278   2        }
+ 279   1        else 
+ 280   1        {
+ 281   2          return 1;
+ 282   2        }
+ 283   1      }
+ 284          
+ 285          void spi_error()
+ 286          {
+ 287   1        spi_data_in[0] = 'E';
+ 288   1        spi_data_in[1] = 'R';
+ 289   1        spi_data_in[2] = 'R';
+ 290   1        spi_data_in[3] = 'O';
+ 291   1        spi_data_in[4] = 'R';
+ 292   1      }
+ 293          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   2325    ----
+   CODE SIZE        =   2554    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =     11      52
+   XDATA SIZE       =     11      58
    PDATA SIZE       =   ----    ----
+C51 COMPILER V9.55   SPI_MASTER                                                            05/16/2019 17:21:30 PAGE 6   
+
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/14/2019 09:24:45 PAGE 1   
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/16/2019 16:31:20 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE ROBOT_SLAVE
@@ -11,126 +11,128 @@ line level    source
    1          #include "spi_slave.h"
    2          #include "light_beam.h"
    3          #include "img_handler.h"
-   4          //#include "pointeur_lumineux.h"
-   5          #include "c8051F020.h"
-   6          
-   7          /*
-   8          #############################################################################
-   9                  PIN List
-  10          #############################################################################
-  11          *
-  12          * UART0 = TX0 -> P0.0 | RX0 -> P0.1
-  13          *
-  14          * SPI = SCK -> P0.2 | MISO -> P0.3 | MOSI -> P0.4 | NSS -> P0.5
-  15          *       SCK : OUT
-  16          *       MISO : IN
-  17          *       MOSI : OUT
-  18          *       NSS : Master PIN_NSS P1.0
-  19          *
-  20          * 
-  21          * Light Beam -> P1.0
-  22          * 
-  23          * Photo Trigger -> P1.1
-  24          *
-  25          * Servo_H -> P1.2
-  26          * 
-  27          *
-  28          * 
-  29          *
+   4          #include "sound_handler.h"
+   5          //#include "pointeur_lumineux.h"
+   6          #include "c8051F020.h"
+   7          
+   8          /*
+   9          #############################################################################
+  10                  PIN List
+  11          #############################################################################
+  12          *
+  13          * UART0 = TX0 -> P0.0 | RX0 -> P0.1
+  14          *
+  15          * SPI = SCK -> P0.2 | MISO -> P0.3 | MOSI -> P0.4 | NSS -> P0.5
+  16          *       SCK : OUT
+  17          *       MISO : IN
+  18          *       MOSI : OUT
+  19          *       NSS : Master PIN_NSS P1.0
+  20          *
+  21          * 
+  22          * Light Beam -> P1.0
+  23          * 
+  24          * Photo Trigger -> P1.1
+  25          *
+  26          * Servo_H -> P1.2
+  27          * 
+  28          *
+  29          * 
   30          *
   31          *
   32          *
-  33          */
-  34          
-  35          sfr Reg = 0xFF;
-  36          
-  37          OUT_M2 commands = {ACQ_non,
-  38                              0,
-  39                              GEN_non,
-  40                              0,
+  33          *
+  34          */
+  35          
+  36          sfr Reg = 0xFF;
+  37          
+  38          OUT_M2 commands = {ACQ_non,
+  39                              0,
+  40                              GEN_non,
   41                              0,
   42                              0,
   43                              0,
-  44                              Lumiere_non,
-  45                              10,
+  44                              0,
+  45                              Lumiere_non,
   46                              10,
-  47                              20,
-  48                              10,
-  49                              Servo_non,
-  50                              0,
-  51                              Photo_non,
-  52                              0,
-  53                              0};
-  54          
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/14/2019 09:24:45 PAGE 2   
+  47                              10,
+  48                              20,
+  49                              10,
+  50                              Servo_non,
+  51                              0,
+  52                              Photo_non,
+  53                              0,
+  54                              0};
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/16/2019 16:31:20 PAGE 2   
 
-  55          void Init_External_clk()
-  56          {
-  57   1        // Config External Osci
-  58   1        OSCXCN = 0x67;
-  59   1        while(OSCXCN != 0xE7) {}
-  60   1        
-  61   1        // Use Exern CLK
-  62   1        OSCICN = 0x08;
-  63   1          
-  64   1        CKCON = 0x00;
-  65   1      }
-  66          
-  67          void Enable_Crossbar()
-  68          {
-  69   1        // Enable Crossbar
-  70   1        XBR2 |= 0x40;
-  71   1        
+  55          
+  56          void Init_External_clk()
+  57          {
+  58   1        // Config External Osci
+  59   1        OSCXCN = 0x67;
+  60   1        while(OSCXCN != 0xE7) {}
+  61   1        
+  62   1        // Use Exern CLK
+  63   1        OSCICN = 0x08;
+  64   1          
+  65   1        CKCON = 0x00;
+  66   1      }
+  67          
+  68          void Enable_Crossbar()
+  69          {
+  70   1        // Enable Crossbar
+  71   1        XBR2 |= 0x40;
   72   1        
-  73   1      }
-  74          
-  75          void Enable_general_Int()
-  76          {
-  77   1        EA = 1; // Enable general interruption
-  78   1      }
-  79          
-  80          int main (void)
-  81          {
-  82   1        Reg = 0xDE;   // Dévalidation du watchdog 
-  83   1        Reg = 0xAD;
-  84   1        
-  85   1        Init_External_clk();
-  86   1        
-  87   1        Init_uart0();
-*** WARNING C206 IN LINE 87 OF src\robot_slave.c: 'Init_uart0': missing function-prototype
-  88   1        
-  89   1        Init_SPI();
-  90   1        
-  91   1        Init_light_beam();
-  92   1        
-  93   1        //Init_Img_Handler();
-  94   1        
-  95   1        Enable_Crossbar();
-  96   1      
-  97   1        Enable_general_Int();
-  98   1        
-  99   1        //LED = 0;
- 100   1        
+  73   1        
+  74   1      }
+  75          
+  76          void Enable_general_Int()
+  77          {
+  78   1        EA = 1; // Enable general interruption
+  79   1      }
+  80          
+  81          int main (void)
+  82          {
+  83   1        Reg = 0xDE;   // Dévalidation du watchdog 
+  84   1        Reg = 0xAD;
+  85   1        
+  86   1        Init_External_clk();
+  87   1        
+  88   1        Init_uart0();
+  89   1        
+  90   1        Init_SPI();
+  91   1        
+  92   1        Init_light_beam();
+  93   1        
+  94   1        Init_Img_Handler();
+  95   1        
+  96   1        Enable_Crossbar();
+  97   1      
+  98   1        Enable_general_Int();
+  99   1        
+ 100   1        //LED = 0;
  101   1        
  102   1        
- 103   1        while(1)
- 104   1        {
- 105   2          spi_process(&commands);
- 106   2          
- 107   2          light_beam_process(&commands);
- 108   2          
- 109   2          //img_handler_process(&commands);
- 110   2      
+ 103   1        
+ 104   1        while(1)
+ 105   1        {
+ 106   2          spi_process(&commands);
+ 107   2          
+ 108   2          light_beam_process(&commands);
+ 109   2          
+ 110   2          sound_handler_process(&commands);
  111   2          
- 112   2        }
- 113   1        
- 114   1      }
+ 112   2          img_handler_process(&commands);
+ 113   2      
+ 114   2          
+ 115   2        }
+ 116   1        
+C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/16/2019 16:31:20 PAGE 3   
 
-C51 COMPILER V9.55   ROBOT_SLAVE                                                           05/14/2019 09:24:45 PAGE 3   
+ 117   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     66    ----
+   CODE SIZE        =     87    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     17    ----
    PDATA SIZE       =   ----    ----
@@ -140,4 +142,4 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

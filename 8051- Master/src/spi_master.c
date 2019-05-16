@@ -128,7 +128,9 @@ void spi_process(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 {
 	if(cmd->Etat_ACQ_Son == ACQ_oui)
 	{
-		
+		spi_cmd_acq_sound(cmd, spi_packet);
+		cmd->Etat_ACQ_Son = ACQ_non;
+		spi_packet->ready = 1;
 	}
 	else if(cmd->Etat_GEN_Son == GEN_oui)
 	{
@@ -225,6 +227,15 @@ void spi_cmd_generate_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet)
 	spi_packet->send_data[2] = (cmd->GEN_son_Duree);
 	spi_packet->send_data[3] = (cmd->GEN_silence_Duree);
 	spi_packet->send_data[4] = (cmd->GEN_nbr_bip);
+}
+
+void spi_cmd_acq_sound(OUT_M1 * cmd, SPI_PACKET* spi_packet)
+{
+	spi_packet->send_data[0] = SPI_ACQ_SOUND_CMD;
+	spi_packet->send_data[1] = (cmd->ACQ_Duree);
+	spi_packet->send_data[2] = 0;
+	spi_packet->send_data[3] = 0;
+	spi_packet->send_data[4] = 0;
 }
 
 void spi_cmd_photo_ON(OUT_M1 * cmd, SPI_PACKET* spi_packet)

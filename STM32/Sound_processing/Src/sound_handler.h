@@ -11,7 +11,7 @@
 
 #define ADC1_TIME_STEP	164
 
-#define ADC_BUFFER_SIZE	6
+#define ADC_BUFFER_SIZE	6000
 
 #define ADC_STOP_BYTE 0x0D
 
@@ -25,7 +25,8 @@ typedef enum
 {
 	SH_IDLE = 0,
 	SH_GENE,
-	SH_ACQ
+	SH_ACQ,
+	SH_TX_HBYTE
 }SH_STATE;
 
 typedef struct

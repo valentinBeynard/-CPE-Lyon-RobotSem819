@@ -34,7 +34,7 @@ const CMD_ dispatch_table [NUMBER_OF_COMMAND] = {
     {"RC", complete_rotation_cmd},
     {"RA", angle_rotation_cmd},
     {"G", move_to_cmd},
-    {"ASS", default_process},
+    {"ASS", acquire_sound_cmd},
     {"MI", current_measure},
     {"ME", energy_measure},
     {"IPO", default_process},

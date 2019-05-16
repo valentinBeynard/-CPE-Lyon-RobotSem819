@@ -66,7 +66,11 @@ byte detecte_obstacle(CMD_PACKET* cmd_packet);
 byte servo_move_cmd(CMD_PACKET* cmd_packet);
 byte light_beam_ON_cmd(CMD_PACKET* cmd_packet);
 byte light_beam_OFF_cmd(CMD_PACKET* cmd_packet);
+
 byte generate_sound_cmd(CMD_PACKET* cmd_packet);
+byte acquire_sound_cmd(CMD_PACKET* cmd_packet);
+
+
 byte photo_cmd(CMD_PACKET* cmd_packet);
 byte photo_OFF_cmd(CMD_PACKET* cmd_packet);
 byte aux_cmd(CMD_PACKET* cmd_packet);

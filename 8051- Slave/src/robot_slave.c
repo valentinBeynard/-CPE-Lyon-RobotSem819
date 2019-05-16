@@ -1,6 +1,7 @@
 #include "spi_slave.h"
 #include "light_beam.h"
 #include "img_handler.h"
+#include "sound_handler.h"
 //#include "pointeur_lumineux.h"
 #include "c8051F020.h"
 
@@ -90,7 +91,7 @@ int main (void)
 	
 	Init_light_beam();
 	
-	//Init_Img_Handler();
+	Init_Img_Handler();
 	
 	Enable_Crossbar();
 
@@ -106,7 +107,9 @@ int main (void)
 		
 		light_beam_process(&commands);
 		
-		//img_handler_process(&commands);
+		sound_handler_process(&commands);
+		
+		img_handler_process(&commands);
 
 		
 	}

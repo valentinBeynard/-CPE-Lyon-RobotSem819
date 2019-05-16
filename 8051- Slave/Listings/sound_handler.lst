@@ -1,4 +1,4 @@
-C51 COMPILER V9.55   SOUND_HANDLER                                                         05/14/2019 09:24:45 PAGE 1   
+C51 COMPILER V9.55   SOUND_HANDLER                                                         05/16/2019 16:31:20 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE SOUND_HANDLER
@@ -62,7 +62,7 @@ line level    source
   52   2        }
   53   1      }
   54          
-C51 COMPILER V9.55   SOUND_HANDLER                                                         05/14/2019 09:24:45 PAGE 2   
+C51 COMPILER V9.55   SOUND_HANDLER                                                         05/16/2019 16:31:20 PAGE 2   
 
   55          void UART0_send(byte ch)
   56          {
@@ -93,8 +93,8 @@ line level    source
   81   2          case SD_GEN_IDLE:
   82   2            sd_gen_idle(cmd);
   83   2            break;
-  84   2          case SD_GEN_PARSE_CMD:
-  85   2            // TODO
+  84   2          case SD_ACQ_SEND_CMD:
+  85   2            acq_send(cmd);
   86   2            break;
   87   2          default:
   88   2            sd_gen_send(cmd);
@@ -110,97 +110,88 @@ line level    source
   98   1        
   99   1        if(cmd->Etat_GEN_Son == GEN_oui || cmd->Etat_ACQ_Son == ACQ_oui)
  100   1        {
- 101   2          sd_gen_current_state = SD_GEN_SEND_CMD;
+ 101   2          (sd_gen_current_state = (cmd->Etat_GEN_Son == GEN_oui) ? SD_GEN_SEND_CMD : SD_ACQ_SEND_CMD);
  102   2        }
  103   1        else
  104   1        {
  105   2          // Scrutation sur l'UART0
- 106   2          UART0_receive(&read_byte);
+ 106   2          /*UART0_receive(&read_byte);
  107   2      
  108   2          // Si on lit un caractère
  109   2          if(read_byte != '*'){
- 110   3              if(read_byte == STOP_BYTE)
- 111   3              {
- 112   4                // On passe à l'Etat 'Get Command' après avoir terminé de préparer le Buffer
- 113   4                raw_data[sd_gen_buffer_index] = read_byte;
- 114   4                sd_gen_buffer_index++;
- 115   4                // Tjrs ajouter un '\0' à la fin du buffer, sinon strlen ne marche pas...
- 116   4                raw_data[sd_gen_buffer_index] = '\0';
-C51 COMPILER V9.55   SOUND_HANDLER                                                         05/14/2019 09:24:45 PAGE 3   
+ 110   2              if(read_byte == STOP_BYTE)
+ 111   2              {
+ 112   2                // On passe à l'Etat 'Get Command' après avoir terminé de préparer le Buffer
+ 113   2                raw_data[sd_gen_buffer_index] = read_byte;
+ 114   2                sd_gen_buffer_index++;
+ 115   2                // Tjrs ajouter un '\0' à la fin du buffer, sinon strlen ne marche pas...
+ 116   2                raw_data[sd_gen_buffer_index] = '\0';
+C51 COMPILER V9.55   SOUND_HANDLER                                                         05/16/2019 16:31:20 PAGE 3   
 
- 117   4                sd_gen_current_state = SD_GEN_PARSE_CMD;
- 118   4              }else{
- 119   4                UART0_send(read_byte);
- 120   4                raw_data[sd_gen_buffer_index] = read_byte;
- 121   4                sd_gen_buffer_index++;
- 122   4              }
- 123   3          }
+ 117   2                sd_gen_current_state = SD_GEN_PARSE_CMD;
+ 118   2              }else{
+ 119   2                UART0_send(read_byte);
+ 120   2                raw_data[sd_gen_buffer_index] = read_byte;
+ 121   2                sd_gen_buffer_index++;
+ 122   2              }
+ 123   2          }*/
  124   2        }
  125   1        
  126   1      }
  127          
  128          void sd_gen_send(OUT_M2* cmd)
  129          {
- 130   1      
- 131   1        if(cmd->Etat_GEN_Son == GEN_oui)
- 132   1        {
- 133   2          UART0_send(SD_GEN_GENERATE_CMD);
- 134   2          UART0_send(COMMAND_SEPARATOR);
- 135   2          
- 136   2          UART0_send(cmd->GEN_freq_code);
- 137   2          UART0_send(COMMAND_SEPARATOR);
- 138   2          
- 139   2          UART0_send(cmd->GEN_son_Duree);
- 140   2          UART0_send(COMMAND_SEPARATOR);
- 141   2          
- 142   2          UART0_send(cmd->GEN_silence_Duree);
- 143   2          UART0_send(COMMAND_SEPARATOR);
- 144   2          
- 145   2          UART0_send(cmd->GEN_nbr_bip);
- 146   2          UART0_send(STOP_BYTE);
- 147   2          
- 148   2        }
- 149   1        else if(cmd->Etat_ACQ_Son == ACQ_oui)
- 150   1        {
- 151   2            // TODO
- 152   2        }
- 153   1        else
+ 130   1        UART0_send(SD_GEN_GENERATE_CMD);
+ 131   1        UART0_send(cmd->GEN_freq_code);
+ 132   1        UART0_send(cmd->GEN_son_Duree);
+ 133   1        UART0_send(cmd->GEN_silence_Duree); 
+ 134   1        UART0_send(cmd->GEN_nbr_bip);
+ 135   1        UART0_send(STOP_BYTE);
+ 136   1      
+ 137   1        sd_gen_current_state = SD_GEN_IDLE;
+ 138   1        cmd->Etat_GEN_Son = GEN_non;
+ 139   1      }
+ 140          
+ 141          void acq_send(OUT_M2* cmd)
+ 142          {
+ 143   1      
+ 144   1        UART0_send(ACQ_GENERATE_CMD);
+ 145   1        UART0_send(STOP_BYTE);
+ 146   1      
+ 147   1        sd_gen_current_state = SD_GEN_IDLE;
+ 148   1        cmd->Etat_ACQ_Son = ACQ_non;
+ 149   1      }
+ 150          
+ 151          void sd_gen_parse(OUT_M2* cmd)
+ 152          {
+ 153   1        if(strcmp(raw_data, "SD_F") == 0)
  154   1        {
- 155   2          
+ 155   2          cmd->Etat_GEN_Son = GEN_non;
  156   2        }
- 157   1        sd_gen_current_state = SD_GEN_IDLE;
- 158   1      }
- 159          
- 160          void sd_gen_parse(OUT_M2* cmd)
- 161          {
- 162   1        if(strcmp(raw_data, "SD_F") == 0)
- 163   1        {
- 164   2          cmd->Etat_GEN_Son = GEN_non;
- 165   2        }
- 166   1        else if(strcmp(raw_data, "ASS_F") == 0)
- 167   1        {
- 168   2          cmd->Etat_ACQ_Son = ACQ_non;
- 169   2        }
- 170   1        else
- 171   1        {
- 172   2          
- 173   2        }
- 174   1        
- 175   1        memset(raw_data, 0, sd_gen_buffer_index);
- 176   1        sd_gen_buffer_index = 0;
- 177   1        sd_gen_current_state = SD_GEN_IDLE;
- 178   1      }
-C51 COMPILER V9.55   SOUND_HANDLER                                                         05/14/2019 09:24:45 PAGE 4   
-
+ 157   1        else if(strcmp(raw_data, "ASS_F") == 0)
+ 158   1        {
+ 159   2          cmd->Etat_ACQ_Son = ACQ_non;
+ 160   2        }
+ 161   1        else
+ 162   1        {
+ 163   2          
+ 164   2        }
+ 165   1        
+ 166   1        memset(raw_data, 0, sd_gen_buffer_index);
+ 167   1        sd_gen_buffer_index = 0;
+ 168   1        sd_gen_current_state = SD_GEN_IDLE;
+ 169   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    471    ----
+   CODE SIZE        =    404    ----
    CONSTANT SIZE    =     11    ----
    XDATA SIZE       =     18      11
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
+C51 COMPILER V9.55   SOUND_HANDLER                                                         05/16/2019 16:31:20 PAGE 4   
+
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 

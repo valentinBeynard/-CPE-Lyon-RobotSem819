@@ -81,8 +81,8 @@ void sound_handler_process(OUT_M2* cmd)
 		case SD_GEN_IDLE:
 			sd_gen_idle(cmd);
 			break;
-		case SD_GEN_PARSE_CMD:
-			// TODO
+		case SD_ACQ_SEND_CMD:
+			acq_send(cmd);
 			break;
 		default:
 			sd_gen_send(cmd);
@@ -98,12 +98,12 @@ void sd_gen_idle(OUT_M2* cmd)
 	
 	if(cmd->Etat_GEN_Son == GEN_oui || cmd->Etat_ACQ_Son == ACQ_oui)
 	{
-		sd_gen_current_state = SD_GEN_SEND_CMD;
+		(sd_gen_current_state = (cmd->Etat_GEN_Son == GEN_oui) ? SD_GEN_SEND_CMD : SD_ACQ_SEND_CMD);
 	}
 	else
 	{
 		// Scrutation sur l'UART0
-		UART0_receive(&read_byte);
+		/*UART0_receive(&read_byte);
 
 		// Si on lit un caractère
 		if(read_byte != '*'){
@@ -120,41 +120,32 @@ void sd_gen_idle(OUT_M2* cmd)
 					raw_data[sd_gen_buffer_index] = read_byte;
 					sd_gen_buffer_index++;
 				}
-		}
+		}*/
 	}
 	
 }
 
 void sd_gen_send(OUT_M2* cmd)
 {
+	UART0_send(SD_GEN_GENERATE_CMD);
+	UART0_send(cmd->GEN_freq_code);
+	UART0_send(cmd->GEN_son_Duree);
+	UART0_send(cmd->GEN_silence_Duree);	
+	UART0_send(cmd->GEN_nbr_bip);
+	UART0_send(STOP_BYTE);
 
-	if(cmd->Etat_GEN_Son == GEN_oui)
-	{
-		UART0_send(SD_GEN_GENERATE_CMD);
-		UART0_send(COMMAND_SEPARATOR);
-		
-		UART0_send(cmd->GEN_freq_code);
-		UART0_send(COMMAND_SEPARATOR);
-		
-		UART0_send(cmd->GEN_son_Duree);
-		UART0_send(COMMAND_SEPARATOR);
-		
-		UART0_send(cmd->GEN_silence_Duree);
-		UART0_send(COMMAND_SEPARATOR);
-		
-		UART0_send(cmd->GEN_nbr_bip);
-		UART0_send(STOP_BYTE);
-		
-	}
-	else if(cmd->Etat_ACQ_Son == ACQ_oui)
-	{
-			// TODO
-	}
-	else
-	{
-		
-	}
 	sd_gen_current_state = SD_GEN_IDLE;
+	cmd->Etat_GEN_Son = GEN_non;
+}
+
+void acq_send(OUT_M2* cmd)
+{
+
+	UART0_send(ACQ_GENERATE_CMD);
+	UART0_send(STOP_BYTE);
+
+	sd_gen_current_state = SD_GEN_IDLE;
+	cmd->Etat_ACQ_Son = ACQ_non;
 }
 
 void sd_gen_parse(OUT_M2* cmd)
