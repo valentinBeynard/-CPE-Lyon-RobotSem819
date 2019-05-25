@@ -83,8 +83,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc1){
 			// For Simple recopy
 			adc1value = HAL_ADC_GetValue(hadc1);
 			
-			adc_buffer[adc_buffer_ptr] = (adc1value >> 8);
-			adc_buffer_ptr++;
+			//adc_buffer[adc_buffer_ptr] = (adc1value >> 8);
+			//adc_buffer_ptr++;
 			
 			adc1_L = adc1value;
 			
@@ -92,13 +92,13 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc1){
 			//sprintf(adc_buffer, "%d:%f\n", adc1value, (time_step_cnt * ADC1_TIME_STEP));
 			//sprintf(adc_buffer, "%d\n", adc1value);
 
-			time_step_cnt++;
+			//time_step_cnt++;
 			
 			HAL_UART_Transmit(sound_pck->huart4, &adc1_L, 1, 1);
 			//HAL_UART_Transmit(sound_pck->huart4, &adc1_L, 1, 1);
 			//HAL_UART_Transmit(sound_pck->huart4, &adc_end_flag, 1, 1);
 		}
-		else if(sh_current_state == SH_TX_HBYTE)
+		/*else if(sh_current_state == SH_TX_HBYTE)
 		{
 			if(adc_buffer_ptr == 0)
 			{
@@ -111,9 +111,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc1){
 				adc_buffer_ptr--;
 			}
 			
-		}
+		}*/
 		else{
 			HAL_ADC_Stop(hadc1);
+			sh_current_state = SH_IDLE;
+			HAL_UART_Transmit(sound_pck->huart4, stop_flag, 5, 10);
 		}
 	}
 }

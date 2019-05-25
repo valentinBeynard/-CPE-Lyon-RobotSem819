@@ -43,7 +43,6 @@ void timer_4_init() interrupt 16 {
 			if (IH_Compt_Nombre_photos == IH_Nombre_photos)
 			{
 				T4CON  &= ~0x04;
-				IH_Compt_Nombre_photos = 0;
 				imgh_busy = 0;
 			}
 		}
@@ -124,15 +123,20 @@ void trigger_photo(int nbr_photo, int time_step)
 
 void sequence_trig(int nbr_photo, int time_step)
 {
+	static byte init_f = 0;
+	
 	/* Init Sequence */
-	if(IH_Compt_Nombre_photos == 0)
+	if(init_f == 0)
 	{
 		trigger_photo(nbr_photo, time_step);
+		init_f++;
 	}
 	/* Stop Sequence State when good amount of picture has been taken */
 	else if(IH_Compt_Nombre_photos == IH_Nombre_photos)
 	{
 		imgh_current_state = IMGH_IDLE;
+		IH_Compt_Nombre_photos = 0;
+		init_f = 0;
 	}
 	else
 	{

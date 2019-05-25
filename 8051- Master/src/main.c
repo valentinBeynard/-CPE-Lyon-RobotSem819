@@ -161,7 +161,7 @@ int main (void)
 							
 	Init_ADC0();
 	
-	Init_power_sensor();
+	//Init_power_sensor();
 	
 	Init_distance_detector();
 	
@@ -212,7 +212,7 @@ int main (void)
 			spi_process(&commands, &spi_packet);
 			
 			// Power sensor
-			power_sensor_process(&commands, &informations);
+			//power_sensor_process(&commands, &informations);
 		
     }
 		

@@ -1,9 +1,9 @@
-C51 COMPILER V9.55   IMG_HANDLER                                                           05/16/2019 16:31:20 PAGE 1   
+C51 COMPILER V9.55   IMG_HANDLER                                                           05/23/2019 18:10:03 PAGE 1   
 
 
 C51 COMPILER V9.55, COMPILATION OF MODULE IMG_HANDLER
 OBJECT MODULE PLACED IN .\Objects\img_handler.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\img_handler.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRIN
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\img_handler.c LARGE OPTIMIZE(2,SPEED) BROWSE DEBUG OBJECTEXTEND PRIN
                     -T(.\Listings\img_handler.lst) TABS(2) OBJECT(.\Objects\img_handler.obj)
 
 line level    source
@@ -53,126 +53,130 @@ line level    source
   43   3            if (IH_Compt_Nombre_photos == IH_Nombre_photos)
   44   3            {
   45   4              T4CON  &= ~0x04;
-  46   4              IH_Compt_Nombre_photos = 0;
-  47   4              imgh_busy = 0;
-  48   4            }
-  49   3          }
-  50   2        }
-  51   1        T4CON  &= ~0x80;
-  52   1      }
-  53          
-  54          //initialisation du timer0
-C51 COMPILER V9.55   IMG_HANDLER                                                           05/16/2019 16:31:20 PAGE 2   
+  46   4              imgh_busy = 0;
+  47   4            }
+  48   3          }
+  49   2        }
+  50   1        T4CON  &= ~0x80;
+  51   1      }
+  52          
+  53          //initialisation du timer0
+  54          void Init_Img_Handler()
+C51 COMPILER V9.55   IMG_HANDLER                                                           05/23/2019 18:10:03 PAGE 2   
 
-  55          void Init_Img_Handler()
-  56          { 
-  57   1        //paramétrage timer 4 
-  58   1        RCAP4L = 0x00; //valeur de recharge lowbite
-  59   1        RCAP4H = 0x00; //valeur de recharge highbite
-  60   1          
-  61   1        // Push Pull mode
-  62   1        P1MDOUT |= 0xFF;
-  63   1        
-  64   1        photo_trigger = 0;
-  65   1        
-  66   1        EIE2 = 0x04;  // Enable timer4 interuption
-  67   1      }
+  55          { 
+  56   1        //paramétrage timer 4 
+  57   1        RCAP4L = 0x00; //valeur de recharge lowbite
+  58   1        RCAP4H = 0x00; //valeur de recharge highbite
+  59   1          
+  60   1        // Push Pull mode
+  61   1        P1MDOUT |= 0xFF;
+  62   1        
+  63   1        photo_trigger = 0;
+  64   1        
+  65   1        EIE2 = 0x04;  // Enable timer4 interuption
+  66   1      }
+  67          
   68          
-  69          
-  70          void img_handler_process(OUT_M2 * cmd)
-  71          {
-  72   1        switch(imgh_current_state)
-  73   1        {
-  74   2          /* IDLE State */
-  75   2          case IMGH_IDLE:
-  76   2            switch(cmd->Etat_Photo)
-  77   2            {
-  78   3              case Photo_1:
-  79   3                if(!imgh_busy) imgh_current_state = IMGH_SIMPLE;
-  80   3                cmd->Etat_Photo = Photo_non;
-  81   3                break;
-  82   3              
-  83   3              case Photo_Multiple:
-  84   3                if(!imgh_busy) imgh_current_state = IMGH_SEQ;
-  85   3                cmd->Etat_Photo = Photo_non;
-  86   3                break;
-  87   3              
-  88   3              case Photo_continue:
-  89   3                if(!imgh_busy) imgh_current_state = IMGH_CONTINUE;
-  90   3                cmd->Etat_Photo = Photo_non;
-  91   3                break;
-  92   3              
-  93   3              default:
-  94   3                break;
-  95   3            }
-  96   2            break;
-  97   2            
-  98   2          case IMGH_SIMPLE:
-  99   2            imgh_busy = 1;
- 100   2            trigger_photo(1, 1);
- 101   2            imgh_current_state = IMGH_IDLE;
- 102   2            break;
- 103   2          
- 104   2          case IMGH_SEQ:
- 105   2            imgh_busy = 1;
- 106   2            sequence_trig(cmd->Photo_Nbre, cmd->Photo_Duree);
- 107   2            break;
- 108   2          
- 109   2          case IMGH_CONTINUE:
- 110   2            imgh_busy = 1;
- 111   2            infinite_trig(cmd->Photo_Duree);
- 112   2            break;
- 113   2        }
- 114   1      }
- 115          
- 116          void trigger_photo(int nbr_photo, int time_step)
-C51 COMPILER V9.55   IMG_HANDLER                                                           05/16/2019 16:31:20 PAGE 3   
+  69          void img_handler_process(OUT_M2 * cmd)
+  70          {
+  71   1        switch(imgh_current_state)
+  72   1        {
+  73   2          /* IDLE State */
+  74   2          case IMGH_IDLE:
+  75   2            switch(cmd->Etat_Photo)
+  76   2            {
+  77   3              case Photo_1:
+  78   3                if(!imgh_busy) imgh_current_state = IMGH_SIMPLE;
+  79   3                cmd->Etat_Photo = Photo_non;
+  80   3                break;
+  81   3              
+  82   3              case Photo_Multiple:
+  83   3                if(!imgh_busy) imgh_current_state = IMGH_SEQ;
+  84   3                cmd->Etat_Photo = Photo_non;
+  85   3                break;
+  86   3              
+  87   3              case Photo_continue:
+  88   3                if(!imgh_busy) imgh_current_state = IMGH_CONTINUE;
+  89   3                cmd->Etat_Photo = Photo_non;
+  90   3                break;
+  91   3              
+  92   3              default:
+  93   3                break;
+  94   3            }
+  95   2            break;
+  96   2            
+  97   2          case IMGH_SIMPLE:
+  98   2            imgh_busy = 1;
+  99   2            trigger_photo(1, 1);
+ 100   2            imgh_current_state = IMGH_IDLE;
+ 101   2            break;
+ 102   2          
+ 103   2          case IMGH_SEQ:
+ 104   2            imgh_busy = 1;
+ 105   2            sequence_trig(cmd->Photo_Nbre, cmd->Photo_Duree);
+ 106   2            break;
+ 107   2          
+ 108   2          case IMGH_CONTINUE:
+ 109   2            imgh_busy = 1;
+ 110   2            infinite_trig(cmd->Photo_Duree);
+ 111   2            break;
+ 112   2        }
+ 113   1      }
+ 114          
+ 115          void trigger_photo(int nbr_photo, int time_step)
+ 116          {
+C51 COMPILER V9.55   IMG_HANDLER                                                           05/23/2019 18:10:03 PAGE 3   
 
- 117          {
- 118   1        IH_Nombre_photos = nbr_photo;
- 119   1        IH_duree_photos = time_step;
- 120   1        RCAP4L = 0xCF; //valeur de recharge lowbite
- 121   1        RCAP4H = 0x4C; //valeur de recharge highbite
- 122   1        T4CON = 0x04;
- 123   1      }
- 124          
- 125          void sequence_trig(int nbr_photo, int time_step)
- 126          {
- 127   1        /* Init Sequence */
- 128   1        if(IH_Compt_Nombre_photos == 0)
- 129   1        {
- 130   2          trigger_photo(nbr_photo, time_step);
- 131   2        }
- 132   1        /* Stop Sequence State when good amount of picture has been taken */
- 133   1        else if(IH_Compt_Nombre_photos == IH_Nombre_photos)
- 134   1        {
- 135   2          imgh_current_state = IMGH_IDLE;
- 136   2        }
- 137   1        else
- 138   1        {
- 139   2          // Nothing to do
+ 117   1        IH_Nombre_photos = nbr_photo;
+ 118   1        IH_duree_photos = time_step;
+ 119   1        RCAP4L = 0xCF; //valeur de recharge lowbite
+ 120   1        RCAP4H = 0x4C; //valeur de recharge highbite
+ 121   1        T4CON = 0x04;
+ 122   1      }
+ 123          
+ 124          void sequence_trig(int nbr_photo, int time_step)
+ 125          {
+ 126   1        static byte init_f = 0;
+ 127   1        
+ 128   1        /* Init Sequence */
+ 129   1        if(init_f == 0)
+ 130   1        {
+ 131   2          trigger_photo(nbr_photo, time_step);
+ 132   2          init_f++;
+ 133   2        }
+ 134   1        /* Stop Sequence State when good amount of picture has been taken */
+ 135   1        else if(IH_Compt_Nombre_photos == IH_Nombre_photos)
+ 136   1        {
+ 137   2          imgh_current_state = IMGH_IDLE;
+ 138   2          IH_Compt_Nombre_photos = 0;
+ 139   2          init_f = 0;
  140   2        }
- 141   1      }
- 142          
- 143          void infinite_trig(int time_step)
- 144          {
- 145   1          /* Init Sequence */
- 146   1        if(IH_Compt_Nombre_photos == 0)
- 147   1        {
- 148   2          trigger_photo(10, time_step);
- 149   2        }
- 150   1        else /* Reset photo counter flag check in Interrupt Timer to never reach end condition */
+ 141   1        else
+ 142   1        {
+ 143   2          // Nothing to do
+ 144   2        }
+ 145   1      }
+ 146          
+ 147          void infinite_trig(int time_step)
+ 148          {
+ 149   1          /* Init Sequence */
+ 150   1        if(IH_Compt_Nombre_photos == 0)
  151   1        {
- 152   2          IH_Compt_Nombre_photos = 1;
+ 152   2          trigger_photo(10, time_step);
  153   2        }
- 154   1        
- 155   1      }
+ 154   1        else /* Reset photo counter flag check in Interrupt Timer to never reach end condition */
+ 155   1        {
+ 156   2          IH_Compt_Nombre_photos = 1;
+ 157   2        }
+ 158   1        
+ 159   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    464    ----
+   CODE SIZE        =    676    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =     14       3
+   XDATA SIZE       =     15      13
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
