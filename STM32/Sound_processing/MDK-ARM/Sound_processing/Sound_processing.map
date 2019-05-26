@@ -2164,19 +2164,19 @@ Image Symbol Table
     i.__scatterload_zeroinit                 0x08003eb2   Section       14  handlers.o(i.__scatterload_zeroinit)
     i.clear_raw_buffer                       0x08003ec0   Section        0  uart.o(i.clear_raw_buffer)
     i.freq_calculator                        0x08003ed8   Section        0  sound_handler.o(i.freq_calculator)
-    i.init_sinus                             0x08003f6c   Section        0  sound_handler.o(i.init_sinus)
-    i.init_sound_handler                     0x0800402c   Section        0  sound_handler.o(i.init_sound_handler)
-    i.main                                   0x08004038   Section        0  main.o(i.main)
-    i.send_signal                            0x08004138   Section        0  sound_handler.o(i.send_signal)
-    i.sinus_generate                         0x080041bc   Section        0  sound_handler.o(i.sinus_generate)
-    i.sound_acquisition                      0x080041e4   Section        0  sound_handler.o(i.sound_acquisition)
-    i.sound_handler_process                  0x08004228   Section        0  sound_handler.o(i.sound_handler_process)
-    i.uart_cmd_process                       0x08004268   Section        0  uart.o(i.uart_cmd_process)
-    i.uart_init                              0x080042ac   Section        0  uart.o(i.uart_init)
-    .constdata                               0x080042b8   Section      512  sound_handler.o(.constdata)
-    .constdata                               0x080044b8   Section       32  stm32f3xx_hal_rcc.o(.constdata)
-    .constdata                               0x080044d8   Section       16  system_stm32f3xx.o(.constdata)
-    .constdata                               0x080044e8   Section        8  system_stm32f3xx.o(.constdata)
+    i.init_sinus                             0x08003f60   Section        0  sound_handler.o(i.init_sinus)
+    i.init_sound_handler                     0x08004020   Section        0  sound_handler.o(i.init_sound_handler)
+    i.main                                   0x0800402c   Section        0  main.o(i.main)
+    i.send_signal                            0x0800412c   Section        0  sound_handler.o(i.send_signal)
+    i.sinus_generate                         0x080041b0   Section        0  sound_handler.o(i.sinus_generate)
+    i.sound_acquisition                      0x080041d8   Section        0  sound_handler.o(i.sound_acquisition)
+    i.sound_handler_process                  0x0800421c   Section        0  sound_handler.o(i.sound_handler_process)
+    i.uart_cmd_process                       0x0800425c   Section        0  uart.o(i.uart_cmd_process)
+    i.uart_init                              0x080042a0   Section        0  uart.o(i.uart_init)
+    .constdata                               0x080042ac   Section      512  sound_handler.o(.constdata)
+    .constdata                               0x080044ac   Section       32  stm32f3xx_hal_rcc.o(.constdata)
+    .constdata                               0x080044cc   Section       16  system_stm32f3xx.o(.constdata)
+    .constdata                               0x080044dc   Section        8  system_stm32f3xx.o(.constdata)
     .data                                    0x20000000   Section       40  sound_handler.o(.data)
     bips_counter                             0x20000005   Data           1  sound_handler.o(.data)
     init_flag                                0x20000006   Data           1  sound_handler.o(.data)
@@ -2418,23 +2418,23 @@ Image Symbol Table
     __scatterload_null                       0x08003eb1   Thumb Code     2  handlers.o(i.__scatterload_null)
     __scatterload_zeroinit                   0x08003eb3   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
     clear_raw_buffer                         0x08003ec1   Thumb Code    18  uart.o(i.clear_raw_buffer)
-    freq_calculator                          0x08003ed9   Thumb Code   146  sound_handler.o(i.freq_calculator)
-    init_sinus                               0x08003f6d   Thumb Code   184  sound_handler.o(i.init_sinus)
-    init_sound_handler                       0x0800402d   Thumb Code     6  sound_handler.o(i.init_sound_handler)
-    main                                     0x08004039   Thumb Code   224  main.o(i.main)
-    send_signal                              0x08004139   Thumb Code   124  sound_handler.o(i.send_signal)
-    sinus_generate                           0x080041bd   Thumb Code    34  sound_handler.o(i.sinus_generate)
-    sound_acquisition                        0x080041e5   Thumb Code    64  sound_handler.o(i.sound_acquisition)
-    sound_handler_process                    0x08004229   Thumb Code    58  sound_handler.o(i.sound_handler_process)
-    uart_cmd_process                         0x08004269   Thumb Code    60  uart.o(i.uart_cmd_process)
-    uart_init                                0x080042ad   Thumb Code     8  uart.o(i.uart_init)
-    sine_wave_array                          0x080042b8   Data         512  sound_handler.o(.constdata)
-    aPLLMULFactorTable                       0x080044b8   Data          16  stm32f3xx_hal_rcc.o(.constdata)
-    aPredivFactorTable                       0x080044c8   Data          16  stm32f3xx_hal_rcc.o(.constdata)
-    AHBPrescTable                            0x080044d8   Data          16  system_stm32f3xx.o(.constdata)
-    APBPrescTable                            0x080044e8   Data           8  system_stm32f3xx.o(.constdata)
-    Region$$Table$$Base                      0x080044f0   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08004510   Number         0  anon$$obj.o(Region$$Table)
+    freq_calculator                          0x08003ed9   Thumb Code   134  sound_handler.o(i.freq_calculator)
+    init_sinus                               0x08003f61   Thumb Code   184  sound_handler.o(i.init_sinus)
+    init_sound_handler                       0x08004021   Thumb Code     6  sound_handler.o(i.init_sound_handler)
+    main                                     0x0800402d   Thumb Code   224  main.o(i.main)
+    send_signal                              0x0800412d   Thumb Code   124  sound_handler.o(i.send_signal)
+    sinus_generate                           0x080041b1   Thumb Code    34  sound_handler.o(i.sinus_generate)
+    sound_acquisition                        0x080041d9   Thumb Code    64  sound_handler.o(i.sound_acquisition)
+    sound_handler_process                    0x0800421d   Thumb Code    58  sound_handler.o(i.sound_handler_process)
+    uart_cmd_process                         0x0800425d   Thumb Code    60  uart.o(i.uart_cmd_process)
+    uart_init                                0x080042a1   Thumb Code     8  uart.o(i.uart_init)
+    sine_wave_array                          0x080042ac   Data         512  sound_handler.o(.constdata)
+    aPLLMULFactorTable                       0x080044ac   Data          16  stm32f3xx_hal_rcc.o(.constdata)
+    aPredivFactorTable                       0x080044bc   Data          16  stm32f3xx_hal_rcc.o(.constdata)
+    AHBPrescTable                            0x080044cc   Data          16  system_stm32f3xx.o(.constdata)
+    APBPrescTable                            0x080044dc   Data           8  system_stm32f3xx.o(.constdata)
+    Region$$Table$$Base                      0x080044e4   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08004504   Number         0  anon$$obj.o(Region$$Table)
     inverse_signal                           0x20000000   Data           1  sound_handler.o(.data)
     is_high                                  0x20000001   Data           1  sound_handler.o(.data)
     acq_busy                                 0x20000002   Data           1  sound_handler.o(.data)
@@ -2485,9 +2485,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000189
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x000045ac, Max: 0x00040000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x000045a0, Max: 0x00040000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00004510, Max: 0x00040000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00004504, Max: 0x00040000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -2677,44 +2677,44 @@ Memory Map of the image
     0x08003eb0   0x08003eb0   0x00000002   Code   RO         5309    i.__scatterload_null  mc_w.l(handlers.o)
     0x08003eb2   0x08003eb2   0x0000000e   Code   RO         5310    i.__scatterload_zeroinit  mc_w.l(handlers.o)
     0x08003ec0   0x08003ec0   0x00000018   Code   RO          253    i.clear_raw_buffer  uart.o
-    0x08003ed8   0x08003ed8   0x00000092   Code   RO          161    i.freq_calculator   sound_handler.o
-    0x08003f6a   0x08003f6a   0x00000002   PAD
-    0x08003f6c   0x08003f6c   0x000000c0   Code   RO          162    i.init_sinus        sound_handler.o
-    0x0800402c   0x0800402c   0x0000000c   Code   RO          163    i.init_sound_handler  sound_handler.o
-    0x08004038   0x08004038   0x00000100   Code   RO          312    i.main              main.o
-    0x08004138   0x08004138   0x00000084   Code   RO          164    i.send_signal       sound_handler.o
-    0x080041bc   0x080041bc   0x00000028   Code   RO          166    i.sinus_generate    sound_handler.o
-    0x080041e4   0x080041e4   0x00000044   Code   RO          167    i.sound_acquisition  sound_handler.o
-    0x08004228   0x08004228   0x00000040   Code   RO          168    i.sound_handler_process  sound_handler.o
-    0x08004268   0x08004268   0x00000044   Code   RO          254    i.uart_cmd_process  uart.o
-    0x080042ac   0x080042ac   0x0000000c   Code   RO          255    i.uart_init         uart.o
-    0x080042b8   0x080042b8   0x00000200   Data   RO          170    .constdata          sound_handler.o
-    0x080044b8   0x080044b8   0x00000020   Data   RO         3545    .constdata          stm32f3xx_hal_rcc.o
-    0x080044d8   0x080044d8   0x00000010   Data   RO         4789    .constdata          system_stm32f3xx.o
-    0x080044e8   0x080044e8   0x00000008   Data   RO         4790    .constdata          system_stm32f3xx.o
-    0x080044f0   0x080044f0   0x00000020   Data   RO         5306    Region$$Table       anon$$obj.o
+    0x08003ed8   0x08003ed8   0x00000086   Code   RO          161    i.freq_calculator   sound_handler.o
+    0x08003f5e   0x08003f5e   0x00000002   PAD
+    0x08003f60   0x08003f60   0x000000c0   Code   RO          162    i.init_sinus        sound_handler.o
+    0x08004020   0x08004020   0x0000000c   Code   RO          163    i.init_sound_handler  sound_handler.o
+    0x0800402c   0x0800402c   0x00000100   Code   RO          312    i.main              main.o
+    0x0800412c   0x0800412c   0x00000084   Code   RO          164    i.send_signal       sound_handler.o
+    0x080041b0   0x080041b0   0x00000028   Code   RO          166    i.sinus_generate    sound_handler.o
+    0x080041d8   0x080041d8   0x00000044   Code   RO          167    i.sound_acquisition  sound_handler.o
+    0x0800421c   0x0800421c   0x00000040   Code   RO          168    i.sound_handler_process  sound_handler.o
+    0x0800425c   0x0800425c   0x00000044   Code   RO          254    i.uart_cmd_process  uart.o
+    0x080042a0   0x080042a0   0x0000000c   Code   RO          255    i.uart_init         uart.o
+    0x080042ac   0x080042ac   0x00000200   Data   RO          170    .constdata          sound_handler.o
+    0x080044ac   0x080044ac   0x00000020   Data   RO         3545    .constdata          stm32f3xx_hal_rcc.o
+    0x080044cc   0x080044cc   0x00000010   Data   RO         4789    .constdata          system_stm32f3xx.o
+    0x080044dc   0x080044dc   0x00000008   Data   RO         4790    .constdata          system_stm32f3xx.o
+    0x080044e4   0x080044e4   0x00000020   Data   RO         5306    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08004510, Size: 0x00000bd8, Max: 0x0000a000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08004504, Size: 0x00000bd8, Max: 0x0000a000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x08004510   0x00000028   Data   RW          171    .data               sound_handler.o
-    0x20000028   0x08004538   0x00000004   Data   RW          257    .data               uart.o
-    0x2000002c   0x0800453c   0x0000003c   Data   RW          315    .data               main.o
-    0x20000068   0x08004578   0x00000001   Data   RW          424    .data               user_diskio.o
-    0x20000069   0x08004579   0x00000003   PAD
-    0x2000006c   0x0800457c   0x00000014   Data   RW          425    .data               user_diskio.o
-    0x20000080   0x08004590   0x00000005   Data   RW          482    .data               fatfs.o
-    0x20000085   0x08004595   0x00000003   PAD
-    0x20000088   0x08004598   0x00000004   Data   RW          648    .data               stm32f3xx_hal_msp.o
-    0x2000008c   0x0800459c   0x0000000c   Data   RW         3382    .data               stm32f3xx_hal.o
-    0x20000098   0x080045a8   0x00000004   Data   RW         4791    .data               system_stm32f3xx.o
+    0x20000000   0x08004504   0x00000028   Data   RW          171    .data               sound_handler.o
+    0x20000028   0x0800452c   0x00000004   Data   RW          257    .data               uart.o
+    0x2000002c   0x08004530   0x0000003c   Data   RW          315    .data               main.o
+    0x20000068   0x0800456c   0x00000001   Data   RW          424    .data               user_diskio.o
+    0x20000069   0x0800456d   0x00000003   PAD
+    0x2000006c   0x08004570   0x00000014   Data   RW          425    .data               user_diskio.o
+    0x20000080   0x08004584   0x00000005   Data   RW          482    .data               fatfs.o
+    0x20000085   0x08004589   0x00000003   PAD
+    0x20000088   0x0800458c   0x00000004   Data   RW          648    .data               stm32f3xx_hal_msp.o
+    0x2000008c   0x08004590   0x0000000c   Data   RW         3382    .data               stm32f3xx_hal.o
+    0x20000098   0x0800459c   0x00000004   Data   RW         4791    .data               system_stm32f3xx.o
     0x2000009c        -       0x00000010   Zero   RW          256    .bss                uart.o
     0x200000ac        -       0x000006d8   Zero   RW          313    .bss                main.o
     0x20000784        -       0x00000044   Zero   RW          314    .bss                main.o
     0x200007c8        -       0x0000000c   Zero   RW         5205    .bss                ff_gen_drv.o
-    0x200007d4   0x080045ac   0x00000004   PAD
+    0x200007d4   0x080045a0   0x00000004   PAD
     0x200007d8        -       0x00000400   Zero   RW            1    STACK               startup_stm32f303xc.o
 
 
@@ -2729,7 +2729,7 @@ Image component sizes
         28         10          0          5          0       1154   fatfs.o
         70          4          0          0         12       1759   ff_gen_drv.o
       1234        112          0         60       1820      14539   main.o
-       842         74        512         40          0       8261   sound_handler.o
+       830         74        512         40          0       8237   sound_handler.o
         36          8        392          0       1024        876   startup_stm32f303xc.o
        128         24          0         12          0      13069   stm32f3xx_hal.o
          4          0          0          0          0       1615   stm32f3xx_hal_adc.o
@@ -2754,7 +2754,7 @@ Image component sizes
         44         12          0         21          0       3416   user_diskio.o
 
     ----------------------------------------------------------------------
-     16566       1016        992        156       2876     815081   Object Totals
+     16554       1016        992        156       2876     815057   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         32          0          0          6          4          0   (incl. Padding)
 
@@ -2794,15 +2794,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     16688       1032        992        156       2876     799661   Grand Totals
-     16688       1032        992        156       2876     799661   ELF Image Totals
-     16688       1032        992        156          0          0   ROM Totals
+     16676       1032        992        156       2876     799637   Grand Totals
+     16676       1032        992        156       2876     799637   ELF Image Totals
+     16676       1032        992        156          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                17680 (  17.27kB)
+    Total RO  Size (Code + RO Data)                17668 (  17.25kB)
     Total RW  Size (RW Data + ZI Data)              3032 (   2.96kB)
-    Total ROM Size (Code + RO Data + RW Data)      17836 (  17.42kB)
+    Total ROM Size (Code + RO Data + RW Data)      17824 (  17.41kB)
 
 ==============================================================================
 

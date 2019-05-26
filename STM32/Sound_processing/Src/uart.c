@@ -58,7 +58,6 @@ void uart_cmd_process(CMD_PCK * cmd)
 		{
 			case SD_GEN_GENERATE_CMD:
 				cmd->Etat_GEN = GEN_oui;
-				//sscanf(raw_data,"G %d %d %d %d",&cmd->frequency_code,&cmd->delay_ON,&cmd->delay_OFF,&cmd->nbr_sound);
 				cmd->frequency_code = raw_data[1];
 				cmd->delay_ON = raw_data[2];
 				cmd->delay_OFF = raw_data[3];
@@ -67,7 +66,7 @@ void uart_cmd_process(CMD_PCK * cmd)
 			
 			case ASS_ACQUIRE_SOUND_CMD:
 				cmd->Etat_ACQ = ACQ_oui;
-				cmd->delay_acq = 10;//raw_data[1];
+				cmd->delay_acq = raw_data[1];
 				//sscanf(raw_data,"A %d",&cmd->delay_acq);
 				break;
 		}

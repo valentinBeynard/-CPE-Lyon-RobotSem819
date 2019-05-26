@@ -227,67 +227,67 @@ void freq_calculator(SOUND_PCK* pck)
 	switch(pck->cmd_pck->frequency_code)
 	{
 		case 0x01: // DO 261.6 Hz
-			pck->htim6->Init.Period = 125;
+			pck->htim6->Init.Period = 357;
 			break;
 		case 0x02:	// RE 293.7 Hz
-			pck->htim6->Init.Period = 140;
+			pck->htim6->Init.Period = 318;
 			break;
 		case 0x03:
-			pck->htim6->Init.Period = 157;
+			pck->htim6->Init.Period = 283;
 			break;
 		case 0x04:
-			pck->htim6->Init.Period = 167;
+			pck->htim6->Init.Period = 267;
 			break;
 		case 0x05:
-			pck->htim6->Init.Period = 187;
+			pck->htim6->Init.Period = 238;
 			break;
 		case 0x06:
-			pck->htim6->Init.Period = 210;
+			pck->htim6->Init.Period = 212;
 			break;
 		case 0x07:
-			pck->htim6->Init.Period = 236;
+			pck->htim6->Init.Period = 189;
 			break;
 		case 0x08:
-			pck->htim6->Init.Period = 250;
+			pck->htim6->Init.Period = 178;
 			break;
 		case 0x09:
-			pck->htim6->Init.Period = 280;
+			pck->htim6->Init.Period = 159;
 			break;
 		case 0x0A:
-			pck->htim6->Init.Period = 315;
+			pck->htim6->Init.Period = 141;
 			break;
 		case 0x0B:
-			pck->htim6->Init.Period = 333;
+			pck->htim6->Init.Period = 133;
 			break;
 		case 0x0C:
-			pck->htim6->Init.Period = 374;
+			pck->htim6->Init.Period = 119;
 			break;
 		case 0x0D:
-			pck->htim6->Init.Period = 420;
+			pck->htim6->Init.Period = 106;
 			break;
 		case 0x0E:
-			pck->htim6->Init.Period = 471;
+			pck->htim6->Init.Period = 94;
 			break;
 		case 0x0F:
-			pck->htim6->Init.Period = 499;
+			pck->htim6->Init.Period = 89;
 			break;
 		case 0x10:
-			pck->htim6->Init.Period = 560;
+			pck->htim6->Init.Period = 79;
 			break;
 		case 0x11:
-			pck->htim6->Init.Period = 629;
+			pck->htim6->Init.Period = 70;
 			break;
 		case 0x12:
-			pck->htim6->Init.Period = 667;
+			pck->htim6->Init.Period = 66;
 			break;
 		case 0x13:
-			pck->htim6->Init.Period = 748;
+			pck->htim6->Init.Period = 59;
 			break;
 		case 0x14:
-			pck->htim6->Init.Period = 840;
+			pck->htim6->Init.Period = 52;
 			break;
 		case 0x15:
-			pck->htim6->Init.Period = 943;
+			pck->htim6->Init.Period = 46;
 			break;
 		default:
 			pck->htim6->Init.Period = 210;
